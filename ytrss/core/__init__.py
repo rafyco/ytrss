@@ -46,6 +46,9 @@ class Downloader:
             if not(Debug.get_instance()):
                 self.rememberer.add_element(address)
 
+class SettingException(Exception):
+    pass
+
 class YTsettings:
     urls = []
     playlists = []
@@ -77,7 +80,7 @@ class YTsettingsFile(YTsettings):
             if os.path.expanduser(conf):
                 return conf
             else:
-                raise Exception("file: '%s' not exist.")
+                raise SettingException("file: '%s' not exist.")
         if os.path.isfile(os.path.expanduser("~/.subs_config")):
             return os.path.expanduser("~/.subs_config")
         elif os.path.isfile("/etc/subs_config"):

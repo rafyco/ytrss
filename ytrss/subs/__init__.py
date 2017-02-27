@@ -1,5 +1,6 @@
 from ytrss.core.sys.debug import Debug
 from ytrss.core import YTsettingsFile
+from ytrss.core import SettingException
 from ytrss.core import Downloader
 from optparse import OptionParser
 from ytrss.subs.factory import Factory as YTdown_factory
@@ -27,14 +28,14 @@ def option_args():
     return options
 
 def main():
-    Debug.get_instance().debug_log("Debug mode: Run")
     options = option_args()
     Debug.get_instance().set_debug(options.debug_mode)
-    #try:
-    settings = YTsettingsFile(options.configuration)
-    #except Exception:
-    #    print("Configuration file not exist.")
-    #    exit(1)
+    Debug.get_instance().debug_log("Debug mode: Run")
+    try:
+        settings = YTsettingsFile(options.configuration)
+    except SettingException:
+        print("Configuration file not exist.")
+        exit(1)
         
     if options.show_config:
         print(settings)
