@@ -23,11 +23,24 @@ import sys,os
 from setuptools import setup, find_packages
 import codecs
 
-def read(fname):
-    return codecs.open(os.path.join(os.path.dirname(__file__), fname)).read()
+def read_markdown(fname):
+    fpath = os.path.join(os.path.dirname(__file__), fname)
+    try:
+        import pypandoc
+        return pypandoc.convert(fpath, 'rst')
+    except(IOError, ImportError, RuntimeError):
+        return codecs.open(fpath).read()
 
 version=__import__('ytrss').get_version()
 
+console_scripts = [
+            'ytrss_subs = ytrss.subs:main',
+            'ytrss_daemon = ytrss.daemon:main',
+            'ytdown = ytrss.ytdown:main'
+        ]
+if os.uname() == 'Linux':
+    console_scripts.append('/etc/init.d/ytrss = ytrss.daemon:daemon')
+        
 setup(
     name='ytrss',
     version=version,
@@ -35,8 +48,8 @@ setup(
     author="Rafal Kobel",
     author_email="rafalkobel@rafyco.pl",
     description="Tools for youtube downloading",
-    long_description=read("README.md"),
-    url="http://rafyco.pl",
+    long_description=read_markdown("README.md"),
+    url="http://bitbucket.org/rafyco/ytrss",
     packages=find_packages(),
     include_package_data=True,
     package_dir={'ytrss' : 'ytrss'},
@@ -46,11 +59,7 @@ setup(
     ],
     install_requires = [],
     entry_points = {
-        'console_scripts': [
-            'ytrss_subs = ytrss.subs:main',
-            'ytrss_daemon = ytrss.daemon:main',
-            'ytdown = ytrss.ytdown:main'
-        ]
+        'console_scripts': console_scripts
     },
     platforms='Any',
     keywords='youtube, console'

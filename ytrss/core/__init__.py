@@ -106,7 +106,7 @@ class YTsettingsFile(YTsettings):
         elif os.path.isfile("/etc/subs_config"):
             return "/etc/subs_config"
         else:
-            raise Exception("Cannot find configuration file.")       
+            raise SettingException("Cannot find configuration file.")       
     def __init__(self, conf):
         conf_find = self.check_confiugration_file(conf)
         Debug.get_instance().debug_log("Configuration file: %s" % conf_find)

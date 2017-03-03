@@ -21,6 +21,6 @@
 
 def get_version():
     """ Pobierz wersje oprogramowania. """
-    return "1.0.0"
+    return "0.0.1"
 
 __version__ = get_version()

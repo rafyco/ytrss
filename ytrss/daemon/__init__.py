@@ -51,6 +51,7 @@ def main():
     options = option_args()
     Debug.get_instance().set_debug(options.debug_mode)
     Debug.get_instance().debug_log("Debug mode: Run")
+    raise NotImplementedError
     try:
         settings = YTsettingsFile(options.configuration)
     except SettingException:
