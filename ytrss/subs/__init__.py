@@ -44,6 +44,7 @@ def main():
     factory = YTdown_factory(settings)
     urls = factory.getUrls()
     downloader = Downloader(settings)
+    print(settings)
     for url in urls:
         downloader.download_mp3(url)
     

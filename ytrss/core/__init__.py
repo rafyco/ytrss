@@ -34,7 +34,7 @@ class Downloader:
         self.rememberer = UrlRememberer(self.url_rss)
     def _download_mp3(self, address):
         """ Dodaj do pliku z danymi do pobrania. """
-        if Debug.get_instance():
+        if Debug.get_instance().is_debug():
             return
         plik = open(self.download_file, 'a')
         plik.writelines(address+'\n')
@@ -43,7 +43,7 @@ class Downloader:
         Debug.get_instance().debug_log("DOWNLOAD: %s" % address)
         if self.rememberer.is_new(address):
             self._download_mp3(address)
-            if not(Debug.get_instance()):
+            if not(Debug.get_instance().is_debug()):
                 self.rememberer.add_element(address)
 
 class SettingException(Exception):

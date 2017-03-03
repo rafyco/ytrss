@@ -25,7 +25,9 @@ class Factory:
     def getUrls(self):
         urls = []
         for elem in self.tab:
+            Debug.get_instance().debug_log("Contener: %s" % elem)
             addresses = elem.getUrls()
             for address in addresses:
+                Debug.get_instance().debug_log("El: %s" % address)
                 urls.append(address)
         return urls
