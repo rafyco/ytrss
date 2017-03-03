@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys,os
-from setuptools import setup
+from setuptools import setup, find_packages
 import codecs
 
 def read(fname):
@@ -17,14 +17,16 @@ setup(
     description="Tools for youtube downloading",
     long_description=read("README.md"),
     url="http://rafyco.pl",
-    packages=['ytrss'],
+    packages=find_packages(),
+    include_package_data=True,
+    package_dir={'ytrss' : 'ytrss'},
     classifiers = [
         'Development Status :: 3 - Alpha'
     ],
     install_requires = [],
     entry_points = {
         'console_scripts': [
-            'ytrss_subs = ytrss.subs:main'
+			'ytrss_subs = ytrss.subs:main'
         ]
     },
     platforms='Any',
