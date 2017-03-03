@@ -26,9 +26,11 @@ import codecs
 def read(fname):
     return codecs.open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+version=__import__('ytrss').get_version()
+
 setup(
     name='ytrss',
-    version='1.0.0',
+    version=version,
     license='GNU',
     author="Rafal Kobel",
     author_email="rafalkobel@rafyco.pl",
@@ -39,12 +41,15 @@ setup(
     include_package_data=True,
     package_dir={'ytrss' : 'ytrss'},
     classifiers = [
-        'Development Status :: 3 - Alpha'
+        'Development Status :: 3 - Alpha',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires = [],
     entry_points = {
         'console_scripts': [
-			'ytrss_subs = ytrss.subs:main'
+            'ytrss_subs = ytrss.subs:main',
+            'ytrss_daemon = ytrss.daemon:main',
+            'ytdown = ytrss.ytdown:main'
         ]
     },
     platforms='Any',

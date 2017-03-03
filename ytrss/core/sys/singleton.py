@@ -1,4 +1,12 @@
-# Code downloaded from: http://stackoverflow.com/questions/31875/is-there-a-simple-elegant-way-to-define-singletons
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+###########################################################################
+#                                                                         #
+# Code downloaded from:                                                   #
+#     http://stackoverflow.com/questions/31875/                           #
+#          is-there-a-simple-elegant-way-to-define-singletons             #
+#                                                                         #
+###########################################################################
 
 class Singleton:
     """
