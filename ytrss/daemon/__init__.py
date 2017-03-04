@@ -20,11 +20,13 @@
 ###########################################################################
 
 from ytrss import get_version
-from ytrss.core import URLRememberer
+from ytrss.core import UrlRememberer
+from ytrss.core import URLRemembererError
 from ytrss.core.sys.debug import Debug
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core.sys.locker import Locker, LockerError
+from ytrss.core.downloader import Downloader
 from optparse import OptionParser
 import os
 try:
@@ -50,28 +52,51 @@ def option_args():
 
 def main():
     options = option_args()
-    Debug.get_instance().set_debug(options.debug_mode)
-    Debug.get_instance().debug_log("Debug mode: Run")
-    raise NotImplementedError
+    Debug().set_debug(options.debug_mode)
+    Debug().debug_log("Debug mode: Run")
     try:
         settings = YTSettings(options.configuration)
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
         
-    locker = Locker('lock_ytdown')
+    locker = Locker('lock_ytdown2')
     try:
         locker.lock()
     except LockerError:
         print("Program is running.")
         exit(1)
+    try:
+        urls = UrlRememberer(settings.get_download_file())
+        urls.read_backup(settings.get_url_backup())
+        urls.delete_file()
+        urls.save_as(settings.get_url_backup())
         
+        error_file = UrlRememberer(settings.get_err_file())
+        history_file = UrlRememberer(settings.get_history_file())
         
+        for elem in urls.get_elements():
+            if not(history_file.is_new(elem)):
+                continue
+            task = Downloader(settings, elem)
+            if (task.download()):
+                # finish ok
+                history_file.add_element(elem)
+            else:
+                # finish error
+                error_file.add_element(elem)        
+            
+        locker.unlock()
         
-        
-
-    locker.unlock()
-    Debug.get_instance().debug_log("End")
+        os.remove(settings.get_url_backup())
+        Debug().debug_log("End")
+    except KeyboardInterrupt as ex:
+        locker.unlock()
+        print("Keyboard Interrupt by user.")
+        exit(1)
+    except Exception as ex:
+        locker.unlock()
+        print("Unexpected Error: {}".format(ex))
     
 def daemon():
     print("Not implemented yet.")

@@ -36,7 +36,7 @@ class YTSettings:
             pass
         
         conf_find = self.check_configuration_file(conf)
-        Debug.get_instance().debug_log("Configuration file: %s" % conf_find)
+        Debug().debug_log("Configuration file: %s" % conf_find)
         with open(conf_find) as data_file:
             data = json.load(data_file)
                 

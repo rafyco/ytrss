@@ -53,8 +53,8 @@ def option_args():
 
 def main():
     options = option_args()
-    Debug.get_instance().set_debug(options.debug_mode)
-    Debug.get_instance().debug_log("Debug mode: Run")
+    Debug().set_debug(options.debug_mode)
+    Debug().debug_log("Debug mode: Run")
     try:
         settings = YTSettings(options.configuration)
     except SettingException:
@@ -64,12 +64,15 @@ def main():
     if options.show_config:
         print(settings)
         exit()
-    
+
     finder = URLFinder(settings)
     urls = finder.getUrls()
     queue = Download_Queue(settings)
     print(settings)
     for url in urls:
-        queue.queue_mp3(url)
-    
-    Debug.get_instance().debug_log("End")
+        if queue.queue_mp3(url):
+            print("Element istnieje: {}".format(url))
+        else:
+            print("Element nieistnieje: {}".format(url))
+
+    Debug().debug_log("End")

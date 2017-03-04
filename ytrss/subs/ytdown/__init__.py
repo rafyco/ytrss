@@ -34,7 +34,7 @@ class YTdown_abstract:
         pass
     def getUrls(self):
         url = self.build_url()
-        Debug.get_instance().debug_log("URL: %s" % url)
+        Debug().debug_log("URL: %s" % url)
         return self.youtube_list_from_address(url)
     def youtube_list_from_address(self, address):
         """ Zwraca liste filmow dla uzytkownika o podanym adresie. """
