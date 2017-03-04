@@ -21,8 +21,8 @@
 
 from ytrss import get_version
 from ytrss.core.sys.debug import Debug
-from ytrss.core import YTsettingsFile
-from ytrss.core import SettingException
+from ytrss.core.settings import YTsettingsFile
+from ytrss.core.settings import SettingException
 from ytrss.core.sys.locker import Locker, LockerError
 from optparse import OptionParser
 import os
@@ -71,3 +71,7 @@ def main():
 
     locker.unlock()
     Debug.get_instance().debug_log("End")
+    
+def daemon():
+    print("Not implemented yet.")
+    exit(1)

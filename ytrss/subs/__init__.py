@@ -21,8 +21,8 @@
 
 from ytrss import get_version
 from ytrss.core.sys.debug import Debug
-from ytrss.core import YTsettingsFile
-from ytrss.core import SettingException
+from ytrss.core.settings import YTsettingsFile
+from ytrss.core.settings import SettingException
 from ytrss.core import Downloader
 from optparse import OptionParser
 from ytrss.subs.url_finder import URLFinder 
