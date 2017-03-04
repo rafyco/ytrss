@@ -21,9 +21,9 @@
 
 from ytrss import get_version
 from ytrss.core.sys.debug import Debug
-from ytrss.core.settings import YTsettingsFile
+from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
-from ytrss.core import Downloader
+from ytrss.core import Download_Queue
 from optparse import OptionParser
 from ytrss.subs.url_finder import URLFinder 
 import os
@@ -56,7 +56,7 @@ def main():
     Debug.get_instance().set_debug(options.debug_mode)
     Debug.get_instance().debug_log("Debug mode: Run")
     try:
-        settings = YTsettingsFile(options.configuration)
+        settings = YTSettings(options.configuration)
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
@@ -67,9 +67,9 @@ def main():
     
     finder = URLFinder(settings)
     urls = finder.getUrls()
-    downloader = Downloader(settings)
+    queue = Download_Queue(settings)
     print(settings)
     for url in urls:
-        downloader.download_mp3(url)
+        queue.queue_mp3(url)
     
     Debug.get_instance().debug_log("End")

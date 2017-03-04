@@ -20,8 +20,9 @@
 ###########################################################################
 
 from ytrss import get_version
+from ytrss.core import URLRememberer
 from ytrss.core.sys.debug import Debug
-from ytrss.core.settings import YTsettingsFile
+from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core.sys.locker import Locker, LockerError
 from optparse import OptionParser
@@ -53,7 +54,7 @@ def main():
     Debug.get_instance().debug_log("Debug mode: Run")
     raise NotImplementedError
     try:
-        settings = YTsettingsFile(options.configuration)
+        settings = YTSettings(options.configuration)
     except SettingException:
         print("Configuration file not exist.")
         exit(1)

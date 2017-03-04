@@ -23,7 +23,7 @@ from ytrss import get_version
 from ytrss.core.sys.debug import Debug
 from ytrss.core.settings import SettingException
 from ytrss.core import Downloader
-from ytrss.core.settings import YTsettingsFile
+from ytrss.core.settings import YTSettings
 from optparse import OptionParser
 import os
 try:
@@ -55,7 +55,7 @@ def main():
     (options, args) = option_args()
     Debug.get_instance().set_debug(options.debug_mode)
     try:
-        settings = YTsettingsFile(options.configuration)
+        settings = YTSettings(options.configuration)
     except SettingException:
         print("Configuration file not exist.")
         exit(1)

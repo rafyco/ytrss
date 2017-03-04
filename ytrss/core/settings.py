@@ -27,50 +27,92 @@ class SettingException(Exception):
 
 class YTSettings:
     urls = []
-    playlists = []
-    rss = ""
-    download_file = ""    
+    playlists = [] 
+
+    def __init__(self, conf):
+        try:
+            os.makedirs(YTSettings.get_os_conf_path())
+        except OSError:
+            pass
+        
+        conf_find = self.check_configuration_file(conf)
+        Debug.get_instance().debug_log("Configuration file: %s" % conf_find)
+        with open(conf_find) as data_file:
+            data = json.load(data_file)
+                
+        self.output = data['output']
+        if self.output == "":
+            self.output = os.path.expanduser("~/ytrss_output")
+        
+        self.parse_subsctiptions(data['subscriptions'])
+
     """ Bobieranie danych dla skryptu. """
-    def __init__(self):
-        self.rss = os.path.expanduser("/opt/yt_rss")
-        self.download_file = os.path.expanduser("~/download_yt.txt")
     def get_user_urls(self):
         return self.urls
+    @staticmethod
+    def get_os_conf_path():
+        conf_path = "ytrss"
+        if os.uname()[0] == 'Linux':
+            conf_path = os.path.join("~/.config", conf_path)
+        return os.path.expanduser(conf_path)
+
+    @staticmethod
+    def get_conf_file_path(file_name):
+        return os.path.join(YTSettings.get_os_conf_path(), file_name)
+
     def get_playlist_urls(self):
         return self.playlists
-    def get_paths(self):
-        return os.path.expanduser(self.rss), os.path.expanduser(self.download_file)
+
+    def get_url_rss(self):
+        return YTSettings.get_conf_file_path("rss_remember.txt")
+
+    def get_download_file(self):
+        return YTSettings.get_conf_file_path("download_yt.txt")
+        
+    def get_url_backup(self):
+        return YTSettings.get_conf_file_path("download_yt_last.txt")
+        
+    def get_history_file(self):
+        return YTSettings.get_conf_file_path("download_yt_history.txt")
+    
+    def get_err_file(self):
+        return YTSettings.get_conf_file_path("download_yt.txt.err")
+       
+    def get_cache_path(self):
+        return YTSettings.get_conf_file_path("cache")
+        
+    def get_output_path(self):
+        try:
+            os.makedirs(self.output)
+        except OSError:
+            pass
+        return self.output
+
     def __str__(self):
         result = "Youtube configuration:\n\n"
-        result += "database-file: %s\n" % self.rss
-        result += "output-file: %s\n" % self.download_file
+        result += "output-file: %s\n" % self.output
         for elem in self.urls:
             result += "\turlfile: %s\n" % elem
         for elem in self.playlists:
             result += "\tplaylist: %s\n" % elem
         return result
 
-class YTSettingsFile(YTSettings):
-    def check_confiugration_file(self, conf=""):
+    def check_configuration_file(self, conf=""):
         if conf != "":
             if os.path.expanduser(conf):
                 return conf
             else:
                 raise SettingException("file: '%s' not exist.")
-        if os.path.isfile(os.path.expanduser("~/.subs_config")):
-            return os.path.expanduser("~/.subs_config")
+        conf_file_path = YTSettings.get_conf_file_path("config")
+        if os.path.isfile(conf_file_path):
+            return conf_file_path
         elif os.uname()[0] == 'Linux' and os.path.isfile("/etc/subs_config"):
             return "/etc/subs_config"
         else:
-            raise SettingException("Cannot find configuration file.")       
-    def __init__(self, conf):
-        conf_find = self.check_confiugration_file(conf)
-        Debug.get_instance().debug_log("Configuration file: %s" % conf_find)
-        with open(conf_find) as data_file:
-            data = json.load(data_file)
-        self.rss = data['database']
-        self.download_file = data['output']
-        for elem in data['subscriptions']:
+            raise SettingException("Cannot find configuration file.")
+
+    def parse_subsctiptions(self, subs):
+        for elem in subs:
             if elem.has_key('type'):
                 type = elem['type']
             else:

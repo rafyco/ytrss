@@ -23,12 +23,11 @@ Program do pobierania listy adresów url na podstawie adresów subskrypcji lub w
 
 ## Przykładowy plik kofiguracyjny
 
-    vi ~/.subs_conf
+    vi ~/.conf/ytrss/config
 
 
 ```
 {
-    "database" : "<database_file>",
     "output"   : "<output_file>",
     "subscriptions" : [
         {

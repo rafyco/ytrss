@@ -23,9 +23,17 @@ import subprocess
 import re
 
 class Downloader:
-    def __init__(self):
+    def __init__(self, settings):
         self.name = ""
-        self.output = ""
+        self.settings = settings
+        self.output = self.settings
+        
+
+class Downloader2:
+    def __init__(self, settings):
+        self.name = ""
+        self.settings = settings
+        self.output = settings.get_url_output()
     def download(self, url):
         status = 0
         print("url: %s" % url)
