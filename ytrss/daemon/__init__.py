@@ -103,6 +103,7 @@ def main():
         print("Keyboard Interrupt by user.")
         exit(1)
     except DaemonError:
+        locker.unlock()
         print("Cannot find url to download")
         exit()
     except Exception as ex:
