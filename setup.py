@@ -38,8 +38,8 @@ console_scripts = [
             'ytrss_daemon = ytrss.daemon:main',
             'ytdown = ytrss.ytdown:main'
         ]
-if os.uname()[0] == 'Linux':
-    console_scripts.append('/etc/init.d/ytrss = ytrss.daemon:daemon')
+#if os.uname()[0] == 'Linux':
+#    console_scripts.append('/etc/init.d/ytrss = ytrss.daemon:daemon')
         
 setup(
     name='ytrss',

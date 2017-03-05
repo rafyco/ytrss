@@ -40,7 +40,7 @@ class YTSettings:
         with open(conf_find) as data_file:
             data = json.load(data_file)
                 
-        self.output = data['output']
+        self.output = os.path.expanduser(data['output'])
         if self.output == "":
             self.output = os.path.expanduser("~/ytrss_output")
         

@@ -68,11 +68,10 @@ def main():
     finder = URLFinder(settings)
     urls = finder.getUrls()
     queue = Download_Queue(settings)
-    print(settings)
     for url in urls:
         if queue.queue_mp3(url):
-            print("Element istnieje: {}".format(url))
+            print("Nowy element: {}".format(url))
         else:
-            print("Element nieistnieje: {}".format(url))
+            print("Element istnieje: {}".format(url))
 
     Debug().debug_log("End")

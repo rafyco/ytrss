@@ -60,7 +60,7 @@ def main():
         print("Configuration file not exist.")
         exit(1)
         
-    locker = Locker('lock_ytdown2')
+    locker = Locker('lock_ytdown')
     try:
         locker.lock()
     except LockerError:
@@ -77,13 +77,16 @@ def main():
         
         for elem in urls.get_elements():
             if not(history_file.is_new(elem)):
+                print("URL {} cannot again download".format(elem))
                 continue
             task = Downloader(settings, elem)
             if (task.download()):
                 # finish ok
+                print("finish ok") # RAF
                 history_file.add_element(elem)
             else:
                 # finish error
+                print("finish error") # RAF
                 error_file.add_element(elem)        
             
         locker.unlock()
@@ -97,6 +100,7 @@ def main():
     except Exception as ex:
         locker.unlock()
         print("Unexpected Error: {}".format(ex))
+        raise ex
     
 def daemon():
     print("Not implemented yet.")

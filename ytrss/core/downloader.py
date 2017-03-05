@@ -19,9 +19,9 @@
 #                                                                         #
 ###########################################################################
 
-import subprocess
+import subprocess, shutil
 import re, os
- 
+from ytrss.core.sys.debug import Debug
 
 class Downloader:
     def __init__(self, settings, url):
@@ -55,10 +55,10 @@ class Downloader:
                 destination_path = os.path.join(self.output_path, find_file)
                 Debug().debug_log("source_path: %s" % source_path)
                 Debug().debug_log("destination_path: %s" % destination_path)
-                os.rename(source_path, destination_path)
-        
+                shutil.move(source_path, destination_path)
+
         return status == 0 and finded
-           
+
     def get_downloaded_file(self):
         return self.name
 
@@ -72,6 +72,7 @@ def debug_test():
         print("result: true")
     else:
         print("result: false")
-        
+
+
 if __name__ == '__main__':
     debug_test()

@@ -25,7 +25,6 @@ from ytrss.core.sys.singleton import Singleton
 class Debug:
     def __init__(self, *args, **kwargs):
         self.debug = False
-        print("debug: ")
 
     def set_debug(self, debug=True):
         self.debug = debug

@@ -22,7 +22,7 @@
 from ytrss import get_version
 from ytrss.core.sys.debug import Debug
 from ytrss.core.settings import SettingException
-from ytrss.core import Downloader
+from ytrss.core import Download_Queue
 from ytrss.core.settings import YTSettings
 from optparse import OptionParser
 import os
@@ -64,7 +64,9 @@ def main():
         print("Require url to download")
         exit(1)
         
-    downloader = Downloader(settings)
+    queue = Download_Queue(settings)
     for url in args:
-        downloader.download_mp3(url)
-    
+        if queue.queue_mp3(url):
+            print("Filmik zostanie pobrany: {}".format(url))
+        else:
+            print("Filmik nie zostanie pobrany: {}".format(url))
