@@ -1,13 +1,13 @@
 # YTRSS - Youtube subscription downloader
 
-Program do pobierania listy adresów url na podstawie adresów subskrypcji lub wybranych playlist.
+Program to automatic download YouTube files by youtube_dl scripts.
 
 ![Author](https://img.shields.io/badge/author-Rafa%C5%82%20Kobel-blue.svg)
 ![BitbucketIssues](https://img.shields.io/bitbucket/issues/rafyco/ytrss.svg)
 ![version](https://img.shields.io/pypi/v/ytrss.svg)
 ![License](https://img.shields.io/badge/license-GNU-blue.svg)
 
-## instalacja
+## Instalation
 
 ### PyPi
 
@@ -17,11 +17,21 @@ Program do pobierania listy adresów url na podstawie adresów subskrypcji lub w
 
     sudo python setup.py install
 
-## Wywołanie
+## Usage
 
-    ytrss_subs --help
+Download information about new subscription.
 
-## Przykładowy plik kofiguracyjny
+    ytrss_subs
+    
+Download files from queue.
+    
+    ytrss_daemon
+    
+Add new file to queue
+    
+    ytdown <file_url>
+
+## Example configuration
 
     vi ~/.conf/ytrss/config
 
@@ -46,11 +56,11 @@ Program do pobierania listy adresów url na podstawie adresów subskrypcji lub w
 
 ```
 
-## Autor
+## Author
 
-Rafał Kobel <rafalkobel@rafyco.pl>
+Rafal Kobel <rafalkobel@rafyco.pl>
 
-## Licencja
+## License
 
 >    Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco>
 >
