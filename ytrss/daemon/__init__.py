@@ -50,6 +50,9 @@ def option_args():
     (options, args) = parser.parse_args()
     return options
 
+class DaemonError(Exception):
+    pass
+    
 def main():
     options = option_args()
     Debug().set_debug(options.debug_mode)
@@ -67,6 +70,8 @@ def main():
         print("Program is running.")
         exit(1)
     try:
+        if not(os.path.isfile(settings.get_download_file())):
+            raise DaemonError
         urls = UrlRememberer(settings.get_download_file())
         urls.read_backup(settings.get_url_backup())
         urls.delete_file()
@@ -97,6 +102,9 @@ def main():
         locker.unlock()
         print("Keyboard Interrupt by user.")
         exit(1)
+    except DaemonError:
+        print("Cannot find url to download")
+        exit()
     except Exception as ex:
         locker.unlock()
         print("Unexpected Error: {}".format(ex))

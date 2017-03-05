@@ -45,9 +45,9 @@ class UrlRememberer:
                     self.database.append(elem)
                 
         except Exception as ex:
-            Debug().log_debug(ex)
+            Debug().debug_log(ex)
         except:
-            Debug().log_debug("Unknown error")
+            Debug().debug_log("Unknown error")
 
     def add_element(self, address):
         """ Dodaj dane do bazydanych. """
@@ -116,7 +116,7 @@ class Download_Queue:
         self.download_yt = UrlRememberer(self.download_file)
         if base_file == None:
             base_file = settings.get_url_rss()
-        Debug().log_debug(base_file)
+        Debug().debug_log(base_file)
         self.rememberer = UrlRememberer(base_file)
 
     def _queue_mp3(self, address):
