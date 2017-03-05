@@ -19,6 +19,7 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 from ytrss.core.sys.debug import Debug
 import abc, os, json
 

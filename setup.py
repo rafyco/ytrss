@@ -57,7 +57,9 @@ setup(
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
-    install_requires = [],
+    install_requires = [
+        'youtube_dl'
+    ],
     entry_points = {
         'console_scripts': console_scripts
     },

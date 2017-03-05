@@ -19,6 +19,7 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 from ytrss import get_version
 from ytrss.core.sys.debug import Debug
 from ytrss.core.settings import YTSettings

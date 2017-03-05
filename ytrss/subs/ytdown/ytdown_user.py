@@ -19,6 +19,7 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 from ytrss.subs.ytdown import YTdown_abstract
 
 class YTdown_user(YTdown_abstract):

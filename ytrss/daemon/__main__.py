@@ -19,6 +19,7 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 import ytrss.daemon
 
 if __name__=="__main__":

@@ -19,6 +19,8 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
+
 def get_version():
     """ Pobierz wersje oprogramowania. """
     return "0.0.2"

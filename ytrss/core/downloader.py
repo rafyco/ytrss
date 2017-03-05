@@ -19,8 +19,9 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 import subprocess, shutil
-import re, os
+import re, os, sys
 from ytrss.core.sys.debug import Debug
 
 class Downloader:
@@ -43,9 +44,7 @@ class Downloader:
         command = [ "/usr/bin/youtube-dl", '--extract-audio',  '--audio-format',  'mp3', '-o',  "%(uploader)s - %(title)s.%(ext)s", self.url ]
         process = subprocess.Popen(command, stdout=subprocess.PIPE)
         self.output, self.erroutput = process.communicate()
-        print(self.output.replace('\\r', '\n').replace('\\n', '\n'))
         
-        self.output = open('./output.txt').read()
         files = []
         finded = False
         for find_file in os.listdir(cache_path):
@@ -53,26 +52,11 @@ class Downloader:
                 finded = True
                 source_path = os.path.join(cache_path, find_file)
                 destination_path = os.path.join(self.output_path, find_file)
-                Debug().debug_log("source_path: %s" % source_path)
-                Debug().debug_log("destination_path: %s" % destination_path)
+                Debug().debug_log("source_path: {}".format(source_path))
+                Debug().debug_log("destination_path: {}".format(destination_path))
                 shutil.move(source_path, destination_path)
 
         return status == 0 and finded
 
     def get_downloaded_file(self):
         return self.name
-
-def debug_test():
-    from ytrss.core.settings import YTSettings
-    setting = YTSettings("")
-    down = Downloader(setting, "https://www.youtube.com/watch?v=YZuFsI-bttM")
-
-    result = down.download()
-    if result:
-        print("result: true")
-    else:
-        print("result: false")
-
-
-if __name__ == '__main__':
-    debug_test()

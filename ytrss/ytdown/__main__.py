@@ -19,6 +19,7 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 import ytrss.ytdown
 
 if __name__=="__main__":

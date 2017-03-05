@@ -19,6 +19,7 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 from ytrss.core.sys.debug import Debug
 from sets import Set
 import abc, os, json
@@ -59,7 +60,7 @@ class UrlRememberer:
         plik = open(self.file_name, 'a')
         plik.writelines(address+'\n')
         plik.close()
-        self.file_data = "%s\n%s\n" % (self.file_data, address)
+        self.file_data = "{}\n{}\n".format(self.file_data, address)
         
     def is_new(self, address):
         """ Czy dane znajduja sie w pliku. """

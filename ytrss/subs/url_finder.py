@@ -19,6 +19,7 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 from ytrss.core.sys.debug import Debug
 from ytrss.subs.ytdown.ytdown_playlist import YTdown_playlist
 from ytrss.subs.ytdown.ytdown_user import YTdown_user

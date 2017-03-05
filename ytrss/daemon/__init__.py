@@ -19,6 +19,7 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 from ytrss import get_version
 from ytrss.core import UrlRememberer
 from ytrss.core import URLRemembererError
@@ -70,7 +71,7 @@ def main():
         print("Program is running.")
         exit(1)
     try:
-        if not(os.path.isfile(settings.get_download_file())):
+        if not(os.path.isfile(settings.get_download_file())) and not(os.path.isfile(settings.get_url_backup())):
             raise DaemonError
         urls = UrlRememberer(settings.get_download_file())
         urls.read_backup(settings.get_url_backup())
