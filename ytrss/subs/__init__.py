@@ -25,31 +25,31 @@ from ytrss.core.sys.debug import Debug
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core import Download_Queue
-from optparse import OptionParser
+from argparse import ArgumentParser
 from ytrss.subs.url_finder import URLFinder 
 import os
 try:
-    import optcomplete
+    import argcomplete
 except ImportError:
     pass
 
 def option_args():
-    parser = OptionParser(description="Save urls from Youtube's subscription or playlists to file.",
+    parser = ArgumentParser(description="Save urls from Youtube's subscription or playlists to file.",
                           prog='ytrss_subs',
-                          version='%prog {}'.format(get_version()))                          
-    parser.add_option("-d", "--debug", action="store_true",
-                      dest="debug_mode", default=False,
-                      help="show debug information")
-    parser.add_option("-s", "--show", action="store_true",
-                      dest="show_config", default=False,
-                      help="Write configuration")
-    parser.add_option("-c", "--conf", dest="configuration", 
-                      help="configuration file", default="", metavar="FILE")
+                          version='%(prog)s {}'.format(get_version()))                          
+    parser.add_argument("-d", "--debug", action="store_true",
+                        dest="debug_mode", default=False,
+                        help="show debug information")
+    parser.add_argument("-s", "--show", action="store_true",
+                        dest="show_config", default=False,
+                        help="Write configuration")
+    parser.add_argument("-c", "--conf", dest="configuration", 
+                        help="configuration file", default="", metavar="FILE")
     try:
-        optcomplete.autocomplete(parser)
+        argcomplete.autocomplete(parser)
     except NameError:
         pass
-    (options, args) = parser.parse_args()
+    options = parser.parse_args()
     return options
 
 def main():

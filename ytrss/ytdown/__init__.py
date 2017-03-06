@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# PYTHON_ARGCOMPLETE_OK
 # -*- coding: utf-8 -*-
 ###########################################################################
 #                                                                         #
@@ -25,35 +26,34 @@ from ytrss.core.sys.debug import Debug
 from ytrss.core.settings import SettingException
 from ytrss.core import Download_Queue
 from ytrss.core.settings import YTSettings
-from optparse import OptionParser
+from argparse import ArgumentParser
 import os
 try:
-    import optcomplete
+    import argcomplete
 except ImportError:
     pass
 
 def option_args():
-    parser = OptionParser(description="Save one or more urls from Youtube to file.",
-                          prog='ytdown',
-                          usage='%prog [options] [urls]',
-                          version='%prog {}'.format(get_version()))
-    parser.add_option("-d", "--debug", action="store_true",
-                      dest="debug_mode", default=False,
-                      help="show debug information")
-    parser.add_option("-c", "--conf", dest="configuration", 
-                      help="configuration file", default="", metavar="FILE")
-                      
-    parser
+    parser = ArgumentParser(description="Save one or more urls from Youtube to file.",
+                            prog='ytdown',
+                            version='%(prog)s {}'.format(get_version()))
+    parser.add_argument("-d", "--debug", action="store_true",
+                        dest="debug_mode", default=False,
+                        help="show debug information")
+    parser.add_argument("-c", "--conf", dest="configuration", 
+                        help="configuration file", default="", metavar="FILE")
+    parser.add_argument("urls", nargs='*', default=[], type=unicode,
+                        help="Url to download.")
     try:
-        optcomplete.autocomplete(parser)
+        argcomplete.autocomplete(parser)
     except NameError:
         pass
-    (options, args) = parser.parse_args()
+    options = parser.parse_args()
 
-    return (options, args)
+    return options
 
 def main():
-    (options, args) = option_args()
+    options = option_args()
     Debug.get_instance().set_debug(options.debug_mode)
     try:
         settings = YTSettings(options.configuration)
@@ -61,13 +61,14 @@ def main():
         print("Configuration file not exist.")
         exit(1)
         
-    if len(args) < 1:
+    if len(options.urls) < 1:
         print("Require url to download")
         exit(1)
         
     queue = Download_Queue(settings)
-    for url in args:
-        if queue.queue_mp3(url):
-            print("Filmik zostanie pobrany: {}".format(url))
-        else:
-            print("Filmik nie zostanie pobrany: {}".format(url))
+    for url in options.urls:
+        print("ARG: {}".format(url))
+        #if queue.queue_mp3(url):
+        #    print("Filmik zostanie pobrany: {}".format(url))
+        #else:
+        #    print("Filmik nie zostanie pobrany: {}".format(url))

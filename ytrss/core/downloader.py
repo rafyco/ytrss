@@ -41,7 +41,7 @@ class Downloader:
         os.chdir(cache_path)
          
         print("url: %s" % self.url)
-        command = [ "/usr/bin/youtube-dl", '--extract-audio',  '--audio-format',  'mp3', '-o',  "%(uploader)s - %(title)s.%(ext)s", self.url ]
+        command = [ "youtube-dl", '--extract-audio',  '--audio-format',  'mp3', '-o',  "%(uploader)s - %(title)s.%(ext)s", self.url ]
         process = subprocess.Popen(command, stdout=subprocess.PIPE)
         self.output, self.erroutput = process.communicate()
         

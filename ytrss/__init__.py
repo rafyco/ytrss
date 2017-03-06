@@ -23,6 +23,6 @@ from __future__ import unicode_literals
 
 def get_version():
     """ Pobierz wersje oprogramowania. """
-    return "0.0.4"
+    return "0.0.5"
 
 __version__ = get_version()

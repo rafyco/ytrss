@@ -28,7 +28,7 @@ from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core.sys.locker import Locker, LockerError
 from ytrss.core.downloader import Downloader
-from optparse import OptionParser
+from argparse import ArgumentParser
 import os
 try:
     import argcomplete
@@ -36,19 +36,19 @@ except ImportError:
     pass
 
 def option_args():
-    parser = OptionParser(description="Download all Youtube's movie to youtube path.",
+    parser = ArgumentParser(description="Download all Youtube's movie to youtube path.",
                           prog='ytrss_daemon',
-                          version='%prog {}'.format(get_version())) 
-    parser.add_option("-d", "--debug", action="store_true",
-                      dest="debug_mode", default=False,
-                      help="show debug information")
-    parser.add_option("-c", "--conf", dest="configuration", 
-                      help="configuration file", default="", metavar="FILE")
+                          version='%(prog)s {}'.format(get_version())) 
+    parser.add_argument("-d", "--debug", action="store_true",
+                        dest="debug_mode", default=False,
+                        help="show debug information")
+    parser.add_argument("-c", "--conf", dest="configuration", 
+                        help="configuration file", default="", metavar="FILE")
     try:
         argcomplete.autocomplete(parser)
     except NameError:
         pass
-    (options, args) = parser.parse_args()
+    options = parser.parse_args()
     return options
 
 class DaemonError(Exception):
@@ -88,11 +88,11 @@ def main():
             task = Downloader(settings, elem)
             if (task.download()):
                 # finish ok
-                print("finish ok") # RAF
+                print("finish ok")
                 history_file.add_element(elem)
             else:
                 # finish error
-                print("finish error") # RAF
+                print("finish error")
                 error_file.add_element(elem)        
             
         locker.unlock()
