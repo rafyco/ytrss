@@ -29,7 +29,7 @@ from ytrss.core.settings import SettingException
 from ytrss.core.sys.locker import Locker, LockerError
 from ytrss.core.downloader import Downloader
 from argparse import ArgumentParser
-import os
+import os, sys
 try:
     import argcomplete
 except ImportError:
@@ -53,7 +53,7 @@ def option_args():
 
 class DaemonError(Exception):
     pass
-    
+
 def main():
     options = option_args()
     Debug().set_debug(options.debug_mode)
@@ -62,14 +62,14 @@ def main():
         settings = YTSettings(options.configuration)
     except SettingException:
         print("Configuration file not exist.")
-        exit(1)
+        sys.exit(1)
         
     locker = Locker('lock_ytdown')
     try:
         locker.lock()
     except LockerError:
         print("Program is running.")
-        exit(1)
+        sys.exit(1)
     try:
         if not(os.path.isfile(settings.get_download_file())) and not(os.path.isfile(settings.get_url_backup())):
             raise DaemonError
@@ -102,16 +102,16 @@ def main():
     except KeyboardInterrupt as ex:
         locker.unlock()
         print("Keyboard Interrupt by user.")
-        exit(1)
+        sys.exit(1)
     except DaemonError:
         locker.unlock()
-        print("Cannot find url to download")
-        exit()
+        Debug().debug_log("Cannot find url to download")
+        sys.exit()
     except Exception as ex:
         locker.unlock()
         print("Unexpected Error: {}".format(ex))
         raise ex
-    
+
 def daemon():
     print("Not implemented yet.")
-    exit(1)
+    sys.exit(1)

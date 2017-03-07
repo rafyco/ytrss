@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# PYTHON_ARGCOMPLETE_OK
 # -*- coding: utf-8 -*-
 ###########################################################################
 #                                                                         #
@@ -48,9 +47,7 @@ def option_args():
         argcomplete.autocomplete(parser)
     except NameError:
         pass
-    options = parser.parse_args()
-
-    return options
+    return parser.parse_args()
 
 def main():
     options = option_args()
@@ -67,8 +64,7 @@ def main():
         
     queue = Download_Queue(settings)
     for url in options.urls:
-        print("ARG: {}".format(url))
-        #if queue.queue_mp3(url):
-        #    print("Filmik zostanie pobrany: {}".format(url))
-        #else:
-        #    print("Filmik nie zostanie pobrany: {}".format(url))
+        if queue.queue_mp3(url):
+            print("Filmik zostanie pobrany: {}".format(url))
+        else:
+            print("Filmik nie zostanie pobrany: {}".format(url))

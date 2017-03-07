@@ -84,7 +84,7 @@ remove: clean
 	@$(RM) ytrss.egg-info
 	@$(RM) dist
 
-install:
+install: remove
 	@$(SETUP) install
 
 jenkins-test: remove documentation build clean

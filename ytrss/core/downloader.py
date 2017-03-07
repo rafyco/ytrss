@@ -23,6 +23,7 @@ from __future__ import unicode_literals
 import subprocess, shutil
 import re, os, sys
 from ytrss.core.sys.debug import Debug
+import youtube_dl
 
 class Downloader:
     def __init__(self, settings, url):
@@ -41,10 +42,15 @@ class Downloader:
         os.chdir(cache_path)
          
         print("url: %s" % self.url)
-        command = [ "youtube-dl", '--extract-audio',  '--audio-format',  'mp3', '-o',  "%(uploader)s - %(title)s.%(ext)s", self.url ]
-        process = subprocess.Popen(command, stdout=subprocess.PIPE)
-        self.output, self.erroutput = process.communicate()
-        
+        try: 
+            command = [ '--extract-audio', '--audio-format', 'mp3', '-o', "%(uploader)s - %(title)s.%(ext)s", self.url ]
+            youtube_dl.main(command)
+        except SystemExit as ex:
+            if ex.code == None:
+                status = 0
+            else:
+                status = ex.code
+
         files = []
         finded = False
         for find_file in os.listdir(cache_path):
