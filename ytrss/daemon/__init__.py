@@ -26,7 +26,7 @@ from ytrss.core import URLRemembererError
 from ytrss.core.sys.debug import Debug
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
-from ytrss.core.sys.locker import Locker, LockerError
+from ytrss.core.locker import Locker, LockerError
 from ytrss.core.downloader import Downloader
 from argparse import ArgumentParser
 import os, sys

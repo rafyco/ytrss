@@ -20,8 +20,38 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.subs.ytdown import YTdown_abstract
+from ytrss.core.sys.debug import Debug
+from ytrss.core.ytdown import YTDown
 
-class YTdown_user(YTdown_abstract):
-    def build_url(self):
-        return "https://www.youtube.com/feeds/videos.xml?channel_id=%s" % self.code
+class URLFinder:
+    def __init__(self, settings = None):
+        self.tab = []
+        if settings != None:
+            self.add_user_url(settings.get_user_urls())
+            self.add_playlist_url(settings.get_playlist_urls())
+
+    def add_user_url(self, url):
+        if isinstance(url, list):
+            for elem in url:
+                self.add_user_url(elem)
+        else:
+            Debug().debug_log("add user url: %s" % url)
+            self.tab.append(YTdown(url, type="user"))
+
+    def add_playlist_url(self, url):
+        if isinstance(url, list):
+            for elem in url:
+                self.add_playlist_url(elem)
+        else:
+            Debug().debug_log("add playlist url: %s" % url)
+            self.tab.append(YTDown(url, type="playlist"))
+
+    def getUrls(self):
+        urls = []
+        for elem in self.tab:
+            Debug().debug_log("Contener: %s" % elem)
+            addresses = elem.getUrls()
+            for address in addresses:
+                Debug().debug_log("El: %s" % address)
+                urls.append(address)
+        return urls

@@ -20,8 +20,39 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.subs.ytdown import YTdown_abstract
+from ytrss.core.sys.debug import Debug
+from urllib import urlopen
+from xml.dom import minidom
+import abc
 
-class YTdown_playlist(YTdown_abstract):
+class YTDown:
+    """ Klasa do pobierania listy adresow url filmow z podanego zrodla. """
+    __metaclass__ = abc.ABCMeta
+    def __init__(self, code, type='user'):
+        self.code = code
+        self.type = type
+
     def build_url(self):
-        return "https://www.youtube.com/feeds/videos.xml?playlist_id=%s" % self.code
+        if self.type == 'playlist':
+            return "https://www.youtube.com/feeds/videos.xml?playlist_id={}".format(self.code)
+        else:
+            return "https://www.youtube.com/feeds/videos.xml?channel_id={}".format(self.code)
+        
+    def getUrls(self):
+        url = self.build_url()
+        Debug().debug_log("URL: %s" % url)
+        return self.youtube_list_from_address(url)
+
+    def youtube_list_from_address(self, address):
+        """ Zwraca liste filmow dla uzytkownika o podanym adresie. """
+        xml_str = urlopen(address).read()
+        xmldoc = minidom.parseString(xml_str)
+        tags = xmldoc.getElementsByTagName('link')
+        result = []
+        iterator = 0
+        for elem in tags:
+            if iterator != 0 and iterator != 1:
+                url = elem.getAttribute("href")
+                result.append(url)
+            iterator = iterator + 1
+        return result

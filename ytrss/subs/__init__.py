@@ -22,11 +22,11 @@
 from __future__ import unicode_literals
 from ytrss import get_version
 from ytrss.core.sys.debug import Debug
+from ytrss.core import Download_Queue
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
-from ytrss.core import Download_Queue
+from ytrss.core.url_finder import URLFinder
 from argparse import ArgumentParser
-from ytrss.subs.url_finder import URLFinder 
 import os
 try:
     import argcomplete
