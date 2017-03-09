@@ -21,7 +21,7 @@
 
 from __future__ import unicode_literals
 from ytrss import get_version
-from ytrss.core.sys.debug import Debug
+from ytrss.core.system.debug import Debug
 from ytrss.core import Download_Queue
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
@@ -76,3 +76,7 @@ def main():
             print("Element istnieje: {}".format(url))
 
     Debug().debug_log("End")
+    
+if __name__ == "__main__":
+    main()
+

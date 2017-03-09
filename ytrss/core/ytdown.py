@@ -20,7 +20,7 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.core.sys.debug import Debug
+from ytrss.core.system.debug import Debug
 from urllib import urlopen
 from xml.dom import minidom
 import abc
@@ -37,7 +37,7 @@ class YTDown:
             return "https://www.youtube.com/feeds/videos.xml?playlist_id={}".format(self.code)
         else:
             return "https://www.youtube.com/feeds/videos.xml?channel_id={}".format(self.code)
-        
+
     def getUrls(self):
         url = self.build_url()
         Debug().debug_log("URL: %s" % url)

@@ -19,7 +19,7 @@
 #                                                                         #
 ###########################################################################
 
-from ytrss.core.sys.singleton import Singleton
+from ytrss.core.system.singleton import Singleton
 
 @Singleton
 class Debug:

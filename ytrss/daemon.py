@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 from ytrss import get_version
 from ytrss.core import UrlRememberer
 from ytrss.core import URLRemembererError
-from ytrss.core.sys.debug import Debug
+from ytrss.core.system.debug import Debug
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core.locker import Locker, LockerError
@@ -115,3 +115,7 @@ def main():
 def daemon():
     print("Not implemented yet.")
     sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+

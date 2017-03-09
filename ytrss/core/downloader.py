@@ -22,7 +22,7 @@
 from __future__ import unicode_literals
 import subprocess, shutil
 import re, os, sys
-from ytrss.core.sys.debug import Debug
+from ytrss.core.system.debug import Debug
 import youtube_dl
 
 class Downloader:

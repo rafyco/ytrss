@@ -19,7 +19,7 @@
 #                                                                         #
 ###########################################################################
 
-from ytrss.core.sys.debug import Debug
+from ytrss.core.system.debug import Debug
 import os, tempfile
 
 class LockerError(Exception):

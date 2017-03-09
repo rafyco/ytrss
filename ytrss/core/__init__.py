@@ -20,7 +20,7 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.core.sys.debug import Debug
+from ytrss.core.system.debug import Debug
 from sets import Set
 import abc, os, json
 

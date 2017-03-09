@@ -20,7 +20,7 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.core.sys.debug import Debug
+from ytrss.core.system.debug import Debug
 from ytrss.core.ytdown import YTDown
 
 class URLFinder:
@@ -36,7 +36,7 @@ class URLFinder:
                 self.add_user_url(elem)
         else:
             Debug().debug_log("add user url: %s" % url)
-            self.tab.append(YTdown(url, type="user"))
+            self.tab.append(YTDown(url, type="user"))
 
     def add_playlist_url(self, url):
         if isinstance(url, list):

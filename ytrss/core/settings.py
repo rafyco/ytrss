@@ -20,8 +20,9 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.core.sys.debug import Debug
+from ytrss.core.system.debug import Debug
 import abc, os, json
+import sys
 
 class SettingException(Exception):
     pass
@@ -53,7 +54,9 @@ class YTSettings:
     @staticmethod
     def get_os_conf_path():
         conf_path = "ytrss"
-        if os.uname()[0] == 'Linux':
+        if sys.platform.lower().startswith('win'):
+            conf_path = os.path.join("~\YTRSS", conf_path)
+        else:
             conf_path = os.path.join("~/.config", conf_path)
         return os.path.expanduser(conf_path)
 
@@ -107,7 +110,7 @@ class YTSettings:
         conf_file_path = YTSettings.get_conf_file_path("config")
         if os.path.isfile(conf_file_path):
             return conf_file_path
-        elif os.uname()[0] == 'Linux' and os.path.isfile("/etc/subs_config"):
+        elif not(sys.platform.lower().startswith('win')) and os.path.isfile("/etc/subs_config"):
             return "/etc/subs_config"
         else:
             raise SettingException("Cannot find configuration file.")
