@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 from ytrss import get_version
 from ytrss.core import UrlRememberer
 from ytrss.core import URLRemembererError
-from ytrss.core.system.debug import Debug
+import logging
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core.locker import Locker, LockerError
@@ -37,13 +37,12 @@ except ImportError:
 
 def option_args():
     parser = ArgumentParser(description="Download all Youtube's movie to youtube path.",
-                          prog='ytrss_daemon',
-                          version='%(prog)s {}'.format(get_version())) 
-    parser.add_argument("-d", "--debug", action="store_true",
-                        dest="debug_mode", default=False,
-                        help="show debug information")
+                            prog='ytrss_daemon',
+                            version='%(prog)s {}'.format(get_version()))
     parser.add_argument("-c", "--conf", dest="configuration", 
                         help="configuration file", default="", metavar="FILE")
+    parser.add_argument("-l", "--log", dest="logLevel",
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Set the logging level")
     try:
         argcomplete.autocomplete(parser)
     except NameError:
@@ -56,8 +55,8 @@ class DaemonError(Exception):
 
 def main():
     options = option_args()
-    Debug().set_debug(options.debug_mode)
-    Debug().debug_log("Debug mode: Run")
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=options.logLevel)
+    logging.debug("Debug mode: Run")
     try:
         settings = YTSettings(options.configuration)
     except SettingException:
@@ -98,14 +97,14 @@ def main():
         locker.unlock()
         
         os.remove(settings.get_url_backup())
-        Debug().debug_log("End")
+        logging.debug("End")
     except KeyboardInterrupt as ex:
         locker.unlock()
         print("Keyboard Interrupt by user.")
         sys.exit(1)
     except DaemonError:
         locker.unlock()
-        Debug().debug_log("Cannot find url to download")
+        logging.debug("Cannot find url to download")
         sys.exit()
     except Exception as ex:
         locker.unlock()

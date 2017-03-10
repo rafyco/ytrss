@@ -19,7 +19,7 @@
 #                                                                         #
 ###########################################################################
 
-from ytrss.core.system.debug import Debug
+import logging
 import os, tempfile
 
 class LockerError(Exception):
@@ -33,15 +33,15 @@ class Locker:
         else:
             tmp = dir
         self.file_path = "%s/%s" % (tmp, id)
-        Debug().debug_log("lock path: %s" % self.file_path)
+        logging.debug("lock path: %s" % self.file_path)
     def is_lock(self):
         return os.path.isfile(self.file_path)
     def lock(self):
-        Debug().debug_log("Lock program: %s" % self.file_path)
+        logging.debug("Lock program: %s" % self.file_path)
         if self.is_lock():
             raise LockerError
         open(self.file_path, 'a').close()
     def unlock(self):
-        Debug().debug_log("Unlock program: %s" % self.file_path)
+        logging.debug("Unlock program: %s" % self.file_path)
         if self.is_lock():
             os.remove(self.file_path)

@@ -20,7 +20,7 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.core.system.debug import Debug
+import logging
 from ytrss.core.ytdown import YTDown
 
 class URLFinder:
@@ -35,7 +35,7 @@ class URLFinder:
             for elem in url:
                 self.add_user_url(elem)
         else:
-            Debug().debug_log("add user url: %s" % url)
+            logging.debug("add user url: %s" % url)
             self.tab.append(YTDown(url, type="user"))
 
     def add_playlist_url(self, url):
@@ -43,15 +43,15 @@ class URLFinder:
             for elem in url:
                 self.add_playlist_url(elem)
         else:
-            Debug().debug_log("add playlist url: %s" % url)
+            logging.debug("add playlist url: %s" % url)
             self.tab.append(YTDown(url, type="playlist"))
 
     def getUrls(self):
         urls = []
         for elem in self.tab:
-            Debug().debug_log("Contener: %s" % elem)
+            logging.debug("Contener: %s" % elem)
             addresses = elem.getUrls()
             for address in addresses:
-                Debug().debug_log("El: %s" % address)
+                logging.debug("El: %s" % address)
                 urls.append(address)
         return urls

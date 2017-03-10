@@ -20,7 +20,7 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.core.system.debug import Debug
+import logging
 from urllib import urlopen
 from xml.dom import minidom
 import abc
@@ -40,7 +40,7 @@ class YTDown:
 
     def getUrls(self):
         url = self.build_url()
-        Debug().debug_log("URL: %s" % url)
+        logging.debug("URL: %s" % url)
         return self.youtube_list_from_address(url)
 
     def youtube_list_from_address(self, address):

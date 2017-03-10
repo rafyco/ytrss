@@ -22,7 +22,7 @@
 from __future__ import unicode_literals
 import subprocess, shutil
 import re, os, sys
-from ytrss.core.system.debug import Debug
+import logging
 import youtube_dl
 
 class Downloader:
@@ -58,8 +58,8 @@ class Downloader:
                 finded = True
                 source_path = os.path.join(cache_path, find_file)
                 destination_path = os.path.join(self.output_path, find_file)
-                Debug().debug_log("source_path: {}".format(source_path))
-                Debug().debug_log("destination_path: {}".format(destination_path))
+                logging.debug("source_path: {}".format(source_path))
+                logging.debug("destination_path: {}".format(destination_path))
                 shutil.move(source_path, destination_path)
 
         return status == 0 and finded

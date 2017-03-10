@@ -21,7 +21,7 @@
 
 from __future__ import unicode_literals
 from ytrss import get_version
-from ytrss.core.system.debug import Debug
+import logging
 from ytrss.core.settings import SettingException
 from ytrss.core import Download_Queue
 from ytrss.core.settings import YTSettings
@@ -36,11 +36,10 @@ def option_args():
     parser = ArgumentParser(description="Save one or more urls from Youtube to file.",
                             prog='ytdown',
                             version='%(prog)s {}'.format(get_version()))
-    parser.add_argument("-d", "--debug", action="store_true",
-                        dest="debug_mode", default=False,
-                        help="show debug information")
     parser.add_argument("-c", "--conf", dest="configuration", 
                         help="configuration file", default="", metavar="FILE")
+    parser.add_argument("-l", "--log", dest="logLevel",
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Set the logging level")
     parser.add_argument("urls", nargs='*', default=[], type=unicode,
                         help="Url to download.")
     try:
@@ -51,7 +50,7 @@ def option_args():
 
 def main():
     options = option_args()
-    Debug.get_instance().set_debug(options.debug_mode)
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=options.logLevel)
     try:
         settings = YTSettings(options.configuration)
     except SettingException:

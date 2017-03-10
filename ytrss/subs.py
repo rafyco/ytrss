@@ -21,7 +21,7 @@
 
 from __future__ import unicode_literals
 from ytrss import get_version
-from ytrss.core.system.debug import Debug
+import logging
 from ytrss.core import Download_Queue
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
@@ -35,16 +35,16 @@ except ImportError:
 
 def option_args():
     parser = ArgumentParser(description="Save urls from Youtube's subscription or playlists to file.",
-                          prog='ytrss_subs',
-                          version='%(prog)s {}'.format(get_version()))                          
-    parser.add_argument("-d", "--debug", action="store_true",
-                        dest="debug_mode", default=False,
-                        help="show debug information")
+                            prog='ytrss_subs',
+                            version='%(prog)s {}'.format(get_version()))
     parser.add_argument("-s", "--show", action="store_true",
                         dest="show_config", default=False,
                         help="Write configuration")
     parser.add_argument("-c", "--conf", dest="configuration", 
                         help="configuration file", default="", metavar="FILE")
+    parser.add_argument("-l", "--log", dest="logLevel",
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Set the logging level")
+
     try:
         argcomplete.autocomplete(parser)
     except NameError:
@@ -54,8 +54,8 @@ def option_args():
 
 def main():
     options = option_args()
-    Debug().set_debug(options.debug_mode)
-    Debug().debug_log("Debug mode: Run")
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=options.logLevel)
+    logging.debug("Debug mode: Run")
     try:
         settings = YTSettings(options.configuration)
     except SettingException:
@@ -75,7 +75,7 @@ def main():
         else:
             print("Element istnieje: {}".format(url))
 
-    Debug().debug_log("End")
+    logging.debug("End")
     
 if __name__ == "__main__":
     main()

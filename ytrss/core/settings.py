@@ -20,7 +20,7 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.core.system.debug import Debug
+import logging
 import abc, os, json
 import sys
 
@@ -38,7 +38,7 @@ class YTSettings:
             pass
         
         conf_find = self.check_configuration_file(conf)
-        Debug().debug_log("Configuration file: %s" % conf_find)
+        logging.debug("Configuration file: %s" % conf_find)
         with open(conf_find) as data_file:
             data = json.load(data_file)
                 

@@ -20,7 +20,7 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.core.system.debug import Debug
+import logging
 from sets import Set
 import abc, os, json
 
@@ -33,7 +33,7 @@ class UrlRememberer:
         self.file_data = ""
         self.database = []
         self.file_name = ""
-        Debug().debug_log("url_remember: {}".format(file_name))
+        logging.debug("url_remember: {}".format(file_name))
         self.file_name = file_name
         try:
             plik = open(self.file_name)
@@ -46,9 +46,9 @@ class UrlRememberer:
                     self.database.append(elem)
                 
         except Exception as ex:
-            Debug().debug_log(ex)
+            logging.debug(ex)
         except:
-            Debug().debug_log("Unknown error")
+            logging.debug("Unknown error")
 
     def add_element(self, address):
         """ Dodaj dane do bazydanych. """
@@ -64,11 +64,11 @@ class UrlRememberer:
         
     def is_new(self, address):
         """ Czy dane znajduja sie w pliku. """
-        Debug().debug_log("Sprawdzanie pliku: {}".format(self.file_name))
+        logging.debug("Sprawdzanie pliku: {}".format(self.file_name))
         for elem in self.database:
-            Debug().debug_log("Analiza: {}".format(elem))
+            logging.debug("Analiza: {}".format(elem))
             if elem == address:
-                Debug().debug_log("old element {}".format(address))
+                logging.debug("old element {}".format(address))
                 return False
         return True
 
@@ -117,24 +117,14 @@ class Download_Queue:
         self.download_yt = UrlRememberer(self.download_file)
         if base_file == None:
             base_file = settings.get_url_rss()
-        Debug().debug_log(base_file)
+        logging.debug(base_file)
         self.rememberer = UrlRememberer(base_file)
 
-    def _queue_mp3(self, address):
-        """ Dodaj do pliku z danymi do pobrania. """
-        if Debug().is_debug():
-            return
-        plik = open(self.download_file, 'a')
-        plik.writelines(address+'\n')
-        plik.close()
-
     def queue_mp3(self, address):
-        Debug().debug_log("DOWNLOAD: %s" % address)
+        logging.debug("DOWNLOAD: %s" % address)
         if self.rememberer.is_new(address):
-            #self._queue_mp3(address)
-            Debug().debug_log("Download adress: {}".format(address))
-            if not(Debug().is_debug()):
-                self.download_yt.add_element(address)
-                self.rememberer.add_element(address)
+            logging.debug("Download adress: {}".format(address))
+            self.download_yt.add_element(address)
+            self.rememberer.add_element(address)
             return True
         return False
