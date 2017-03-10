@@ -32,7 +32,7 @@ try:
 except ImportError:
     pass
 
-def option_args():
+def option_args(argv=None):
     parser = ArgumentParser(description="Save one or more urls from Youtube to file.",
                             prog='ytdown',
                             version='%(prog)s {}'.format(get_version()))
@@ -46,10 +46,10 @@ def option_args():
         argcomplete.autocomplete(parser)
     except NameError:
         pass
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
-def main():
-    options = option_args()
+def main(argv=None):
+    options = option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=options.logLevel)
     try:
         settings = YTSettings(options.configuration)

@@ -35,7 +35,7 @@ try:
 except ImportError:
     pass
 
-def option_args():
+def option_args(argv=None):
     parser = ArgumentParser(description="Download all Youtube's movie to youtube path.",
                             prog='ytrss_daemon',
                             version='%(prog)s {}'.format(get_version()))
@@ -47,14 +47,14 @@ def option_args():
         argcomplete.autocomplete(parser)
     except NameError:
         pass
-    options = parser.parse_args()
+    options = parser.parse_args(argv)
     return options
 
 class DaemonError(Exception):
     pass
 
-def main():
-    options = option_args()
+def main(argv=None):
+    options = option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=options.logLevel)
     logging.debug("Debug mode: Run")
     try:
