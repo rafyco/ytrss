@@ -70,15 +70,15 @@ def main(argv=None):
         print("Program is running.")
         sys.exit(1)
     try:
-        if not(os.path.isfile(settings.get_download_file())) and not(os.path.isfile(settings.get_url_backup())):
+        if not(os.path.isfile(settings.download_file)) and not(os.path.isfile(settings.url_backup)):
             raise DaemonError
-        urls = UrlRememberer(settings.get_download_file())
-        urls.read_backup(settings.get_url_backup())
+        urls = UrlRememberer(settings.download_file)
+        urls.read_backup(settings.url_backup)
         urls.delete_file()
-        urls.save_as(settings.get_url_backup())
+        urls.save_as(settings.url_backup)
         
-        error_file = UrlRememberer(settings.get_err_file())
-        history_file = UrlRememberer(settings.get_history_file())
+        error_file = UrlRememberer(settings.err_file)
+        history_file = UrlRememberer(settings.history_file)
         
         for elem in urls.get_elements():
             if not(history_file.is_new(elem)):
@@ -96,7 +96,7 @@ def main(argv=None):
             
         locker.unlock()
         
-        os.remove(settings.get_url_backup())
+        os.remove(settings.url_backup)
         logging.debug("End")
     except KeyboardInterrupt as ex:
         locker.unlock()

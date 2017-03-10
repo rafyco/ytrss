@@ -32,65 +32,40 @@ class YTSettings:
     playlists = [] 
 
     def __init__(self, conf):
+        conf_path = ""
+        if sys.platform.lower().startswith('win'):
+            conf_path = os.path.join("~\YTRSS", conf_path)
+        else:
+            conf_path = os.path.join("~/.config/ytrss", conf_path)
+        self.conf_path = os.path.expanduser(conf_path) ##
+    
         try:
-            os.makedirs(YTSettings.get_os_conf_path())
+            os.makedirs(self.conf_path)
         except OSError:
             pass
         
-        conf_find = self.check_configuration_file(conf)
+        conf_find = self.__check_configuration_file(conf)
         logging.debug("Configuration file: %s" % conf_find)
         with open(conf_find) as data_file:
             data = json.load(data_file)
                 
-        self.output = os.path.expanduser(data['output'])
+        self.output = os.path.expanduser(data['output']) ##
         if self.output == "":
             self.output = os.path.expanduser("~/ytrss_output")
+            try:
+                os.makedirs(self.output)
+            except OSError:
+                pass
         
-        self.parse_subsctiptions(data['subscriptions'])
-
-    """ Bobieranie danych dla skryptu. """
-    def get_user_urls(self):
-        return self.urls
-    @staticmethod
-    def get_os_conf_path():
-        conf_path = "ytrss"
-        if sys.platform.lower().startswith('win'):
-            conf_path = os.path.join("~\YTRSS", conf_path)
-        else:
-            conf_path = os.path.join("~/.config", conf_path)
-        return os.path.expanduser(conf_path)
-
-    @staticmethod
-    def get_conf_file_path(file_name):
-        return os.path.join(YTSettings.get_os_conf_path(), file_name)
-
-    def get_playlist_urls(self):
-        return self.playlists
-
-    def get_url_rss(self):
-        return YTSettings.get_conf_file_path("rss_remember.txt")
-
-    def get_download_file(self):
-        return YTSettings.get_conf_file_path("download_yt.txt")
+        self.__parse_subsctiptions(data['subscriptions'])
         
-    def get_url_backup(self):
-        return YTSettings.get_conf_file_path("download_yt_last.txt")
+        self.url_rss = self.__conf_file_path("rss_remember.txt")
+        self.download_file = self.__conf_file_path("download_yt.txt")
+        self.url_backup = self.__conf_file_path("download_yt_last.txt")
+        self.history_file = self.__conf_file_path("download_yt_history.txt")
+        self.err_file = self.__conf_file_path("download_yt.txt.err")
+        self.cache_path = self.__conf_file_path("cache")
         
-    def get_history_file(self):
-        return YTSettings.get_conf_file_path("download_yt_history.txt")
-    
-    def get_err_file(self):
-        return YTSettings.get_conf_file_path("download_yt.txt.err")
-       
-    def get_cache_path(self):
-        return YTSettings.get_conf_file_path("cache")
-        
-    def get_output_path(self):
-        try:
-            os.makedirs(self.output)
-        except OSError:
-            pass
-        return self.output
 
     def __str__(self):
         result = "Youtube configuration:\n\n"
@@ -101,13 +76,16 @@ class YTSettings:
             result += "\tplaylist: %s\n" % elem
         return result
 
-    def check_configuration_file(self, conf=""):
+    def __conf_file_path(self, file_name):
+        return os.path.join(self.conf_path, file_name)
+
+    def __check_configuration_file(self, conf=""):
         if conf != "":
             if os.path.expanduser(conf):
                 return conf
             else:
                 raise SettingException("file: '%s' not exist.")
-        conf_file_path = YTSettings.get_conf_file_path("config")
+        conf_file_path = self.__conf_file_path("config")
         if os.path.isfile(conf_file_path):
             return conf_file_path
         elif not(sys.platform.lower().startswith('win')) and os.path.isfile("/etc/subs_config"):
@@ -115,7 +93,7 @@ class YTSettings:
         else:
             raise SettingException("Cannot find configuration file.")
 
-    def parse_subsctiptions(self, subs):
+    def __parse_subsctiptions(self, subs):
         for elem in subs:
             if elem.has_key('type'):
                 type = elem['type']

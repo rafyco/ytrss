@@ -30,10 +30,10 @@ class Downloader:
         self.name = ""
         self.settings = settings
         self.url = url
-        self.output_path = settings.get_output_path()
+        self.output_path = settings.output
     def download(self):
         status = 0
-        cache_path = self.settings.get_cache_path()
+        cache_path = self.settings.cache_path
         try:
             os.makedirs(cache_path)
         except OSError:

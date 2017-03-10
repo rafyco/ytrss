@@ -112,11 +112,11 @@ class Download_Queue:
     """ Klasa zapisująca do pliku adresy do pobrania. """
     
     def __init__(self, settings, base_file=None):
-        self.url_rss = settings.get_url_rss() 
-        self.download_file = settings.get_download_file()
+        self.url_rss = settings.url_rss 
+        self.download_file = settings.download_file
         self.download_yt = UrlRememberer(self.download_file)
         if base_file == None:
-            base_file = settings.get_url_rss()
+            base_file = settings.url_rss
         logging.debug(base_file)
         self.rememberer = UrlRememberer(base_file)
 

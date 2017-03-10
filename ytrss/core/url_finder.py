@@ -27,8 +27,8 @@ class URLFinder:
     def __init__(self, settings = None):
         self.tab = []
         if settings != None:
-            self.add_user_url(settings.get_user_urls())
-            self.add_playlist_url(settings.get_playlist_urls())
+            self.add_user_url(settings.urls)
+            self.add_playlist_url(settings.playlists)
 
     def add_user_url(self, url):
         if isinstance(url, list):
