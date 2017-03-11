@@ -33,7 +33,7 @@ Add new file to queue
 
 ## Example configuration
 
-    vi ~/.conf/ytrss/config
+    vi ~/.config/ytrss/config
 
 
 ```

@@ -18,6 +18,45 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Settings parser module.
+
+File are read from the first of the following location.
+
+For MS Windows
+
+    - I{~/YTRSS/config}
+
+For Linux (and other systems)
+
+    - I{/etc/subs_config}
+    - I{~/.config/ytrss/config}
+
+In some case you can set file path in constructor or read data in json format.
+
+Example file
+============
+
+code of example file::
+
+    {
+        "output"   : "<output_file>",
+        "subscriptions" : [
+            {
+                "code"    : "<playlist_id>",
+                "type"    : "playlist"
+            },
+            {
+                "code"    : "<subscritpion_id>"
+            },
+            {
+                "code"    : "<subscription_id>", 
+                "enabled" : false
+            }
+        ]            
+    }
+
+"""
 
 from __future__ import unicode_literals
 import logging
@@ -25,30 +64,48 @@ import abc, os, json
 import sys
 
 class SettingException(Exception):
+    """ Settings exception. """
     pass
 
 class YTSettings:
+    """
+    Parser settings for ytrss.
+    
+    Class read settings from parameters or from default conf file.
+    """
     urls = []
     playlists = [] 
 
-    def __init__(self, conf):
+    def __init__(self, conf_file="", conf_str=""):
         conf_path = ""
         if sys.platform.lower().startswith('win'):
             conf_path = os.path.join("~\YTRSS", conf_path)
         else:
             conf_path = os.path.join("~/.config/ytrss", conf_path)
-        self.conf_path = os.path.expanduser(conf_path) ##
+        self.conf_path = os.path.expanduser(conf_path)
     
         try:
             os.makedirs(self.conf_path)
         except OSError:
             pass
+            
+        data={}
         
-        conf_find = self.__check_configuration_file(conf)
-        logging.debug("Configuration file: %s" % conf_find)
-        with open(conf_find) as data_file:
-            data = json.load(data_file)
+        if conf_path.empty() and conf_str.empty():
+            raise SettingException
+        
+        if not conf_file.empty():
+            conf_find = self.__check_configuration_file(conf_file)
+            logging.debug("Configuration file: %s" % conf_find)
+            with open(conf_find) as data_file:
+                data = json.load(data_file)
                 
+        if not conf_str.empty():
+            data = json.load(conf_str)
+            
+        self.__parse_data(data)
+        
+    def __parse_data(self, data):
         self.output = os.path.expanduser(data['output']) ##
         if self.output == "":
             self.output = os.path.expanduser("~/ytrss_output")
@@ -66,7 +123,7 @@ class YTSettings:
         self.err_file = self.__conf_file_path("download_yt.txt.err")
         self.cache_path = self.__conf_file_path("cache")
         
-
+        
     def __str__(self):
         result = "Youtube configuration:\n\n"
         result += "output-file: %s\n" % self.output
