@@ -20,26 +20,28 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss import get_version
+from __future__ import print_function
 import logging
-from ytrss.core.settings import SettingException
-from ytrss.core import Download_Queue
-from ytrss.core.settings import YTSettings
 from argparse import ArgumentParser
-import os
+from ytrss import get_version
+from ytrss.core import DownloadQueue
+from ytrss.core.settings import YTSettings
+from ytrss.core.settings import SettingException
 try:
     import argcomplete
 except ImportError:
     pass
 
+
 def __option_args(argv=None):
     parser = ArgumentParser(description="Save one or more urls from Youtube to file.",
                             prog='ytdown',
                             version='%(prog)s {}'.format(get_version()))
-    parser.add_argument("-c", "--conf", dest="configuration", 
+    parser.add_argument("-c", "--conf", dest="configuration",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Set the logging level")
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help="Set the logging level")
     parser.add_argument("urls", nargs='*', default=[], type=unicode,
                         help="Url to download.")
     try:
@@ -50,23 +52,24 @@ def __option_args(argv=None):
 
 def main(argv=None):
     options = __option_args(argv)
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=options.logLevel)
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        level=options.logLevel)
     try:
         settings = YTSettings(options.configuration)
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
-        
+
     if len(options.urls) < 1:
         print("Require url to download")
         exit(1)
-        
-    queue = Download_Queue(settings)
+
+    queue = DownloadQueue(settings)
     for url in options.urls:
         if queue.queue_mp3(url):
             print("Filmik zostanie pobrany: {}".format(url))
         else:
             print("Filmik nie zostanie pobrany: {}".format(url))
-            
+
 if __name__ == "__main__":
     main()

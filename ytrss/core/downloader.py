@@ -20,12 +20,13 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-import subprocess, shutil
-import re, os, sys
+import os
+import shutil
 import logging
 import youtube_dl
 
-class Downloader:
+
+class Downloader(object):
     def __init__(self, settings, url):
         self.settings = settings
         self.url = url
@@ -40,26 +41,27 @@ class Downloader:
             pass
         current_path = os.getcwd()
         os.chdir(cache_path)
-         
-        logging.info("url: %s" % self.url)
-        try: 
-            command = [ '--extract-audio', '--audio-format', 'mp3', '-o', "%(uploader)s - %(title)s.%(ext)s", self.url ]
+
+        logging.info("url: %s", self.url)
+        try:
+            command = ['--extract-audio', '--audio-format', 'mp3',
+                       '-o', "%(uploader)s - %(title)s.%(ext)s", self.url]
             youtube_dl.main(command)
         except SystemExit as ex:
-            if ex.code == None:
+            if ex.code is None:
                 status = 0
             else:
                 status = ex.code
 
-        files = []
         finded = False
         for find_file in os.listdir(cache_path):
             if find_file.endswith(".mp3"):
                 source_path = os.path.join(cache_path, find_file)
                 destination_path = os.path.join(self.output_path, find_file)
-                logging.debug("source_path: {}".format(source_path))
-                logging.debug("destination_path: {}".format(destination_path))
+                logging.debug("source_path: %s", source_path)
+                logging.debug("destination_path: %s", destination_path)
                 shutil.move(source_path, destination_path)
                 finded = True
 
+        os.chdir(current_path)
         return status == 0 and finded

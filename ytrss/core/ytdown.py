@@ -20,25 +20,29 @@
 ###########################################################################
 
 from __future__ import unicode_literals
+import abc
 import logging
 from urllib import urlopen
 from xml.dom import minidom
-import abc
 
-class YTDown:
+
+class YTDown(object):
     """ Klasa do pobierania listy adresow url filmow z podanego zrodla. """
+
     __metaclass__ = abc.ABCMeta
-    def __init__(self, code, type='user'):
+
+    def __init__(self, code, link_type='user'):
         self.code = code
-        self.type = type
+        self.link_type = link_type
 
     def __build_url(self):
-        if self.type == 'playlist':
+        if self.link_type == 'playlist':
             return "https://www.youtube.com/feeds/videos.xml?playlist_id={}".format(self.code)
         else:
             return "https://www.youtube.com/feeds/videos.xml?channel_id={}".format(self.code)
 
-    def __youtube_list_from_address(self, address):
+    @staticmethod
+    def __youtube_list_from_address(address):
         """ Zwraca liste filmow dla uzytkownika o podanym adresie. """
         xml_str = urlopen(address).read()
         xmldoc = minidom.parseString(xml_str)
@@ -52,8 +56,7 @@ class YTDown:
             iterator = iterator + 1
         return result
 
-    def getUrls(self):
+    def get_urls(self):
         url = self.__build_url()
-        logging.debug("URL: %s" % url)
-        return self.__youtube_list_from_address(url)
-
+        logging.debug("URL: %s", url)
+        return YTDown.__youtube_list_from_address(url)

@@ -20,29 +20,32 @@
 ###########################################################################
 
 from __future__ import unicode_literals
+from __future__ import print_function
+import os
+import sys
+import logging
+from argparse import ArgumentParser
 from ytrss import get_version
 from ytrss.core import UrlRememberer
-from ytrss.core import URLRemembererError
-import logging
-from ytrss.core.settings import YTSettings
-from ytrss.core.settings import SettingException
 from ytrss.core.locker import Locker, LockerError
 from ytrss.core.downloader import Downloader
-from argparse import ArgumentParser
-import os, sys
+from ytrss.core.settings import YTSettings
+from ytrss.core.settings import SettingException
 try:
     import argcomplete
 except ImportError:
     pass
 
+
 def __option_args(argv=None):
     parser = ArgumentParser(description="Download all Youtube's movie to youtube path.",
                             prog='ytrss_daemon',
                             version='%(prog)s {}'.format(get_version()))
-    parser.add_argument("-c", "--conf", dest="configuration", 
+    parser.add_argument("-c", "--conf", dest="configuration",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Set the logging level")
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help="Set the logging level")
     try:
         argcomplete.autocomplete(parser)
     except NameError:
@@ -53,16 +56,18 @@ def __option_args(argv=None):
 class DaemonError(Exception):
     pass
 
+#pylint: disable=R0915
 def main(argv=None):
     options = __option_args(argv)
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=options.logLevel)
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        level=options.logLevel)
     logging.debug("Debug mode: Run")
     try:
         settings = YTSettings(options.configuration)
     except SettingException:
         print("Configuration file not exist.")
         sys.exit(1)
-        
+
     locker = Locker('lock_ytdown')
     try:
         locker.lock()
@@ -70,32 +75,32 @@ def main(argv=None):
         print("Program is running.")
         sys.exit(1)
     try:
-        if not(os.path.isfile(settings.download_file)) and not(os.path.isfile(settings.url_backup)):
+        if not os.path.isfile(settings.download_file)  and not os.path.isfile(settings.url_backup):
             raise DaemonError
         urls = UrlRememberer(settings.download_file)
         urls.read_backup(settings.url_backup)
         urls.delete_file()
         urls.save_as(settings.url_backup)
-        
+
         error_file = UrlRememberer(settings.err_file)
         history_file = UrlRememberer(settings.history_file)
-        
+
         for elem in urls.get_elements():
-            if not(history_file.is_new(elem)):
+            if not history_file.is_new(elem):
                 print("URL {} cannot again download".format(elem))
                 continue
             task = Downloader(settings, elem)
-            if (task.download()):
+            if task.download():
                 # finish ok
                 print("finish ok")
                 history_file.add_element(elem)
             else:
                 # finish error
                 print("finish error")
-                error_file.add_element(elem)        
-            
+                error_file.add_element(elem)
+
         locker.unlock()
-        
+
         os.remove(settings.url_backup)
         logging.debug("End")
     except KeyboardInterrupt as ex:
@@ -117,4 +122,3 @@ def daemon():
 
 if __name__ == "__main__":
     main()
-

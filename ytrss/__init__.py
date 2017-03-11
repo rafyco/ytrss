@@ -29,17 +29,17 @@ There are a two metod of installation C{ytrss} module.
 From PyPI repository::
 
     pip install ytrss
-    
+
 From sources::
 
     git clone git@bitbucket.org:rafyco/ytrss.git
     cd ytrss
     python setup.py install
-    
+
 Usage
 =====
 
-Before you using this tools you should create configuration file. More 
+Before you using this tools you should create configuration file. More
 information you can find L{here<ytrss.core.settings>}.
 
 YTRSS allow you to run a few command-line tool.
@@ -51,6 +51,7 @@ YTRSS allow you to run a few command-line tool.
 """
 
 from __future__ import unicode_literals
+
 
 def get_version():
     """ Get version of ytrss package. """

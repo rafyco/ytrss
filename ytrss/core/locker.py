@@ -19,32 +19,33 @@
 #                                                                         #
 ###########################################################################
 
+import os
 import logging
-import os, tempfile
+import tempfile
+
 
 class LockerError(Exception):
     pass
 
-class Locker:
-    def __init__(self, id, dir=None):
-        self.id = id
-        if dir == None:
+class Locker(object):
+    def __init__(self, identify, direcotry=None):
+        if direcotry is None:
             tmp = tempfile.gettempdir()
         else:
-            tmp = dir
-        self.file_path = "%s/%s" % (tmp, id)
-        logging.debug("lock path: %s" % self.file_path)
-        
+            tmp = direcotry
+        self.file_path = os.path.join(tmp, identify)
+        logging.debug("lock path: %s", self.file_path)
+
     def is_lock(self):
         return os.path.isfile(self.file_path)
-        
+
     def lock(self):
-        logging.debug("Lock program: %s" % self.file_path)
+        logging.debug("Lock program: %s", self.file_path)
         if self.is_lock():
             raise LockerError
         open(self.file_path, 'a').close()
-        
+
     def unlock(self):
-        logging.debug("Unlock program: %s" % self.file_path)
+        logging.debug("Unlock program: %s", self.file_path)
         if self.is_lock():
             os.remove(self.file_path)

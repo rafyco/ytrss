@@ -23,8 +23,9 @@ from __future__ import unicode_literals
 import logging
 from ytrss.core.ytdown import YTDown
 
-class URLFinder:
-    def __init__(self, settings = None):
+
+class URLFinder(object):
+    def __init__(self, settings=None):
         self.tab = []
         if settings != None:
             self.add_user_url(settings.urls)
@@ -35,23 +36,23 @@ class URLFinder:
             for elem in url:
                 self.add_user_url(elem)
         else:
-            logging.debug("add user url: %s" % url)
-            self.tab.append(YTDown(url, type="user"))
+            logging.debug("add user url: %s", url)
+            self.tab.append(YTDown(url, link_type="user"))
 
     def add_playlist_url(self, url):
         if isinstance(url, list):
             for elem in url:
                 self.add_playlist_url(elem)
         else:
-            logging.debug("add playlist url: %s" % url)
-            self.tab.append(YTDown(url, type="playlist"))
+            logging.debug("add playlist url: %s", url)
+            self.tab.append(YTDown(url, link_type="playlist"))
 
-    def getUrls(self):
+    def get_urls(self):
         urls = []
         for elem in self.tab:
-            logging.debug("Contener: %s" % elem)
-            addresses = elem.getUrls()
+            logging.debug("Contener: %s", elem)
+            addresses = elem.get_urls()
             for address in addresses:
-                logging.debug("El: %s" % address)
+                logging.debug("El: %s", address)
                 urls.append(address)
         return urls

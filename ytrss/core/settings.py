@@ -50,61 +50,64 @@ code of example file::
                 "code"    : "<subscritpion_id>"
             },
             {
-                "code"    : "<subscription_id>", 
+                "code"    : "<subscription_id>",
                 "enabled" : false
             }
-        ]            
+        ]
     }
 
 """
 
 from __future__ import unicode_literals
-import logging
-import abc, os, json
+import os
 import sys
+import json
+import logging
+
 
 class SettingException(Exception):
     """ Settings exception. """
     pass
 
-class YTSettings:
+class YTSettings(object):
     """
     Parser settings for ytrss.
-    
+
     Class read settings from parameters or from default conf file.
     """
+
     urls = []
-    playlists = [] 
+    playlists = []
 
     def __init__(self, conf_file="", conf_str=""):
         conf_path = ""
         if sys.platform.lower().startswith('win'):
-            conf_path = os.path.join("~\YTRSS", conf_path)
+            conf_path = os.path.join("~/YTRSS", conf_path)
         else:
             conf_path = os.path.join("~/.config/ytrss", conf_path)
         self.conf_path = os.path.expanduser(conf_path)
-    
+
         try:
             os.makedirs(self.conf_path)
         except OSError:
             pass
-            
-        data={}
-        
-        if conf_path.empty() and conf_str.empty():
+
+        data = {}
+
+        if conf_path is "" and conf_str is "":
             raise SettingException
-        
-        if not conf_file.empty():
+
+        if conf_file is not "":
             conf_find = self.__check_configuration_file(conf_file)
-            logging.debug("Configuration file: %s" % conf_find)
+            logging.debug("Configuration file: %s", conf_find)
             with open(conf_find) as data_file:
                 data = json.load(data_file)
-                
-        if not conf_str.empty():
+
+        if conf_str is not "":
             data = json.load(conf_str)
-            
+
         self.__parse_data(data)
-        
+
     def __parse_data(self, data):
         self.output = os.path.expanduser(data['output']) ##
         if self.output == "":
@@ -113,17 +116,16 @@ class YTSettings:
                 os.makedirs(self.output)
             except OSError:
                 pass
-        
+
         self.__parse_subsctiptions(data['subscriptions'])
-        
+
         self.url_rss = self.__conf_file_path("rss_remember.txt")
         self.download_file = self.__conf_file_path("download_yt.txt")
         self.url_backup = self.__conf_file_path("download_yt_last.txt")
         self.history_file = self.__conf_file_path("download_yt_history.txt")
         self.err_file = self.__conf_file_path("download_yt.txt.err")
         self.cache_path = self.__conf_file_path("cache")
-        
-        
+
     def __str__(self):
         result = "Youtube configuration:\n\n"
         result += "output-file: %s\n" % self.output
@@ -153,12 +155,12 @@ class YTSettings:
     def __parse_subsctiptions(self, subs):
         for elem in subs:
             if elem.has_key('type'):
-                type = elem['type']
+                link_type = elem['type']
             else:
-                type = 'url'
-            if elem.has_key('enabled') and not(elem['enabled']):
+                link_type = 'url'
+            if elem.has_key('enabled') and not elem['enabled']:
                 continue
-            if type == 'playlist':
+            if link_type == 'playlist':
                 self.playlists.append(elem['code'])
             else:
                 self.urls.append(elem['code'])

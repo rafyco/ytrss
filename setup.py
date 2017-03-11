@@ -19,9 +19,12 @@
 #                                                                         #
 ###########################################################################
 
-import sys,os
-from setuptools import setup, find_packages
+import os
+import sys
 import codecs
+from setuptools import setup
+from setuptools import find_packages
+
 
 def read_markdown(fname):
     fpath = os.path.join(os.path.dirname(__file__), fname)
@@ -39,8 +42,7 @@ def read_description(module_name):
             result = line
             continue
     return result
-    
-        
+
 version=__import__('ytrss').get_version()
 
 console_scripts = [
@@ -50,7 +52,7 @@ console_scripts = [
         ]
 #if os.uname()[0] == 'Linux':
 #    console_scripts.append('/etc/init.d/ytrss = ytrss.daemon:daemon')
-        
+
 setup(
     name='ytrss',
     version=version,

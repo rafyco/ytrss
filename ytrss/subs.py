@@ -20,30 +20,33 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss import get_version
+from __future__ import print_function
 import logging
-from ytrss.core import Download_Queue
+from argparse import ArgumentParser
+from ytrss import get_version
+from ytrss.core import DownloadQueue
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core.url_finder import URLFinder
-from argparse import ArgumentParser
-import os
 try:
     import argcomplete
 except ImportError:
     pass
 
+
 def __option_args(argv=None):
-    parser = ArgumentParser(description="Save urls from Youtube's subscription or playlists to file.",
+    parser = ArgumentParser(description="Save urls from Youtube's "
+                                        "subscription or playlists to file.",
                             prog='ytrss_subs',
                             version='%(prog)s {}'.format(get_version()))
     parser.add_argument("-s", "--show", action="store_true",
                         dest="show_config", default=False,
                         help="Write configuration")
-    parser.add_argument("-c", "--conf", dest="configuration", 
+    parser.add_argument("-c", "--conf", dest="configuration",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'], help="Set the logging level")
+                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        help="Set the logging level")
 
     try:
         argcomplete.autocomplete(parser)
@@ -54,21 +57,22 @@ def __option_args(argv=None):
 
 def main(argv=None):
     options = __option_args(argv)
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=options.logLevel)
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                        level=options.logLevel)
     logging.debug("Debug mode: Run")
     try:
         settings = YTSettings(options.configuration)
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
-        
+
     if options.show_config:
         print(settings)
         exit()
 
     finder = URLFinder(settings)
-    urls = finder.getUrls()
-    queue = Download_Queue(settings)
+    urls = finder.get_urls()
+    queue = DownloadQueue(settings)
     for url in urls:
         if queue.queue_mp3(url):
             print("Nowy element: {}".format(url))
@@ -76,7 +80,6 @@ def main(argv=None):
             print("Element istnieje: {}".format(url))
 
     logging.debug("End")
-    
+
 if __name__ == "__main__":
     main()
-
