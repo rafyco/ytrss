@@ -18,6 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Module with additional class for ytrss tools.
+"""
 
 from __future__ import unicode_literals
 import logging
@@ -109,9 +112,21 @@ class UrlRememberer:
 
             
 class Download_Queue:
-    """ Klasa zapisująca do pliku adresy do pobrania. """
+    """ Class saving urls to download. """
     
     def __init__(self, settings, base_file=None):
+        """
+        Download_Queue constructor.
+        
+        @param self: object handle
+        @type self: L{Download_Queue}
+        @param settings: settings for Download_Queue
+        @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+        @param base_file: path to file with remember subscription
+        @type base_file: str
+        
+        @note:: if C{base_file} not set, it is get from settings object.
+        """
         self.url_rss = settings.url_rss 
         self.download_file = settings.download_file
         self.download_yt = UrlRememberer(self.download_file)
@@ -121,6 +136,17 @@ class Download_Queue:
         self.rememberer = UrlRememberer(base_file)
 
     def queue_mp3(self, address):
+        """ 
+        Add address to download.
+        
+        @param self: object handle
+        @type self: L{Download_Queue}
+        @param address: adress to download
+        @type address: str
+        
+        @return: C{True} if C{address} can be downloaded, C{False} otherwise
+        @rtype: Boolean
+        """
         logging.debug("DOWNLOAD: %s" % address)
         if self.rememberer.is_new(address):
             logging.debug("Download adress: {}".format(address))

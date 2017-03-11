@@ -31,6 +31,16 @@ def read_markdown(fname):
     except(IOError, ImportError, RuntimeError):
         return codecs.open(fpath).read()
 
+def read_description(module_name):
+    module_doc = __import__(module_name).__doc__.splitlines()
+    result = ""
+    for line in module_doc:
+        if line:
+            result = line
+            continue
+    return result
+    
+        
 version=__import__('ytrss').get_version()
 
 console_scripts = [
@@ -47,7 +57,7 @@ setup(
     license='GNU',
     author="Rafal Kobel",
     author_email="rafalkobel@rafyco.pl",
-    description="Tools for youtube downloading",
+    description=read_description('ytrss'),
     long_description=read_markdown("README.md"),
     url="http://bitbucket.org/rafyco/ytrss",
     packages=find_packages(),

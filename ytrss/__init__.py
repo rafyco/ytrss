@@ -18,11 +18,42 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Tools for downloading mp3 from YouTube subscription and playlists.
+
+Insallation
+===========
+
+There are a two metod of installation C{ytrss} module.
+
+From PyPI repository::
+
+    pip install ytrss
+    
+From sources::
+
+    git clone git@bitbucket.org:rafyco/ytrss.git
+    cd ytrss
+    python setup.py install
+    
+Usage
+=====
+
+Before you using this tools you should create configuration file. More 
+information you can find L{here<ytrss.core.settings>}.
+
+YTRSS allow you to run a few command-line tool.
+
+    - L{ytrss_daemon<ytrss.daemon>}
+    - L{ytdown<ytrss.ytdown>}
+    - L{ytrss_subs<ytrss.subs>}
+
+"""
 
 from __future__ import unicode_literals
 
 def get_version():
-    """ Pobierz wersje oprogramowania. """
-    return "0.0.5"
+    """ Get version of ytrss package. """
+    return "0.1.0"
 
 __version__ = get_version()

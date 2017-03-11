@@ -1,6 +1,6 @@
 # YTRSS - Youtube subscription downloader
 
-Program to automatic download YouTube files by youtube_dl scripts.
+Program to automatic download YouTube files by ```youtube_dl``` scripts.
 
 ![Author](https://img.shields.io/badge/author-Rafa%C5%82%20Kobel-blue.svg)
 ![BitbucketIssues](https://img.shields.io/bitbucket/issues/rafyco/ytrss.svg)
@@ -55,6 +55,12 @@ Add new file to queue
 }
 
 ```
+
+## Changelog
+
+### 0.1.0
+    
+* First working version.
 
 ## Author
 

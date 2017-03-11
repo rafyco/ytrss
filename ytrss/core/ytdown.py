@@ -32,18 +32,13 @@ class YTDown:
         self.code = code
         self.type = type
 
-    def build_url(self):
+    def __build_url(self):
         if self.type == 'playlist':
             return "https://www.youtube.com/feeds/videos.xml?playlist_id={}".format(self.code)
         else:
             return "https://www.youtube.com/feeds/videos.xml?channel_id={}".format(self.code)
 
-    def getUrls(self):
-        url = self.build_url()
-        logging.debug("URL: %s" % url)
-        return self.youtube_list_from_address(url)
-
-    def youtube_list_from_address(self, address):
+    def __youtube_list_from_address(self, address):
         """ Zwraca liste filmow dla uzytkownika o podanym adresie. """
         xml_str = urlopen(address).read()
         xmldoc = minidom.parseString(xml_str)
@@ -56,3 +51,9 @@ class YTDown:
                 result.append(url)
             iterator = iterator + 1
         return result
+
+    def getUrls(self):
+        url = self.__build_url()
+        logging.debug("URL: %s" % url)
+        return self.__youtube_list_from_address(url)
+

@@ -33,7 +33,7 @@ try:
 except ImportError:
     pass
 
-def option_args(argv=None):
+def __option_args(argv=None):
     parser = ArgumentParser(description="Save urls from Youtube's subscription or playlists to file.",
                             prog='ytrss_subs',
                             version='%(prog)s {}'.format(get_version()))
@@ -53,7 +53,7 @@ def option_args(argv=None):
     return options
 
 def main(argv=None):
-    options = option_args(argv)
+    options = __option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=options.logLevel)
     logging.debug("Debug mode: Run")
     try:

@@ -27,10 +27,10 @@ import youtube_dl
 
 class Downloader:
     def __init__(self, settings, url):
-        self.name = ""
         self.settings = settings
         self.url = url
         self.output_path = settings.output
+
     def download(self):
         status = 0
         cache_path = self.settings.cache_path
@@ -41,7 +41,7 @@ class Downloader:
         current_path = os.getcwd()
         os.chdir(cache_path)
          
-        print("url: %s" % self.url)
+        logging.info("url: %s" % self.url)
         try: 
             command = [ '--extract-audio', '--audio-format', 'mp3', '-o', "%(uploader)s - %(title)s.%(ext)s", self.url ]
             youtube_dl.main(command)
@@ -55,14 +55,11 @@ class Downloader:
         finded = False
         for find_file in os.listdir(cache_path):
             if find_file.endswith(".mp3"):
-                finded = True
                 source_path = os.path.join(cache_path, find_file)
                 destination_path = os.path.join(self.output_path, find_file)
                 logging.debug("source_path: {}".format(source_path))
                 logging.debug("destination_path: {}".format(destination_path))
                 shutil.move(source_path, destination_path)
+                finded = True
 
         return status == 0 and finded
-
-    def get_downloaded_file(self):
-        return self.name
