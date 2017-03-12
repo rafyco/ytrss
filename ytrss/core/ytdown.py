@@ -53,7 +53,7 @@ class YTDown(object):
         """
         self.code = code
         self.link_type = link_type
-        if self.link_type is not "usr" and self.link_type is not "playlist":
+        if self.link_type != "user" and self.link_type != "playlist":
             raise AttributeError("link_type must be 'user' or 'playlist'")
 
     def __build_url(self):
