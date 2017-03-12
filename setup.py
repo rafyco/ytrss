@@ -40,7 +40,7 @@ def read_description(module_name):
     for line in module_doc:
         if line:
             result = line
-            continue
+            break
     return result
 
 version=__import__('ytrss').get_version()
