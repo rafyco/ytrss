@@ -34,8 +34,10 @@ class YTDown(object):
     Class to download list of YouTube movie urls.
 
     @ivar code: Code for parsing source
+    @type code: str
     @ivar link_type: type of parsing source.
         (I{user} for subscription or I{playlist} for playlist)
+    @type link_type: str
     """
 
     def __init__(self, code, link_type='user'):

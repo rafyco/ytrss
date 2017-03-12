@@ -18,6 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Finding YouTube movie urls.
+"""
 
 from __future__ import unicode_literals
 import logging
@@ -25,13 +28,35 @@ from ytrss.core.ytdown import YTDown
 
 
 class URLFinder(object):
+    """
+    Finding YouTube movie urls from configuration.
+
+    @ivar tab: table with source's urls
+    @type tab: list
+    """
     def __init__(self, settings=None):
+        """
+        URLFinder constructor.
+
+        @param self: handle object
+        @type self: L{URLFinder}
+        @param settings: configuration settings
+        @type settings: {ytrss.core.settings.YTSettings}
+        """
         self.tab = []
         if settings is not None:
             self.add_user_url(settings.urls)
             self.add_playlist_url(settings.playlists)
 
     def add_user_url(self, url):
+        """
+        Add subscription code url.
+
+        @param self: handle object
+        @type self: L{URLFinder}
+        @param url: subscription's code
+        @type url: str
+        """
         if isinstance(url, list):
             for elem in url:
                 self.add_user_url(elem)
@@ -40,6 +65,14 @@ class URLFinder(object):
             self.tab.append(YTDown(url, link_type="user"))
 
     def add_playlist_url(self, url):
+        """
+        Add playlist code url.
+
+        @param self: handle object
+        @type self: L{URLFinder}
+        @param url: playlist's code
+        @type url: str
+        """
         if isinstance(url, list):
             for elem in url:
                 self.add_playlist_url(elem)
@@ -48,6 +81,12 @@ class URLFinder(object):
             self.tab.append(YTDown(url, link_type="playlist"))
 
     def get_urls(self):
+        """
+        Get urls to YouTube movies.
+
+        @param self: handle object
+        @type self: L{URLFinder}
+        """
         urls = []
         for elem in self.tab:
             logging.debug("Contener: %s", elem)
