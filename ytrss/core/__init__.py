@@ -33,6 +33,7 @@ import logging
 class URLRemembererError(Exception):
     pass
 
+
 class UrlRememberer(object):
 
     def __init__(self, file_name):
@@ -62,7 +63,7 @@ class UrlRememberer(object):
         if self.file_name == "":
             return
         plik = open(self.file_name, 'a')
-        plik.writelines(address+'\n')
+        plik.writelines(address + '\n')
         plik.close()
         self.file_data = "{}\n{}\n".format(self.file_data, address)
 
@@ -85,7 +86,7 @@ class UrlRememberer(object):
     def save_as(self, file_name):
         plik = open(file_name, 'a')
         for elem in self.database:
-            plik.writelines(elem+'\n')
+            plik.writelines(elem + '\n')
         plik.close()
 
     def delete_file(self):
@@ -110,6 +111,7 @@ class UrlRememberer(object):
             except IOError:
                 pass
             os.remove(backup_file)
+
 
 class DownloadQueue(object):
     """ Class saving urls to download. """

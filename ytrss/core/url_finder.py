@@ -27,7 +27,7 @@ from ytrss.core.ytdown import YTDown
 class URLFinder(object):
     def __init__(self, settings=None):
         self.tab = []
-        if settings != None:
+        if settings is not None:
             self.add_user_url(settings.urls)
             self.add_playlist_url(settings.playlists)
 

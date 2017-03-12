@@ -45,7 +45,8 @@ def __option_args(argv=None):
     parser.add_argument("-c", "--conf", dest="configuration",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        choices=['DEBUG', 'INFO', 'WARNING',
+                                 'ERROR', 'CRITICAL'],
                         help="Set the logging level")
 
     try:
@@ -55,9 +56,11 @@ def __option_args(argv=None):
     options = parser.parse_args(argv)
     return options
 
+
 def main(argv=None):
     options = __option_args(argv)
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    logging.basicConfig(format='%(asctime)s - %(name)s '
+                               '- %(levelname)s - %(message)s',
                         level=options.logLevel)
     logging.debug("Debug mode: Run")
     try:

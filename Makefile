@@ -15,8 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # 
 # Author: Rafal Kobel <rafalkobel@rafyco.pl>
-# Project: 
-# Description:
+# Project: YTRSS
+# Description: YTRSS - Module to download YouTube files
 #############################################################################
 
 
@@ -78,6 +78,9 @@ clean:
 	@$(RM) $(DOC_PDF)/*.aux $(DOC_PDF)/*.idx $(DOC_PDF)/*.log $(DOC_PDF)/*.out build $(DOC_PDF)/*.toc $(DOC_PDF)/*.dvi
 	@$(RM) */__pycache__
 
+test:
+	@$(PYTHON) -m ytrss.tests
+
 remove: clean
 	@echo Usuwanie wygenerowanych plikow
 	@$(RM) $(DOC_PDF) $(DOC_FILE)
@@ -87,7 +90,7 @@ remove: clean
 install: remove
 	@$(SETUP) install
 
-jenkins-test: remove documentation build clean
+jenkins-test: remove documentation test build clean
 	@echo "Project jenkins"
 
 help:
@@ -95,6 +98,7 @@ help:
 	@echo " "
 	@echo "install       - Instalacja pakietu ytrss"
 	@echo "build         - Tworzenie plikow budowania"
+	@echo "test          - Wykonanie testow"
 	@echo "documentation - Budowanie dokumentacji."
 	@echo "doc-pdf       - Budowanie dokumentacji pdf"
 	@echo "doc-html      - Budowanie dokumentacji html"

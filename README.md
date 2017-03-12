@@ -51,16 +51,23 @@ Add new file to queue
             "code"    : "<subscription_id>", 
             "enabled" : false
         }
-    ]            
+    ]
 }
 
 ```
 
+## Unit test
+
+For testing module write:
+
+    python -m ytrss.tests
+
 ## Changelog
 
-### 0.1.0
+### 0.1
     
 * First working version.
+* Unit test.
 
 ## Author
 

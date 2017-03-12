@@ -34,13 +34,15 @@ except ImportError:
 
 
 def __option_args(argv=None):
-    parser = ArgumentParser(description="Save one or more urls from Youtube to file.",
+    parser = ArgumentParser(description="Save one or more urls from "
+                                        "Youtube to file.",
                             prog='ytdown',
                             version='%(prog)s {}'.format(get_version()))
     parser.add_argument("-c", "--conf", dest="configuration",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        choices=['DEBUG', 'INFO', 'WARNING',
+                                 'ERROR', 'CRITICAL'],
                         help="Set the logging level")
     parser.add_argument("urls", nargs='*', default=[], type=unicode,
                         help="Url to download.")
@@ -50,9 +52,11 @@ def __option_args(argv=None):
         pass
     return parser.parse_args(argv)
 
+
 def main(argv=None):
     options = __option_args(argv)
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    logging.basicConfig(format='%(asctime)s - %(name)s - '
+                               '%(levelname)s - %(message)s',
                         level=options.logLevel)
     try:
         settings = YTSettings(options.configuration)

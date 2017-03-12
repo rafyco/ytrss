@@ -36,10 +36,10 @@ class YTDown(object):
         self.link_type = link_type
 
     def __build_url(self):
+        patern = "channel_id"
         if self.link_type == 'playlist':
-            return "https://www.youtube.com/feeds/videos.xml?playlist_id={}".format(self.code)
-        else:
-            return "https://www.youtube.com/feeds/videos.xml?channel_id={}".format(self.code)
+            patern = "playlist_id"
+        return "https://www.youtube.com/feeds/videos.xml?{}={}".format(patern, self.code)
 
     @staticmethod
     def __youtube_list_from_address(address):

@@ -38,13 +38,15 @@ except ImportError:
 
 
 def __option_args(argv=None):
-    parser = ArgumentParser(description="Download all Youtube's movie to youtube path.",
+    parser = ArgumentParser(description="Download all Youtube's movie "
+                                        "to youtube path.",
                             prog='ytrss_daemon',
                             version='%(prog)s {}'.format(get_version()))
     parser.add_argument("-c", "--conf", dest="configuration",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",
-                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+                        choices=['DEBUG', 'INFO', 'WARNING',
+                                 'ERROR', 'CRITICAL'],
                         help="Set the logging level")
     try:
         argcomplete.autocomplete(parser)
@@ -53,13 +55,16 @@ def __option_args(argv=None):
     options = parser.parse_args(argv)
     return options
 
+
 class DaemonError(Exception):
     pass
 
-#pylint: disable=R0915
+
+# pylint: disable=R0915
 def main(argv=None):
     options = __option_args(argv)
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    logging.basicConfig(format='%(asctime)s - %(name)s - '
+                               '%(levelname)s - %(message)s',
                         level=options.logLevel)
     logging.debug("Debug mode: Run")
     try:
@@ -75,7 +80,7 @@ def main(argv=None):
         print("Program is running.")
         sys.exit(1)
     try:
-        if not os.path.isfile(settings.download_file)  and not os.path.isfile(settings.url_backup):
+        if not os.path.isfile(settings.download_file) and not os.path.isfile(settings.url_backup):
             raise DaemonError
         urls = UrlRememberer(settings.download_file)
         urls.read_backup(settings.url_backup)
@@ -115,6 +120,7 @@ def main(argv=None):
         locker.unlock()
         print("Unexpected Error: {}".format(ex))
         raise ex
+
 
 def daemon():
     print("Not implemented yet.")

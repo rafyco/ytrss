@@ -70,7 +70,8 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires = [
-        'youtube_dl'
+        'youtube_dl',
+        'pep8'
     ],
     entry_points = {
         'console_scripts': console_scripts

@@ -69,6 +69,7 @@ class SettingException(Exception):
     """ Settings exception. """
     pass
 
+
 class YTSettings(object):
     """
     Parser settings for ytrss.
@@ -82,7 +83,7 @@ class YTSettings(object):
     def __init__(self, conf_file="", conf_str=""):
         conf_path = ""
         if sys.platform.lower().startswith('win'):
-            conf_path = os.path.join("~/YTRSS", conf_path)
+            conf_path = os.path.join("~\YTRSS", conf_path)
         else:
             conf_path = os.path.join("~/.config/ytrss", conf_path)
         self.conf_path = os.path.expanduser(conf_path)
@@ -93,24 +94,24 @@ class YTSettings(object):
             pass
 
         data = {}
-
-        if conf_path is "" and conf_str is "":
-            raise SettingException
-
-        if conf_file is not "":
+        if conf_str is not "":
+            data = json.load(conf_str)
+        else:
             conf_find = self.__check_configuration_file(conf_file)
             logging.debug("Configuration file: %s", conf_find)
             with open(conf_find) as data_file:
                 data = json.load(data_file)
 
-        if conf_str is not "":
-            data = json.load(conf_str)
+        print(self.conf_path)
+        if data is {}:
+            raise SettingException
 
         self.__parse_data(data)
 
     def __parse_data(self, data):
-        self.output = os.path.expanduser(data['output']) ##
-        if self.output == "":
+        if 'output' in data:
+            self.output = os.path.expanduser(data['output'])
+        else:
             self.output = os.path.expanduser("~/ytrss_output")
             try:
                 os.makedirs(self.output)
@@ -154,11 +155,11 @@ class YTSettings(object):
 
     def __parse_subsctiptions(self, subs):
         for elem in subs:
-            if elem.has_key('type'):
+            if 'type' in elem:
                 link_type = elem['type']
             else:
                 link_type = 'url'
-            if elem.has_key('enabled') and not elem['enabled']:
+            if 'enabled' in elem and not elem['enabled']:
                 continue
             if link_type == 'playlist':
                 self.playlists.append(elem['code'])

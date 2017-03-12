@@ -19,34 +19,11 @@
 #                                                                         #
 ###########################################################################
 
-import os
-import logging
-import tempfile
+# pylint: disable=W0611
+from __future__ import unicode_literals
+import unittest
+from ytrss.tests import TestYTRSSModule
 
 
-class LockerError(Exception):
-    pass
-
-
-class Locker(object):
-    def __init__(self, identify, direcotry=None):
-        if direcotry is None:
-            tmp = tempfile.gettempdir()
-        else:
-            tmp = direcotry
-        self.file_path = os.path.join(tmp, identify)
-        logging.debug("lock path: %s", self.file_path)
-
-    def is_lock(self):
-        return os.path.isfile(self.file_path)
-
-    def lock(self):
-        logging.debug("Lock program: %s", self.file_path)
-        if self.is_lock():
-            raise LockerError
-        open(self.file_path, 'a').close()
-
-    def unlock(self):
-        logging.debug("Unlock program: %s", self.file_path)
-        if self.is_lock():
-            os.remove(self.file_path)
+if __name__ == "__main__":
+    unittest.main()
