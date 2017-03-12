@@ -67,7 +67,6 @@ doc-pdf:
 
 doc-html:
 	@$(DOC) -v ytrss --html -o $(DOC_FILE)
-	@$(COPY) $(DOC_FILE)/module-tree.html $(DOC_FILE)/index.html
 
 pylint:
 	@$(PYLINT) $(PYLINT_FLAGS) ytrss
