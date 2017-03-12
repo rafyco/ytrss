@@ -20,11 +20,11 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-from ytrss.core.locker import Locker
-from ytrss.core.locker import LockerError
+import os
 import unittest
 import tempfile
-import os
+from ytrss.core.locker import Locker
+from ytrss.core.locker import LockerError
 
 
 class TestLocker(unittest.TestCase):

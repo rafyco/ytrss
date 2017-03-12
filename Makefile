@@ -26,7 +26,7 @@ RM=rm -rf
 COPY=cp
 DOC=epydoc
 PYLINT=pylint
-PYLINT_FLAGS=-f parseable -d I0011,R0801,R0902,R0903,R0921
+PYLINT_FLAGS=-f parseable -d I0011,R0801,R0902,R0903,R0921,C0111
 
 DOC_FILE=ytrss_docs
 DOC_PDF=dist

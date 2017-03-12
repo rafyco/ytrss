@@ -20,9 +20,9 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-import ytrss
 import unittest
 import pep8
+import ytrss
 
 
 class TestYTRSSModule(unittest.TestCase):
