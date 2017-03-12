@@ -18,6 +18,25 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Command line program to automatic downloading files.
+
+Program checking file and download all file descripe in it. It's recomended to
+add this file to crontab or call it manualy.
+
+Example usage
+=============
+
+To invoke program type in your console::
+
+    ytrss_deamon
+
+or::
+
+    python -m ytrss.daemon
+
+for more option call program with flag C{--help}
+"""
 
 from __future__ import unicode_literals
 from __future__ import print_function
@@ -38,6 +57,13 @@ except ImportError:
 
 
 def __option_args(argv=None):
+    """
+    Parsing argument for command line program.
+
+    @param argv: Option parameters
+    @type argv: list
+    @return: parsed arguments
+    """
     parser = ArgumentParser(description="Download all Youtube's movie "
                                         "to youtube path.",
                             prog='ytrss_daemon',
@@ -57,11 +83,18 @@ def __option_args(argv=None):
 
 
 class DaemonError(Exception):
+    """ Daemon Exception. """
     pass
 
 
 # pylint: disable=R0915
 def main(argv=None):
+    """
+    Main function for command line program.
+
+    @param argv: Option parameters
+    @type argv: list
+    """
     options = __option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s - '
                                '%(levelname)s - %(message)s',
@@ -123,6 +156,10 @@ def main(argv=None):
 
 
 def daemon():
+    """
+    Daemon program for Linux.
+    @todo: write daemon
+    """
     print("Not implemented yet.")
     sys.exit(1)
 

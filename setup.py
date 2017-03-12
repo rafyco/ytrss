@@ -22,6 +22,7 @@
 import os
 import sys
 import codecs
+import unittest
 from setuptools import setup
 from setuptools import find_packages
 
@@ -34,6 +35,7 @@ def read_markdown(fname):
     except(IOError, ImportError, RuntimeError):
         return codecs.open(fpath).read()
 
+
 def read_description(module_name):
     module_doc = __import__(module_name).__doc__.splitlines()
     result = ""
@@ -43,14 +45,14 @@ def read_description(module_name):
             break
     return result
 
-version=__import__('ytrss').get_version()
+version = __import__('ytrss').get_version()
 
 console_scripts = [
             'ytrss_subs = ytrss.subs:main',
             'ytrss_daemon = ytrss.daemon:main',
             'ytdown = ytrss.ytdown:main'
         ]
-#if os.uname()[0] == 'Linux':
+# if os.uname()[0] == 'Linux':
 #    console_scripts.append('/etc/init.d/ytrss = ytrss.daemon:daemon')
 
 setup(
@@ -64,16 +66,17 @@ setup(
     url="http://bitbucket.org/rafyco/ytrss",
     packages=find_packages(),
     include_package_data=True,
-    package_dir={'ytrss' : 'ytrss'},
-    classifiers = [
+    package_dir={'ytrss': 'ytrss'},
+    test_suite='ytrss.tests.__main__',
+    classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
-    install_requires = [
+    install_requires=[
         'youtube_dl',
         'pep8'
     ],
-    entry_points = {
+    entry_points={
         'console_scripts': console_scripts
     },
     platforms='Any',

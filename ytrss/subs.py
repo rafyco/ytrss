@@ -18,6 +18,26 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Command line program to checking movie's URL in subscription.
+
+Program checking subscription and playlist from config and save it
+to downloading file. It's recomended to add this file to crontab or call
+it manually.
+
+Example usage
+=============
+
+To invoke program type in your console::
+
+    ytrss_subs
+
+or::
+
+    python -m ytrss.subs
+
+for more option call program with flag C{--help}
+"""
 
 from __future__ import unicode_literals
 from __future__ import print_function
@@ -35,6 +55,13 @@ except ImportError:
 
 
 def __option_args(argv=None):
+    """
+    Parsing argument for command line program.
+
+    @param argv: Option parameters
+    @type argv: list
+    @return: parsed arguments
+    """
     parser = ArgumentParser(description="Save urls from Youtube's "
                                         "subscription or playlists to file.",
                             prog='ytrss_subs',
@@ -58,6 +85,12 @@ def __option_args(argv=None):
 
 
 def main(argv=None):
+    """
+    Main function for command line program.
+
+    @param argv: Option parameters
+    @type argv: list
+    """
     options = __option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s '
                                '- %(levelname)s - %(message)s',

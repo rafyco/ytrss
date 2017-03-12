@@ -60,7 +60,7 @@ Add new file to queue
 
 For testing module write:
 
-    python -m ytrss.tests
+    python setup.py test
 
 ## Changelog
 

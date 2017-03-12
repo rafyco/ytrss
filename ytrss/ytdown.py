@@ -18,6 +18,22 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Add one or more URL address to downlad file.
+
+Example usage
+=============
+
+To invoke program type in your console::
+
+    ytdown [url]
+
+or::
+
+    python -m ytrss.ytdown [url]
+
+for more option call program with flag C{--help}
+"""
 
 from __future__ import unicode_literals
 from __future__ import print_function
@@ -34,6 +50,13 @@ except ImportError:
 
 
 def __option_args(argv=None):
+    """
+    Parsing argument for command line program.
+
+    @param argv: Option parameters
+    @type argv: list
+    @return: parsed arguments
+    """
     parser = ArgumentParser(description="Save one or more urls from "
                                         "Youtube to file.",
                             prog='ytdown',
@@ -54,6 +77,12 @@ def __option_args(argv=None):
 
 
 def main(argv=None):
+    """
+    Main function for command line program.
+
+    @param argv: Option parameters
+    @type argv: list
+    """
     options = __option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s - '
                                '%(levelname)s - %(message)s',
