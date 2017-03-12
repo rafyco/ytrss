@@ -25,11 +25,23 @@ import tempfile
 
 
 class LockerError(Exception):
+    """ Locker exception """
     pass
 
 
 class Locker(object):
+    """ 
+    Class for blocking running program
+    
+    @ivar file_path: program's blocking file
+    """
     def __init__(self, identify, direcotry=None):
+        """
+        Locker constructor
+
+        @param self: object handle
+        @type self: L{Locker}
+        """
         if direcotry is None:
             tmp = tempfile.gettempdir()
         else:
@@ -38,15 +50,34 @@ class Locker(object):
         logging.debug("lock path: %s", self.file_path)
 
     def is_lock(self):
+        """
+        Is program lock.
+
+        @param self: object handle
+        @type self: L{Locker}
+        """
         return os.path.isfile(self.file_path)
 
     def lock(self):
+        """
+        Lock program.
+
+        @param self: object handle
+        @type self: L{Locker}
+        """
         logging.debug("Lock program: %s", self.file_path)
         if self.is_lock():
             raise LockerError
         open(self.file_path, 'a').close()
 
     def unlock(self):
+        """
+        Unlock program.
+
+        @param self: object handle
+        @type self: L{Locker}
+        @warn: This method not raise any exception.
+        """
         logging.debug("Unlock program: %s", self.file_path)
         if self.is_lock():
             os.remove(self.file_path)
