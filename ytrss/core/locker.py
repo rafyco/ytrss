@@ -18,6 +18,26 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Locking program module
+
+This modul allow you to blocking program for make more of one instance.
+
+Example of usage::
+
+    locker = Locker('program_name')
+    try:
+        locker.lock()
+    catch LockerError:
+        print("Blocked file")
+        exit(1)
+    # code of our application
+    locker.unlock()
+
+@warn: Before out of program method -L{unlock() <Locker.unlock>} should
+    be invoke.
+
+"""
 
 import os
 import logging
@@ -30,9 +50,12 @@ class LockerError(Exception):
 
 
 class Locker(object):
-    """ 
+    """
     Class for blocking running program
-    
+
+    @warn: Before out of program method L{unlock() <Locker.unlock>} should
+        be invoke.
+
     @ivar file_path: program's blocking file
     """
     def __init__(self, identify, direcotry=None):
@@ -41,6 +64,10 @@ class Locker(object):
 
         @param self: object handle
         @type self: L{Locker}
+        @param identify: identification of blocking application
+        @type identify: str
+        @param direcotry: path to direcotory with blocking file
+            (if direcotry is C{None} file will be in temporary path)
         """
         if direcotry is None:
             tmp = tempfile.gettempdir()
@@ -55,6 +82,8 @@ class Locker(object):
 
         @param self: object handle
         @type self: L{Locker}
+        @return: C{True} is blocking on, C{False} otherwise.
+        @rtype: Boolean
         """
         return os.path.isfile(self.file_path)
 
@@ -64,6 +93,7 @@ class Locker(object):
 
         @param self: object handle
         @type self: L{Locker}
+        @raise LockerError: in case of locked
         """
         logging.debug("Lock program: %s", self.file_path)
         if self.is_lock():

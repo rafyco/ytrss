@@ -18,6 +18,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Module to download list of YouTube movie ulrs from codes.
+"""
 
 from __future__ import unicode_literals
 import abc
@@ -27,15 +30,40 @@ from xml.dom import minidom
 
 
 class YTDown(object):
-    """ Klasa do pobierania listy adresow url filmow z podanego zrodla. """
+    """
+    Class to download list of YouTube movie urls.
 
-    __metaclass__ = abc.ABCMeta
+    @ivar code: Code for parsing source
+    @ivar link_type: type of parsing source.
+        (I{user} for subscription or I{playlist} for playlist)
+    """
 
     def __init__(self, code, link_type='user'):
+        """
+        YTDown constructor.
+
+        @param self: object handle
+        @type self: L{YTDown}
+        @param code: code for parsing source
+        @type code: str
+        @param link_type: type of source [user|playlist]
+        @type link_type: str
+        @raise AttributeError: lint_type is not user or playlist
+        """
         self.code = code
         self.link_type = link_type
+        if self.link_type is not "usr" and self.link_type is not "playlist":
+            raise AttributeError("link_type must be 'user' or 'playlist'")
 
     def __build_url(self):
+        """
+        Build url to rss source from id save in object.
+
+        @param self: object handle
+        @type self: L{YTDown}
+        @return: url to rss
+        @rtype: str
+        """
         patern = "channel_id"
         if self.link_type == 'playlist':
             patern = "playlist_id"
@@ -43,7 +71,14 @@ class YTDown(object):
 
     @staticmethod
     def __youtube_list_from_address(address):
-        """ Zwraca liste filmow dla uzytkownika o podanym adresie. """
+        """
+        Get movie urls from rss address.
+
+        @param address: address to playlist or subscription rss.
+        @type address: list
+        @return: list of movie urls
+        @rtype: list
+        """
         xml_str = urlopen(address).read()
         xmldoc = minidom.parseString(xml_str)
         tags = xmldoc.getElementsByTagName('link')
@@ -57,6 +92,14 @@ class YTDown(object):
         return result
 
     def get_urls(self):
+        """
+        Get movie urls for object.
+
+        @param self: object handle
+        @type self: L{YTDown}
+        @return: list of movie urls
+        @rtype: list
+        """
         url = self.__build_url()
         logging.debug("URL: %s", url)
         return YTDown.__youtube_list_from_address(url)
