@@ -23,6 +23,7 @@
 from __future__ import unicode_literals
 import unittest
 from ytrss.tests import TestYTRSSModule
+from ytrss.tests.locker_test import TestLocker
 
 
 if __name__ == "__main__":

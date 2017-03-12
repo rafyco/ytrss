@@ -20,8 +20,8 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-import unittest
 import ytrss
+import unittest
 import pep8
 
 
