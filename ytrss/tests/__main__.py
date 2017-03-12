@@ -18,6 +18,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+CommandLine interface for test.
+
+For checking tests call::
+
+    python -m ytrss.tests
+"""
 
 # pylint: disable=W0611
 from __future__ import unicode_literals

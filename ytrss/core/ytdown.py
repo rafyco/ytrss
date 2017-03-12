@@ -23,7 +23,6 @@ Module to download list of YouTube movie ulrs from codes.
 """
 
 from __future__ import unicode_literals
-import abc
 import logging
 from urllib import urlopen
 from xml.dom import minidom

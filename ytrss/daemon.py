@@ -90,7 +90,7 @@ def main(argv=None):
         error_file = UrlRememberer(settings.err_file)
         history_file = UrlRememberer(settings.history_file)
 
-        for elem in urls.get_elements():
+        for elem in urls.database:
             if not history_file.is_new(elem):
                 print("URL {} cannot again download".format(elem))
                 continue

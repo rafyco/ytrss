@@ -18,6 +18,11 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Download mp3 file from YouTube using I{youtube_dl} library.
+
+@see: U{https://rg3.github.io/youtube-dl/}
+"""
 
 from __future__ import unicode_literals
 import os
@@ -27,12 +32,46 @@ import youtube_dl
 
 
 class Downloader(object):
+    """
+    Download mp3 file from YouTube.
+
+    Class download file to cache folder. In case of success files are
+    moved to output file. Output and cache folder are describe in
+    L{YTSettings<ytrss.core.settings.YTSettings>} object.
+
+    @ivar settings: Setting object
+    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @ivar url: URL to download
+    @type url: str
+    @ivar output_path: Path to output folder
+    @type output_path: str
+    """
     def __init__(self, settings, url):
+        """
+        Downloader constructor.
+
+        @param self: object handler
+        @type self: L{Downloader}
+        @param settings: settings handler
+        @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+        @param url: URL to YouTube movie
+        @type url: str
+        """
         self.settings = settings
         self.url = url
         self.output_path = settings.output
 
     def download(self):
+        """
+        Download YouTube movie.
+
+        Function download movie, convert to mp3 and move to output file.
+
+        @param self: object handler
+        @type self: L{Downloader}
+        @return: C{True} if success, C{False} otherwise
+        @rtype: Boolean
+        """
         status = 0
         cache_path = self.settings.cache_path
         try:

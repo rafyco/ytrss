@@ -18,6 +18,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Testing module ytrss.
+
+TestCase checking module files. It should be conform to PEP8.
+
+@see: L{ytrss}
+"""
 
 from __future__ import unicode_literals
 import unittest
@@ -26,7 +33,7 @@ import ytrss
 
 
 class TestYTRSSModule(unittest.TestCase):
-    """ Module tests. """
+    """ Module testsCase. """
     def test_pap8(self):
         """ Test that we conform to PEP8. """
         pep8_style = pep8.StyleGuide(paths=['--ignore=E501'])

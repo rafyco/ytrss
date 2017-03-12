@@ -18,6 +18,11 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+Testing Locker module
+
+@see: L{Locker<ytrss.core.locker>}
+"""
 
 from __future__ import unicode_literals
 import os
