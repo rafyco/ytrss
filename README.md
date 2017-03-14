@@ -3,6 +3,7 @@
 Program to automatic download YouTube files by ```youtube_dl``` scripts.
 
 ![Author](https://img.shields.io/badge/author-Rafa%C5%82%20Kobel-blue.svg)
+![Build](https://img.shields.io/magnumci/ci/49f620081981f2d89f90e45f705715be.svg)
 ![BitbucketIssues](https://img.shields.io/bitbucket/issues/rafyco/ytrss.svg)
 ![version](https://img.shields.io/pypi/v/ytrss.svg)
 ![License](https://img.shields.io/badge/license-GNU-blue.svg)
@@ -95,4 +96,3 @@ Rafal Kobel <rafalkobel@rafyco.pl>
 >
 >    You should have received a copy of the GNU General Public License
 >    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
