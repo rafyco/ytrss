@@ -19,10 +19,9 @@
 #                                                                         #
 ###########################################################################
 
+from __future__ import unicode_literals
 import os
-import sys
 import codecs
-import unittest
 from setuptools import setup
 from setuptools import find_packages
 
@@ -33,7 +32,7 @@ def read_markdown(fname):
         import pypandoc
         return pypandoc.convert(fpath, 'rst')
     except(IOError, ImportError, RuntimeError):
-        return codecs.open(fpath).read()
+        return codecs.open(fpath).read().decode('utf-8')
 
 
 def read_description(module_name):
@@ -69,7 +68,11 @@ setup(
     package_dir={'ytrss': 'ytrss'},
     test_suite='ytrss.tests.__main__',
     classifiers=[
+        'Environment :: Console',
         'Development Status :: 3 - Alpha',
+        'Topic :: Multimedia :: Sound/Audio',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
