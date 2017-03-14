@@ -59,15 +59,16 @@ def __option_args(argv=None):
     """
     parser = ArgumentParser(description="Save one or more urls from "
                                         "Youtube to file.",
-                            prog='ytdown',
-                            version='%(prog)s {}'.format(get_version()))
+                            prog='ytdown')
+    parser.add_argument("-v", "--version", action='version',
+                        version='%(prog)s {}'.format(get_version()))
     parser.add_argument("-c", "--conf", dest="configuration",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",
                         choices=['DEBUG', 'INFO', 'WARNING',
                                  'ERROR', 'CRITICAL'],
                         help="Set the logging level")
-    parser.add_argument("urls", nargs='*', default=[], type=unicode,
+    parser.add_argument("urls", nargs='*', default=[], type=str,
                         help="Url to download.")
     try:
         argcomplete.autocomplete(parser)

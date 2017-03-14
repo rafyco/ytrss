@@ -64,8 +64,9 @@ def __option_args(argv=None):
     """
     parser = ArgumentParser(description="Save urls from Youtube's "
                                         "subscription or playlists to file.",
-                            prog='ytrss_subs',
-                            version='%(prog)s {}'.format(get_version()))
+                            prog='ytrss_subs')
+    parser.add_argument("-v", "--version", action='version',
+                        version='%(prog)s {}'.format(get_version()))
     parser.add_argument("-s", "--show", action="store_true",
                         dest="show_config", default=False,
                         help="Write configuration")

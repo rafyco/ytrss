@@ -99,7 +99,7 @@ class TestLocker(unittest.TestCase):
         """ Testing if locker with identical identify can block each other. """
         tested_locker_1 = self.prepare_locker("ytrss_duplicate_test")
         tested_locker_2 = self.prepare_locker("ytrss_duplicate_test")
-        self.assertNotEquals(tested_locker_1, tested_locker_2)
+        self.assertNotEqual(tested_locker_1, tested_locker_2)
 
         self.assertFalse(tested_locker_1.is_lock())
         self.assertFalse(tested_locker_2.is_lock())
@@ -123,7 +123,7 @@ class TestLocker(unittest.TestCase):
             pass
         test_name = "ytrss_path_test"
         tested_locker = Locker(test_name, directory)
-        self.assertEquals(os.path.join(directory, test_name), tested_locker.file_path)
+        self.assertEqual(os.path.join(directory, test_name), tested_locker.file_path)
         tested_locker.lock()
         self.assertTrue(os.path.isfile(os.path.join(directory, test_name)))
         tested_locker.unlock()
