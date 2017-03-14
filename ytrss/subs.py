@@ -67,9 +67,6 @@ def __option_args(argv=None):
                             prog='ytrss_subs')
     parser.add_argument("-v", "--version", action='version',
                         version='%(prog)s {}'.format(get_version()))
-    parser.add_argument("-s", "--show", action="store_true",
-                        dest="show_config", default=False,
-                        help="Write configuration")
     parser.add_argument("-c", "--conf", dest="configuration",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",

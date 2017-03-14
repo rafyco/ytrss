@@ -65,7 +65,13 @@ For testing module write:
 ## Changelog
 
 ### 0.1
-    
+
+#### 0.1.4
+
+* Wsparcie dla python3
+
+#### 0.1.3
+
 * First working version.
 * Unit test.
 

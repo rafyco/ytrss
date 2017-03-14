@@ -68,6 +68,9 @@ def __option_args(argv=None):
                         choices=['DEBUG', 'INFO', 'WARNING',
                                  'ERROR', 'CRITICAL'],
                         help="Set the logging level")
+    parser.add_argument("-s", "--show", action="store_true",
+                        dest="show_config", default=False,
+                        help="Write configuration")
     parser.add_argument("urls", nargs='*', default=[], type=str,
                         help="Url to download.")
     try:
@@ -93,6 +96,10 @@ def main(argv=None):
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
+
+    if options.show_config:
+        print(settings)
+        exit()
 
     if len(options.urls) < 1:
         print("Require url to download")
