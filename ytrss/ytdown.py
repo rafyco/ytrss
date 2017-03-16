@@ -40,6 +40,8 @@ from __future__ import print_function
 import logging
 from argparse import ArgumentParser
 from ytrss import get_version
+from ytrss.daemon import download_all_movie
+from ytrss.subs import prepare_urls
 from ytrss.core import DownloadQueue
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
@@ -71,6 +73,12 @@ def __option_args(argv=None):
     parser.add_argument("-s", "--show", action="store_true",
                         dest="show_config", default=False,
                         help="Write configuration")
+    parser.add_argument("-r", "--read", action="store_true",
+                        dest="daemon_run", default=False,
+                        help="Read urls to download from rss")
+    parser.add_argument("-d", "--download", action="store_true",
+                        dest="download_run", default=False,
+                        help="Download all movies to output path")
     parser.add_argument("urls", nargs='*', default=[], type=str,
                         help="Url to download.")
     try:
@@ -101,7 +109,14 @@ def main(argv=None):
         print(settings)
         exit()
 
-    if len(options.urls) < 1:
+    if options.daemon_run or options.download_run:
+        prepare_urls(settings)
+
+    if options.download_run:
+        download_all_movie(settings)
+
+    if (len(options.urls) < 1 and not options.download_run and
+            not options.daemon_run):
         print("Require url to download")
         exit(1)
 

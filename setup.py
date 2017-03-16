@@ -47,8 +47,6 @@ def read_description(module_name):
 version = __import__('ytrss').get_version()
 
 console_scripts = [
-            'ytrss_subs = ytrss.subs:main',
-            'ytrss_daemon = ytrss.daemon:main',
             'ytdown = ytrss.ytdown:main'
         ]
 # if os.uname()[0] == 'Linux':

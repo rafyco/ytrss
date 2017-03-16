@@ -82,6 +82,24 @@ def __option_args(argv=None):
     return options
 
 
+def prepare_urls(settings):
+    """
+    Prepare urls for downloader.
+
+    @param settings: Settings handle
+    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    """
+    logging.info("Prepare new urls")
+    finder = URLFinder(settings)
+    urls = finder.get_urls()
+    queue = DownloadQueue(settings)
+    for url in urls:
+        if queue.queue_mp3(url):
+            print("Nowy element: {}".format(url))
+        else:
+            logging.info("Element istnieje: %s", url)
+
+
 def main(argv=None):
     """
     Main function for command line program.
@@ -99,21 +117,8 @@ def main(argv=None):
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
+    prepare_urls(settings, options)
 
-    if options.show_config:
-        print(settings)
-        exit()
-
-    finder = URLFinder(settings)
-    urls = finder.get_urls()
-    queue = DownloadQueue(settings)
-    for url in urls:
-        if queue.queue_mp3(url):
-            print("Nowy element: {}".format(url))
-        else:
-            print("Element istnieje: {}".format(url))
-
-    logging.debug("End")
 
 if __name__ == "__main__":
     main()

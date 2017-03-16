@@ -88,25 +88,14 @@ class DaemonError(Exception):
     pass
 
 
-# pylint: disable=R0915
-def main(argv=None):
+def download_all_movie(settings):
     """
-    Main function for command line program.
+    Download all movie saved in download_file.
 
-    @param argv: Option parameters
-    @type argv: list
+    @param settings: Settings handle
+    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
     """
-    options = __option_args(argv)
-    logging.basicConfig(format='%(asctime)s - %(name)s - '
-                               '%(levelname)s - %(message)s',
-                        level=options.logLevel)
-    logging.debug("Debug mode: Run")
-    try:
-        settings = YTSettings(options.configuration)
-    except SettingException:
-        print("Configuration file not exist.")
-        sys.exit(1)
-
+    logging.info("download movie from urls")
     locker = Locker('lock_ytdown')
     try:
         locker.lock()
@@ -143,7 +132,6 @@ def main(argv=None):
         locker.unlock()
 
         os.remove(settings.url_backup)
-        logging.debug("End")
     except KeyboardInterrupt as ex:
         locker.unlock()
         print("Keyboard Interrupt by user.")
@@ -156,6 +144,27 @@ def main(argv=None):
         locker.unlock()
         print("Unexpected Error: {}".format(ex))
         raise ex
+
+
+# pylint: disable=R0915
+def main(argv=None):
+    """
+    Main function for command line program.
+
+    @param argv: Option parameters
+    @type argv: list
+    """
+    options = __option_args(argv)
+    logging.basicConfig(format='%(asctime)s - %(name)s - '
+                               '%(levelname)s - %(message)s',
+                        level=options.logLevel)
+    logging.debug("Debug mode: Run")
+    try:
+        settings = YTSettings(options.configuration)
+    except SettingException:
+        print("Configuration file not exist.")
+        sys.exit(1)
+    download_all_movie(settings)
 
 
 def daemon():

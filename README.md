@@ -20,13 +20,9 @@ Program to automatic download YouTube files by ```youtube_dl``` scripts.
 
 ## Usage
 
-Download information about new subscription.
-
-    ytrss_subs
-    
 Download files from queue.
     
-    ytrss_daemon
+    ytdown -d
     
 Add new file to queue
     
@@ -69,7 +65,8 @@ For testing module write:
 
 #### 0.1.4
 
-* Wsparcie dla python3
+* Support for python3
+* Reduce commands to one prog 
 
 #### 0.1.3
 
