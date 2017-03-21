@@ -20,7 +20,11 @@ Program to automatic download YouTube files by ```youtube_dl``` scripts.
 
 ## Usage
 
-Download files from queue.
+Start service
+
+    sudo service ytrss start
+
+Manual once run.
     
     ytdown -d
     
@@ -31,6 +35,8 @@ Add new file to queue
 ## Example configuration
 
     vi ~/.config/ytrss/config
+    
+For linux daemon config file should be created in ```root``` path.
 
 
 ```
@@ -62,6 +68,10 @@ For testing module write:
 ## Changelog
 
 ### 0.1
+
+#### 0.1.5
+
+* Daemon for linux
 
 #### 0.1.4
 

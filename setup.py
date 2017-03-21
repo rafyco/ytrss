@@ -47,10 +47,9 @@ def read_description(module_name):
 version = __import__('ytrss').get_version()
 
 console_scripts = [
-            'ytdown = ytrss.ytdown:main'
+            'ytdown = ytrss.ytdown:main',
+            '/etc/init.d/ytrss = ytrss.ytdown:daemon'
         ]
-# if os.uname()[0] == 'Linux':
-#    console_scripts.append('/etc/init.d/ytrss = ytrss.daemon:daemon')
 
 setup(
     name='ytrss',
@@ -75,6 +74,7 @@ setup(
     ],
     install_requires=[
         'youtube_dl',
+        'daemonocle',
         'pep8'
     ],
     entry_points={
