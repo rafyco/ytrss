@@ -149,7 +149,7 @@ def daemon_main():
                 pass
         except SettingException:
             logging.error("Configuration file not exist.")
-        except Exception:
+        except Exception as ex:
             logging.error("Unknown error: {}".format(ex))
         # Wait 10 min.
         time.sleep(60 * 10)
@@ -186,7 +186,7 @@ def daemon(argv=None):
     try:
         if argv[1] == "start":
             try:
-                settings = YTSettings()
+                YTSettings()
             except SettingException:
                 print("Configuration file not exist.")
                 exit(1)
