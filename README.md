@@ -8,6 +8,14 @@ Program to automatic download YouTube files by ```youtube_dl``` scripts.
 ![version](https://img.shields.io/pypi/v/ytrss.svg)
 ![License](https://img.shields.io/badge/license-GNU-blue.svg)
 
+## Useful links
+
+* [Author Website](http://rafyco.pl)
+* [Source](https://bitbucket.org/rafyco/ytrss)
+* [Build on Magnum CI](https://magnum-ci.com/public/6235732918b5c621d0bf/builds)
+* [Bitbucket Issues](https://bitbucket.org/rafyco/ytrss/issues)
+* [pypi](https://pypi.python.org/pypi/ytrss/)
+
 ## Instalation
 
 ### PyPi

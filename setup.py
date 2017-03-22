@@ -81,5 +81,5 @@ setup(
         'console_scripts': console_scripts
     },
     platforms='Any',
-    keywords='youtube, console'
+    keywords='youtube, console, download, rss, mp3, service'
 )
