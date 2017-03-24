@@ -1,0 +1,17 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          ytrss
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: YouTube podcast tool.
+# Description:       Tools for downloading mp3 from YouTube subscription and playlists. 
+### END INIT INFO
+
+# author: Rafal Kobel
+
+python -m ytrss.daemon $*
+exit $?
+

@@ -42,7 +42,6 @@ import time
 import logging
 from argparse import ArgumentParser
 from ytrss import get_version
-from ytrss.daemon import download_all_movie
 from ytrss.subs import prepare_urls
 from ytrss.core import DownloadQueue
 from ytrss.core.settings import YTSettings
@@ -55,6 +54,62 @@ except ImportError:
     pass
 
 
+def download_all_movie(settings):
+    """
+    Download all movie saved in download_file.
+
+    @param settings: Settings handle
+    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    """
+    logging.info("download movie from urls")
+    locker = Locker('lock_ytdown')
+    try:
+        locker.lock()
+    except LockerError:
+        print("Program is running.")
+        sys.exit(1)
+    try:
+        if not os.path.isfile(
+                settings.download_file) and not os.path.isfile(
+                settings.url_backup):
+            raise DaemonError
+        urls = UrlRememberer(settings.download_file)
+        urls.read_backup(settings.url_backup)
+        urls.delete_file()
+        urls.save_as(settings.url_backup)
+
+        error_file = UrlRememberer(settings.err_file)
+        history_file = UrlRememberer(settings.history_file)
+
+        for elem in urls.database:
+            if not history_file.is_new(elem):
+                print("URL {} cannot again download".format(elem))
+                continue
+            task = Downloader(settings, elem)
+            if task.download():
+                # finish ok
+                print("finish ok")
+                history_file.add_element(elem)
+            else:
+                # finish error
+                print("finish error")
+                error_file.add_element(elem)
+
+        locker.unlock()
+
+        os.remove(settings.url_backup)
+    except KeyboardInterrupt as ex:
+        locker.unlock()
+        print("Keyboard Interrupt by user.")
+        sys.exit(1)
+    except DaemonError:
+        locker.unlock()
+        logging.debug("Cannot find url to download")
+        sys.exit()
+    except Exception as ex:
+        locker.unlock()
+        print("Unexpected Error: {}".format(ex))
+        raise ex
 def __option_args(argv=None):
     """
     Parsing argument for command line program.
