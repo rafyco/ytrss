@@ -37,15 +37,20 @@ for more option call program with flag C{--help}
 
 from __future__ import unicode_literals
 from __future__ import print_function
+import os
 import sys
 import time
 import logging
 from argparse import ArgumentParser
 from ytrss import get_version
 from ytrss.subs import prepare_urls
+from ytrss.core import UrlRememberer
 from ytrss.core import DownloadQueue
+from ytrss.core.downloader import Downloader
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
+from ytrss.core.locker import Locker
+from ytrss.core.locker import LockerError
 from daemonocle import Daemon
 from daemonocle.exceptions import DaemonError
 try:
@@ -110,6 +115,8 @@ def download_all_movie(settings):
         locker.unlock()
         print("Unexpected Error: {}".format(ex))
         raise ex
+
+
 def __option_args(argv=None):
     """
     Parsing argument for command line program.
