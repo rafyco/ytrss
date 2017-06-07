@@ -4,16 +4,16 @@ Program to automatic download YouTube files by ```youtube_dl``` scripts.
 
 ![Author](https://img.shields.io/badge/author-Rafa%C5%82%20Kobel-blue.svg)
 ![Build](https://img.shields.io/magnumci/ci/49f620081981f2d89f90e45f705715be.svg)
-![BitbucketIssues](https://img.shields.io/bitbucket/issues/rafyco/ytrss.svg)
+![GithubIssues](https://img.shields.io/github/issues/rafyco/ytrss.svg)
 ![version](https://img.shields.io/pypi/v/ytrss.svg)
 ![License](https://img.shields.io/badge/license-GNU-blue.svg)
 
 ## Useful links
 
 * [Author Website](http://rafyco.pl)
-* [Source](https://bitbucket.org/rafyco/ytrss)
+* [Source](https://github.com/rafyco/ytrss)
 * [Build on Magnum CI](https://magnum-ci.com/public/6235732918b5c621d0bf/builds)
-* [Bitbucket Issues](https://bitbucket.org/rafyco/ytrss/issues)
+* [Github Issues](https://github.com/rafyco/ytrss/issues)
 * [pypi](https://pypi.python.org/pypi/ytrss/)
 
 ## Instalation
