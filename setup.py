@@ -21,7 +21,7 @@
 
 from __future__ import unicode_literals
 import os
-import sys
+#import sys
 import codecs
 from setuptools import setup
 from setuptools import find_packages
@@ -49,8 +49,8 @@ version = __import__('ytrss').get_version()
 
 data_files = []
 
-if not(sys.platform.lower().startswith('win')):
-    data_files.append(('/etc/init.d', ['scripts/ytrss']))
+#if not(sys.platform.lower().startswith('win')):
+#    data_files.append(('/etc/init.d', ['scripts/ytrss']))
 
 setup(
     name='ytrss',
