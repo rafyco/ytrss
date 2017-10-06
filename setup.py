@@ -60,7 +60,7 @@ setup(
     author_email="rafalkobel@rafyco.pl",
     description=read_description('ytrss'),
     long_description=read_markdown("README.md"),
-    url="http://bitbucket.org/rafyco/ytrss",
+    url="https://github.com/rafyco/ytrss",
     packages=find_packages(),
     include_package_data=True,
     package_dir={'ytrss': 'ytrss'},
