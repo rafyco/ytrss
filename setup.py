@@ -40,7 +40,7 @@ version = __import__('ytrss').get_version()
 
 data_files = []
 
-if sys.argv[2] == "--with-service" and not(sys.platform.lower().startswith('win')):
+if count(sys.argv) >= 2 and sys.argv[2] == "--with-service" and not(sys.platform.lower().startswith('win')):
     try:
         data_files.append(('/etc/init.d', ['scripts/ytrss']))
     except Exception:
