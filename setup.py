@@ -21,19 +21,10 @@
 
 from __future__ import unicode_literals
 import os
-#import sys
+import sys
 import codecs
 from setuptools import setup
 from setuptools import find_packages
-
-
-def read_markdown(fname):
-    fpath = os.path.join(os.path.dirname(__file__), fname)
-    try:
-        import pypandoc
-        return pypandoc.convert(fpath, 'rst')
-    except(IOError, ImportError, RuntimeError):
-        return codecs.open(fpath).read().decode('utf-8')
 
 
 def read_description(module_name):
@@ -49,8 +40,12 @@ version = __import__('ytrss').get_version()
 
 data_files = []
 
-#if not(sys.platform.lower().startswith('win')):
-#    data_files.append(('/etc/init.d', ['scripts/ytrss']))
+if not(sys.platform.lower().startswith('win')):
+    try:
+        data_files.append(('/etc/init.d', ['scripts/ytrss']))
+    except Exception:
+        print("Warning: Cannot install 'ytrss' service on your computer")
+        print("         Try install with root privileges")
 
 setup(
     name='ytrss',
@@ -59,7 +54,7 @@ setup(
     author="Rafal Kobel",
     author_email="rafalkobel@rafyco.pl",
     description=read_description('ytrss'),
-    long_description=read_markdown("README.md"),
+    long_description=open("README.rst").read(),
     url="https://github.com/rafyco/ytrss",
     packages=find_packages(),
     include_package_data=True,
@@ -84,6 +79,6 @@ setup(
             'ytdown = ytrss.ytdown:main',
         ]
     },
-    platforms='Any',
-    keywords='youtube, console, download, rss, mp3, service'
+    platforms="Any",
+    keywords="youtube, console, download, rss, mp3, service"
 )
