@@ -4,11 +4,12 @@ sudo: true
 
 python:
  - 2.7
- - 3.4
 
 install:
+ - pip install pylint
  - python setup.py install
 
 script:
+ - pylint -f parseable -d I0011,R0801,R0902,R0903,R0921 ytrss
  - python -m ytrss.tests
 
