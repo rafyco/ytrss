@@ -52,10 +52,10 @@ class Element(object):
     """
     def __init__(self, intro):
         """
-        Downloader constructor.
+        Element constructor.
 
         @param self: object handler
-        @type self: L{Downloader}
+        @type self: L{Element}
         @param intro: Initialization parameter
         @type intro: str | dict
         """
@@ -96,11 +96,6 @@ class Element(object):
     def code(self):
         """
         Movie's ID
-
-        @param self: object handler
-        @type self: L{Downloader}
-        @return: movie's ID
-        @rtype: str
         """
         return self.__code
 
@@ -108,11 +103,6 @@ class Element(object):
     def url(self):
         """
         URL to movie
-
-        @param self: object handler
-        @type self: L{Downloader}
-        @return: movie's URL
-        @rtype: str
         """
         return "https://www.youtube.com/watch?v={}".format(self.__code)
 
@@ -121,7 +111,7 @@ class Element(object):
         Make string reprezenting object
 
         @param self: object handler
-        @type self: L{Downloader}
+        @type self: L{Element}
         @return: JSON's string
         @rtype: str
         """
@@ -134,8 +124,6 @@ class Element(object):
         """
         Set object from JSON string
 
-        @param self: object handler
-        @type self: L{Downloader}
         @param text: JSON string
         @type text: str
         @return: tab from JSON
@@ -152,9 +140,9 @@ class Element(object):
         Compare object with another object
 
         @param self: object handler
-        @type self: L{Downloader}
+        @type self: L{Element}
         @param other: other object handler or URL string
-        @type other: L{Downloader} or str
+        @type other: L{Element} or str
         @return: C{True} if object equal, C{False} otherwise
         @rtype: bool
         """
@@ -170,7 +158,7 @@ class Element(object):
         Return string from object
 
         @param self: object handler
-        @type self: L{Downloader}
+        @type self: L{Element}
         @return: string URL
         @rtype: str
         """

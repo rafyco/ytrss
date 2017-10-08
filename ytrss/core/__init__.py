@@ -85,7 +85,7 @@ class UrlRememberer(object):
         @param self: object handle
         @type self: L{UrlRememberer}
         @param address: adding address
-        @type address: L{Element<ytrss.core.element.Element}
+        @type address: L{Element<ytrss.core.element.Element>}
         """
         self.database.append(address)
         if self.file_name == "":
@@ -102,7 +102,7 @@ class UrlRememberer(object):
         @param self: object handle
         @type self: L{UrlRememberer}
         @param address: element to check
-        @type address: L{Element{ytrss.core.element.Element}
+        @type address: L{Element<ytrss.core.element.Element>}
         @return: C{True} if address new, C{False} otherwise
         @rtype: Boolean
         """
