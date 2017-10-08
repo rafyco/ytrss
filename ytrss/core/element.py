@@ -29,6 +29,7 @@ except ImportError:
     from io import StringIO
 import re
 import json
+from ytrss.core.downloader import Downloader
 
 
 class InvalidStringJSONParseError(Exception):
@@ -105,6 +106,20 @@ class Element(object):
         URL to movie
         """
         return "https://www.youtube.com/watch?v={}".format(self.__code)
+
+    def download(self, settings):
+        """
+        Download element
+
+        @param self: object handler
+        @type self: L{Element}
+        @param settings: setting handler
+        @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+        @return: C{True} if download correct, C{False} otherwise
+        @rtype: bool
+        """
+        task = Downloader(settings, self)
+        return task.download()
 
     def to_string(self):
         """

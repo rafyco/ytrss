@@ -45,7 +45,6 @@ from ytrss import get_version
 from ytrss.subs import prepare_urls
 from ytrss.core import UrlRememberer
 from ytrss.core import DownloadQueue
-from ytrss.core.downloader import Downloader
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core.locker import Locker
@@ -92,8 +91,8 @@ def download_all_movie(settings):
             if not history_file.is_new(elem):
                 print("URL {} cannot again download".format(elem))
                 continue
-            task = Downloader(settings, elem)
-            if task.download():
+
+            if elem.download():
                 # finish ok
                 print("finish ok")
                 history_file.add_element(elem)

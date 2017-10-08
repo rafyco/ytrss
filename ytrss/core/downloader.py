@@ -29,7 +29,7 @@ import os
 import shutil
 import logging
 import youtube_dl
-from ytrss.core.element import Element
+import ytrss
 
 
 class Downloader(object):
@@ -58,7 +58,7 @@ class Downloader(object):
         @param url: URL to YouTube movie
         @type url: L{Element<ytrss.core.element.Element>}
         """
-        assert isinstance(url, Element)
+        assert isinstance(url, ytrss.core.element.Element)
         self.settings = settings
         self.url = url
         self.output_path = settings.output
