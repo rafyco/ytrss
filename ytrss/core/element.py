@@ -60,7 +60,7 @@ class Element(object):
         @param intro: Initialization parameter
         @type intro: str | dict
         """
-        if isinstance(intro, unicode) or isinstance(intro, str):
+        if isinstance(intro, basestring):
             if bool(re.search("^[A-Za-z0-9_\\-]{11}$", intro)):
                 self.__code = intro
             elif bool(re.search("^http(s)?://(www.)?youtube.com/watch\\?v="
@@ -161,7 +161,7 @@ class Element(object):
         @return: C{True} if object equal, C{False} otherwise
         @rtype: bool
         """
-        if isinstance(other, unicode) or isinstance(other, str):
+        if isinstance(other, basestring):
             if other == "":
                 return False
             tmp_other = Element(other)
