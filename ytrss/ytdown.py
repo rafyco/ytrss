@@ -39,7 +39,6 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import os
 import sys
-import time
 import logging
 from argparse import ArgumentParser
 from ytrss import get_version
@@ -51,11 +50,14 @@ from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
-from daemonocle import Daemon
-from daemonocle.exceptions import DaemonError
 try:
     import argcomplete
 except ImportError:
+    pass
+
+
+class URLError(Exception):
+    """ Problem with URL """
     pass
 
 
@@ -76,8 +78,8 @@ def download_all_movie(settings):
     try:
         if not os.path.isfile(
                 settings.download_file) and not os.path.isfile(
-                settings.url_backup):
-            raise DaemonError
+                    settings.url_backup):
+            raise URLError
         urls = UrlRememberer(settings.download_file)
         urls.read_backup(settings.url_backup)
         urls.delete_file()
@@ -107,7 +109,7 @@ def download_all_movie(settings):
         locker.unlock()
         print("Keyboard Interrupt by user.")
         sys.exit(1)
-    except DaemonError:
+    except URLError:
         locker.unlock()
         logging.debug("Cannot find url to download")
         sys.exit()
@@ -192,71 +194,6 @@ def main(argv=None):
             print("Filmik zostanie pobrany: {}".format(url))
         else:
             print("Filmik nie zostanie pobrany: {}".format(url))
-
-
-def daemon_main():
-    """
-    Daemon main function.
-    """
-    while True:
-        try:
-            settings = YTSettings()
-            try:
-                prepare_urls(settings)
-            except SystemExit:
-                pass
-            try:
-                download_all_movie(settings)
-            except SystemExit:
-                pass
-        except SettingException:
-            logging.error("Configuration file not exist.")
-        except Exception as ex:
-            logging.error("Unknown error: {}".format(ex))
-        # Wait 10 min.
-        time.sleep(60 * 10)
-
-
-def daemon_error_print():
-    """
-    Print error message in case of invalid argument.
-    """
-    print("[info] Usage: /etc/init.d/ytrss {start|stop|restart|status}")
-
-
-def daemon(argv=None):
-    """
-    Daemon script function.
-
-    This script turn on daemon.
-
-    @param argv: Option parameters
-    @type argv: list
-    """
-    daemon = Daemon(worker=daemon_main,
-                    pidfile='/var/run/daemonocle_example.pid'
-                    )
-    if argv is None:
-        argv = sys.argv
-    logging.basicConfig(
-        filename='/var/log/ytrss_daemon.log',
-        level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s',
-    )
-    if len(argv) != 2:
-        daemon_error_print()
-        exit(1)
-    try:
-        if argv[1] == "start":
-            try:
-                YTSettings()
-            except SettingException:
-                print("Configuration file not exist.")
-                exit(1)
-        daemon.do_action(argv[1])
-        sys.exit(0)
-    except (DaemonError, IndexError):
-        daemon_error_print()
-        sys.exit(1)
 
 
 if __name__ == "__main__":

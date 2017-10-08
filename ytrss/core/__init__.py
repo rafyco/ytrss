@@ -28,6 +28,8 @@ import os
 import abc
 import json
 import logging
+from ytrss.core.element import Element
+from ytrss.core.element import InvalidParameterElementError
 
 
 class URLRemembererError(Exception):
@@ -67,8 +69,11 @@ class UrlRememberer(object):
             finally:
                 plik.close()
             for elem in self.file_data.split('\n'):
-                if elem != "":
-                    self.database.append(elem)
+                try:
+                    tmp_elem = Element(elem)
+                    self.database.append(tmp_elem)
+                except InvalidParameterElementError as ex:
+                    logging.debug("Error: %s", ex)
 
         except IOError as ex:
             logging.debug("Unknown error %s", ex)
@@ -80,17 +85,15 @@ class UrlRememberer(object):
         @param self: object handle
         @type self: L{UrlRememberer}
         @param address: adding address
-        @type address: str
+        @type address: L{Element<ytrss.core.element.Element}
         """
-        if address == "":
-            return
         self.database.append(address)
         if self.file_name == "":
             return
         plik = open(self.file_name, 'a')
-        plik.writelines(address + '\n')
+        plik.writelines(address.to_string() + '\n')
         plik.close()
-        self.file_data = "{}\n{}\n".format(self.file_data, address)
+        self.file_data = "{}\n{}\n".format(self.file_data, address.to_string())
 
     def is_new(self, address):
         """
@@ -98,16 +101,17 @@ class UrlRememberer(object):
 
         @param self: object handle
         @type self: L{UrlRememberer}
-        @param address: address to check
-        @type address: str
+        @param address: element to check
+        @type address: L{Element{ytrss.core.element.Element}
         @return: C{True} if address new, C{False} otherwise
         @rtype: Boolean
         """
+        assert isinstance(address, Element)
         logging.debug("Sprawdzanie pliku: %s", self.file_name)
         for elem in self.database:
-            logging.debug("Analiza: %s", elem)
+            logging.debug("Analiza: %s", elem.url)
             if elem == address:
-                logging.debug("old element %s", address)
+                logging.debug("old element %s", address.url)
                 return False
         return True
 
@@ -122,7 +126,7 @@ class UrlRememberer(object):
         """
         plik = open(file_name, 'a')
         for elem in self.database:
-            plik.writelines(elem + '\n')
+            plik.writelines(elem.to_string() + '\n')
         plik.close()
 
     def delete_file(self):
@@ -158,7 +162,7 @@ class UrlRememberer(object):
                     plik.close()
                 for elem in file_data.split('\n'):
                     if elem != "":
-                        self.add_element(elem)
+                        self.add_element(Element(elem))
             except IOError:
                 pass
             os.remove(backup_file)
@@ -209,9 +213,10 @@ class DownloadQueue(object):
         @return: C{True} if C{address} can be downloaded, C{False} otherwise
         @rtype: Boolean
         """
-        logging.debug("DOWNLOAD: %s", address)
+        assert isinstance(address, Element)
+        logging.debug("DOWNLOAD: %s", address.url)
         if self.rememberer.is_new(address):
-            logging.debug("Download adress: %s", address)
+            logging.debug("Download adress: %s", address.url)
             self.download_yt.add_element(address)
             self.rememberer.add_element(address)
             return True

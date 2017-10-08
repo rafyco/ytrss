@@ -29,6 +29,7 @@ import os
 import shutil
 import logging
 import youtube_dl
+from ytrss.core.element import Element
 
 
 class Downloader(object):
@@ -55,8 +56,9 @@ class Downloader(object):
         @param settings: settings handler
         @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
         @param url: URL to YouTube movie
-        @type url: str
+        @type url: L{Element<ytrss.core.element.Element>}
         """
+        assert isinstance(url, Element)
         self.settings = settings
         self.url = url
         self.output_path = settings.output
@@ -81,16 +83,16 @@ class Downloader(object):
         current_path = os.getcwd()
         os.chdir(cache_path)
 
-        logging.info("url: %s", self.url)
+        logging.info("url: %s", self.url.url)
         try:
             command = ['--extract-audio', '--audio-format', 'mp3',
-                       '-o', "%(uploader)s - %(title)s.%(ext)s", self.url]
+                       '-o', "%(uploader)s - %(title)s.%(ext)s", self.url.url]
             youtube_dl.main(command)
         except SystemExit as ex:
             if ex.code is None:
                 status = 0
             else:
-                status = ex.code
+                status = ex.code  # pylint: disable=R0204
 
         finded = False
         for find_file in os.listdir(cache_path):

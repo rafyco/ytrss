@@ -25,6 +25,7 @@ Finding YouTube movie urls.
 from __future__ import unicode_literals
 import logging
 from ytrss.core.ytdown import YTDown
+from ytrss.core.element import Element
 
 
 class URLFinder(object):
@@ -80,12 +81,14 @@ class URLFinder(object):
             logging.debug("add playlist url: %s", url)
             self.tab.append(YTDown(url, link_type="playlist"))
 
-    def get_urls(self):
+    def get_elements(self):
         """
         Get urls to YouTube movies.
 
         @param self: handle object
         @type self: L{URLFinder}
+        @return: List of elements to download
+        @rtype: L{Element<ytrss.core.element.Element>}
         """
         urls = []
         for elem in self.tab:
@@ -93,5 +96,5 @@ class URLFinder(object):
             addresses = elem.get_urls()
             for address in addresses:
                 logging.debug("El: %s", address)
-                urls.append(address)
+                urls.append(Element(address))
         return urls

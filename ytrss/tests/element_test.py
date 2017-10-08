@@ -25,7 +25,6 @@ Testing Element module
 """
 
 from __future__ import unicode_literals
-import os
 import unittest
 from ytrss.core.element import Element
 from ytrss.core.element import InvalidParameterElementError
@@ -38,7 +37,12 @@ class TestElement(unittest.TestCase):
     Testing for L{ytrss.core.element} module
     """
     def test_input_argument_parse(self):
-        """ Testing usage of module. """
+        """
+        Testing usage of module.
+
+        @param self: object handle
+        @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
+        """
         test_suites = [{
             "arg": "https://www.youtube.com/watch?v=I-JxpVFlaos",
             "code": "I-JxpVFlaos",
@@ -75,7 +79,12 @@ class TestElement(unittest.TestCase):
             self.assertEqual(test_elem.url, elem['url'])
 
     def test_invalid_argument(self):
-        """ Testing invalid argument element """
+        """
+        Testing invalid argument element.
+
+        @param self: object handle
+        @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
+        """
         test_suites = [
             "https://www.youtube.com/watch?w=I-JxpVFlaos",
             "https://www.youtube.com/watch?v=I-JxpVFlaosfs",
@@ -91,7 +100,12 @@ class TestElement(unittest.TestCase):
                 Element(elem)
 
     def test_comparation(self):
-        """ Testing comparation elements """
+        """
+        Testing comparation elements.
+
+        @param self: object handle
+        @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
+        """
         test_suites = [{
             "ob1": "https://www.youtube.com/watch?v=I-JxpVFlaos",
             "ob2": "https://www.youtube.com/watch?v=I-JxpVFlaos"
@@ -108,9 +122,18 @@ class TestElement(unittest.TestCase):
         for elem in test_suites:
             elem1 = Element(elem['ob1'])
             elem2 = Element(elem['ob2'])
-            self.assertEqual(elem1, elem2, "Not equal [{ob1} != {ob2}".format(ob1=elem['ob1'], ob2=elem['ob2']))
+            self.assertEqual(elem1,
+                             elem2,
+                             "Not equal [{} != {}".format(elem['ob1'],
+                                                          elem['ob2']))
 
     def test_serialization(self):
+        """
+        Testing serialization methods.
+
+        @param self: object handle
+        @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
+        """
         elem1 = Element("I-JxpVFlaos")
         element_string = elem1.to_string()
         elem2 = Element(element_string)

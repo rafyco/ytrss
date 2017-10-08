@@ -91,13 +91,13 @@ def prepare_urls(settings):
     """
     logging.info("Prepare new urls")
     finder = URLFinder(settings)
-    urls = finder.get_urls()
+    elements = finder.get_elements()
     queue = DownloadQueue(settings)
-    for url in urls:
-        if queue.queue_mp3(url):
-            print("Nowy element: {}".format(url))
+    for element in elements:
+        if queue.queue_mp3(element):
+            print("Nowy element: {}".format(element.url))
         else:
-            logging.info("Element istnieje: %s", url)
+            logging.info("Element istnieje: %s", element.url)
 
 
 def main(argv=None):
@@ -117,7 +117,7 @@ def main(argv=None):
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
-    prepare_urls(settings, options)
+    prepare_urls(settings)
 
 
 if __name__ == "__main__":
