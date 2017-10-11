@@ -77,9 +77,11 @@ class URLFinder(object):
         if isinstance(url, list):
             for elem in url:
                 self.add_playlist_url(elem)
-        else:
+        elif isinstance(url, dict):
             logging.debug("add playlist url: %s", url)
             self.tab.append(YTDown(url, link_type="playlist"))
+        else:
+            logging.error("Unknown type of playlist: {}".format(type(url)))
 
     def get_elements(self):
         """
@@ -96,5 +98,6 @@ class URLFinder(object):
             addresses = elem.get_urls()
             for address in addresses:
                 logging.debug("El: %s", address)
-                urls.append(Element(address))
+                urls.append(Element(address,
+                                    destination_dir=elem.destination_dir))
         return urls

@@ -47,7 +47,7 @@ from daemonocle import Daemon
 from daemonocle.exceptions import DaemonError
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
-from ytrss.ytdown import prepare_urls
+from ytrss.subs import prepare_urls
 from ytrss.ytdown import download_all_movie
 
 

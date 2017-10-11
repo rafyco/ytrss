@@ -59,7 +59,7 @@ Add new file to queue
 
 ::
 
-    ytdown &lt;file_url&gt;
+    ytdown <file_url>
 
 Example configuration
 ---------------------
@@ -73,17 +73,17 @@ For linux daemon config file should be created in ``root`` path.
 ::
 
     {
-        "output"   : "&lt;output_file&gt;",
+        "output"   : "<output_file>",
         "subscriptions" : [
             {
-                "code"    : "&lt;playlist_id&gt;",
+                "code"    : "<playlist_id>",
                 "type"    : "playlist"
             },
             {
-                "code"    : "&lt;subscritpion_id&gt;"
+                "code"    : "<subscritpion_id>"
             },
             {
-                "code"    : "&lt;subscription_id&gt;", 
+                "code"    : "<subscription_id>", 
                 "enabled" : false
             }
         ]
@@ -101,6 +101,15 @@ For testing module write:
 Changelog
 ---------
 
+0.2
+~~~
+
+0.2.0
+
+-  Files download to specific directory
+-  Read data of downloaded movie
+-  Generate RSS channle of downloaded movie
+
 0.1
 ~~~
 
@@ -115,7 +124,7 @@ Changelog
 -  Support for python3
 -  Reduce commands to one prog
 
-0.1.3
+0.1.3 
 ^^^^^
 
 -  First working version.

@@ -30,7 +30,8 @@ from ytrss.core.element import Element
 from ytrss.core.element import InvalidParameterElementError
 
 
-class TestElement(unittest.TestCase):
+# This is tested class. Can have too many method
+class TestElement(unittest.TestCase):  # pylint: disable=R0904
     """
     Locker tests.
 

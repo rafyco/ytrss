@@ -47,6 +47,7 @@ from ytrss.core import UrlRememberer
 from ytrss.core import DownloadQueue
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
+from ytrss.core.settings import SettingsParseJSONError
 from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
 try:
@@ -92,7 +93,7 @@ def download_all_movie(settings):
                 print("URL {} cannot again download".format(elem))
                 continue
 
-            if elem.download():
+            if elem.download(settings):
                 # finish ok
                 print("finish ok")
                 history_file.add_element(elem)
@@ -171,6 +172,9 @@ def main(argv=None):
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
+    except SettingsParseJSONError:
+        print("Problem with JSON file.")
+        exit(2)
 
     if options.show_config:
         print(settings)

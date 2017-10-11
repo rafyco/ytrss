@@ -32,13 +32,16 @@ from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
 
 
-class TestLocker(unittest.TestCase):
+# This is tested class. Can have too many method
+class TestLocker(unittest.TestCase):  # pylint: disable=R0904
     """
     Locker tests.
 
     Testing for L{ytrss.core.locker} module
     """
-    def setUp(self):
+
+    # Name defined in unittest library. Cannot be change
+    def setUp(self):  # pylint: disable=C0103
         """
         Prepare container for tests.
 
@@ -47,7 +50,8 @@ class TestLocker(unittest.TestCase):
         """
         self.lockers = []
 
-    def tearDown(self):
+    # Name defined in unittest library. Cannot be change
+    def tearDown(self):  # pylint: disable=C0103
         """
         Remove all locks after testing.
 
@@ -168,7 +172,8 @@ class TestLocker(unittest.TestCase):
             pass
         test_name = "ytrss_path_test"
         tested_locker = Locker(test_name, directory)
-        self.assertEqual(os.path.join(directory, test_name), tested_locker.file_path)
+        self.assertEqual(os.path.join(directory, test_name),
+                         tested_locker.file_path)
         tested_locker.lock()
         self.assertTrue(os.path.isfile(os.path.join(directory, test_name)))
         tested_locker.unlock()

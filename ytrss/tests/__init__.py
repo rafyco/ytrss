@@ -32,7 +32,8 @@ import pep8
 import ytrss
 
 
-class TestYTRSSModule(unittest.TestCase):
+# This is tested class. Can have too many method
+class TestYTRSSModule(unittest.TestCase):  # pylint: disable=R0904
     """ Module testsCase. """
     def test_pap8(self):
         """ Test that we conform to PEP8. """

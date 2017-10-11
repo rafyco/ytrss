@@ -84,25 +84,37 @@ class Downloader(object):
         os.chdir(cache_path)
 
         logging.info("url: %s", self.url.url)
+        file_name = "{} - {}".format(self.url.author, self.url.title)
         try:
             command = ['--extract-audio', '--audio-format', 'mp3',
-                       '-o', "%(uploader)s - %(title)s.%(ext)s", self.url.url]
+                       '-o', "{}.mp3".format(file_name), self.url.url]
             youtube_dl.main(command)
         except SystemExit as ex:
             if ex.code is None:
                 status = 0
             else:
-                status = ex.code  # pylint: disable=R0204
+                status = ex.code  # pylint: disable=E0012,R0204
 
         finded = False
+        full_file_name = "{}.mp3".format(file_name)
+        if os.path.isfile(full_file_name):
+            source_path = os.path.join(cache_path, full_file_name)
+            destination_path = os.path.join(self.output_path,
+                                            self.url.destination,
+                                            full_file_name)
+            try:
+                os.mkdir(os.path.join(self.output_path,
+                                      self.url.destination))
+            except OSError:
+                pass
+            logging.debug("source_path: %s", source_path)
+            logging.debug("destination_path: %s", destination_path)
+            shutil.move(source_path, destination_path)
+            finded = True
+
         for find_file in os.listdir(cache_path):
             if find_file.endswith(".mp3"):
-                source_path = os.path.join(cache_path, find_file)
-                destination_path = os.path.join(self.output_path, find_file)
-                logging.debug("source_path: %s", source_path)
-                logging.debug("destination_path: %s", destination_path)
-                shutil.move(source_path, destination_path)
-                finded = True
+                print("Unknown file: {}".format(find_file))
 
         os.chdir(current_path)
         return status == 0 and finded

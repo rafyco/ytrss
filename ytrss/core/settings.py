@@ -80,6 +80,11 @@ class SettingException(Exception):
     pass
 
 
+class SettingsParseJSONError(Exception):
+    """ Settings parse JSON error. """
+    pass
+
+
 class YTSettings(object):
     """
     Parser settings for ytrss.
@@ -98,12 +103,11 @@ class YTSettings(object):
     @type err_file: str
     @ivar cache_path: path to cache folder
     @type cache_path: str
+    @ivar urls: list of subscription codes
+    @type urls: list
+    @ivar playlists: list of playlist codes
+    @type playlists: list
     """
-
-    urls = []
-    """ @cvar: list of subscription codes """
-    playlists = []
-    """ @cvar: list of playlist codes """
 
     def __init__(self, conf_file="", conf_str=""):
         """
@@ -132,7 +136,10 @@ class YTSettings(object):
 
         data = {}
         if conf_str is not "":
-            data = json.load(conf_str)
+            try:
+                data = json.load(conf_str)
+            except ValueError:
+                raise SettingsParseJSONError("Error parse exception")
         else:
             conf_find = self.__check_configuration_file(conf_file)
             logging.debug("Configuration file: %s", conf_find)
@@ -141,6 +148,17 @@ class YTSettings(object):
 
         if data is {}:
             raise SettingException
+
+        self.url_rss = None
+        self.download_file = None
+        self.url_backup = None
+        self.history_file = None
+        self.err_file = None
+        self.cache_path = None
+        self.output = None
+
+        self.urls = []
+        self.playlists = []
 
         self.__parse_data(data)
 
@@ -184,9 +202,9 @@ class YTSettings(object):
         result = "Youtube configuration:\n\n"
         result += "output-file: %s\n" % self.output
         for elem in self.urls:
-            result += "\turlfile: %s\n" % elem
+            result += "\turlfile: %s\n" % elem.code
         for elem in self.playlists:
-            result += "\tplaylist: %s\n" % elem
+            result += "\tplaylist: %s\n" % elem.code
         return result
 
     def __conf_file_path(self, file_name):
@@ -222,7 +240,8 @@ class YTSettings(object):
         conf_file_path = self.__conf_file_path("config")
         if os.path.isfile(conf_file_path):
             return conf_file_path
-        elif not(sys.platform.lower().startswith('win')) and os.path.isfile("/etc/subs_config"):
+        elif not(sys.platform.lower().startswith('win')
+                 ) and os.path.isfile("/etc/subs_config"):
             return "/etc/subs_config"
         else:
             raise SettingException("Cannot find configuration file.")
@@ -255,6 +274,6 @@ class YTSettings(object):
             if 'enabled' in elem and not elem['enabled']:
                 continue
             if link_type == 'playlist':
-                self.playlists.append(elem['code'])
+                self.playlists.append(elem)
             else:
-                self.urls.append(elem['code'])
+                self.urls.append(elem)

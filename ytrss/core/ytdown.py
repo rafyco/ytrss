@@ -25,7 +25,8 @@ Module to download list of YouTube movie ulrs from codes.
 from __future__ import unicode_literals
 import logging
 try:
-    from urllib.request import urlopen
+    # This library should be using by Python2
+    from urllib.request import urlopen  # pylint: disable=E0611,F0401
 except ImportError:
     from urllib import urlopen
 from xml.dom import minidom
@@ -37,12 +38,14 @@ class YTDown(object):
 
     @ivar code: Code for parsing source
     @type code: str
+    @ivar destination_dir: Name of directory where movie should be save
+    @ivar destination_dir: str
     @ivar link_type: type of parsing source.
         (I{user} for subscription or I{playlist} for playlist)
     @type link_type: str
     """
 
-    def __init__(self, code, link_type='user'):
+    def __init__(self, url, link_type='user'):
         """
         YTDown constructor.
 
@@ -54,7 +57,12 @@ class YTDown(object):
         @type link_type: str
         @raise AttributeError: lint_type is not user or playlist
         """
-        self.code = code
+        assert isinstance(url, dict)
+        self.code = url['code']
+        if 'destination_dir' in url:
+            self.destination_dir = url['destination_dir']
+        else:
+            self.destination_dir = "send"
         self.link_type = link_type
         if self.link_type != "user" and self.link_type != "playlist":
             raise AttributeError("link_type must be 'user' or 'playlist'")
@@ -71,7 +79,8 @@ class YTDown(object):
         patern = "channel_id"
         if self.link_type == 'playlist':
             patern = "playlist_id"
-        return "https://www.youtube.com/feeds/videos.xml?{}={}".format(patern, self.code)
+        return ("https://www.youtube.com/feeds/videos.xml?"
+                "{}={}".format(patern, self.code))
 
     @staticmethod
     def __youtube_list_from_address(address):
