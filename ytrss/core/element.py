@@ -77,42 +77,44 @@ class Element(object):
         self.__img_url = None
         self.__json_data = None
         self.destination_dir = destination_dir
-        if isinstance(intro, basestring):
-            if bool(re.search("^[A-Za-z0-9_\\-]{11}$", intro)):
-                self.__code = intro
-            elif bool(re.search("^http(s)?://(www.)?youtube.com/watch\\?v="
-                                "[A-Za-z0-9_\\-]{11}$", intro)):
-                m_result = re.match("http(s)?://(www.)?youtube.com/watch\\?v="
-                                    "(?P<code>[A-Za-z0-9_\\-]{11})", intro)
-                self.__code = m_result.group('code')
-            elif bool(re.search("^http(s)?://youtu.be/[A-Za-z0-9_\\-]"
-                                "{11}$", intro)):
-                m_result = re.match("http(s)?://youtu.be/(?P<code>"
-                                    "[A-Za-z0-9_\\-]{11})", intro)
-                self.__code = m_result.group('code')
-            elif bool(re.search("^{", intro)) and bool(re.search("}$", intro)):
-                try:
-                    tab = Element.__from_string(intro)
-                    self.__code = tab['code']
-                    try:
-                        self.destination = tab['destination']
-                    except KeyError:
-                        pass
-                except InvalidStringJSONParseError:
-                    raise InvalidParameterElementError("Problem with"
-                                                       "parsing json string")
-            else:
-                raise InvalidParameterElementError("Unknow string [{text}]"
-                                                   "".format(text=intro))
-        elif isinstance(intro, dict):
+        if isinstance(intro, dict):
             try:
                 self.__code = intro['code']
             except KeyError:
                 raise InvalidParameterElementError("Invalid dictionary "
                                                    "structure")
         else:
-            raise InvalidParameterElementError("Invalid adress: [{url}]"
-                                               "".format(url=intro))
+            try:
+                if bool(re.search("^[A-Za-z0-9_\\-]{11}$", intro)):
+                    self.__code = intro
+                elif bool(re.search("^http(s)?://(www.)?youtube.com/watch\\?v="
+                                    "[A-Za-z0-9_\\-]{11}$", intro)):
+                    m_result = re.match("http(s)?://(www.)?youtube.com/watch\\?"
+                                        "v=(?P<code>[A-Za-z0-9_\\-]{11})", intro)
+                    self.__code = m_result.group('code')
+                elif bool(re.search("^http(s)?://youtu.be/[A-Za-z0-9_\\-]"
+                                    "{11}$", intro)):
+                    m_result = re.match("http(s)?://youtu.be/(?P<code>"
+                                        "[A-Za-z0-9_\\-]{11})", intro)
+                    self.__code = m_result.group('code')
+                elif bool(re.search("^{", intro)) and bool(re.search("}$",
+                                                                     intro)):
+                    try:
+                        tab = Element.__from_string(intro)
+                        self.__code = tab['code']
+                        try:
+                            self.destination = tab['destination']
+                        except KeyError:
+                            pass
+                    except InvalidStringJSONParseError:
+                        raise InvalidParameterElementError("Problem with"
+                                                           "parsing json string")
+                else:
+                    raise InvalidParameterElementError("Unknow string [{text}]"
+                                                       "".format(text=intro))
+            except TypeError:
+                raise InvalidParameterElementError("Invalid adress type: [{}]"
+                                                   "".format(type(intro)))
 
     @property
     def code(self):
@@ -246,12 +248,13 @@ class Element(object):
         @return: C{True} if object equal, C{False} otherwise
         @rtype: bool
         """
-        if isinstance(other, basestring):
+        if isinstance(other, Element):
+            return self.__code == other.code
+        else:
             if other == "":
                 return False
             tmp_other = Element(other)
             return tmp_other == self
-        return self.__code == other.code
 
     def __str__(self):
         """
