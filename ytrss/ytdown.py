@@ -69,7 +69,7 @@ def download_all_movie(settings):
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
     """
     logging.info("download movie from urls")
-    locker = Locker('lock_ytdown')
+    locker = Locker('lock_ytdown2')
     try:
         locker.lock()
     except LockerError:

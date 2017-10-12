@@ -97,19 +97,30 @@ class Downloader(object):
 
         finded = False
         full_file_name = "{}.mp3".format(file_name)
+        metadate_name = "{}.json".format(file_name)
         if os.path.isfile(full_file_name):
             source_path = os.path.join(cache_path, full_file_name)
             destination_path = os.path.join(self.output_path,
-                                            self.url.destination,
+                                            self.url.destination_dir,
                                             full_file_name)
+            metadate_path = os.path.join(self.output_path,
+                                         self.url.destination_dir,
+                                         metadate_name)
+            try:
+                os.mkdir(self.output_path)
+            except OSError:
+                pass
             try:
                 os.mkdir(os.path.join(self.output_path,
-                                      self.url.destination))
+                                      self.url.destination_dir))
             except OSError:
                 pass
             logging.debug("source_path: %s", source_path)
             logging.debug("destination_path: %s", destination_path)
             shutil.move(source_path, destination_path)
+            file_handler = open(metadate_path, 'w')
+            file_handler.write(self.url.get_json_description())
+            file_handler.close()
             finded = True
 
         for find_file in os.listdir(cache_path):

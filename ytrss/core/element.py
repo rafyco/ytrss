@@ -31,6 +31,9 @@ except ImportError:
 import re
 import sys
 import json
+import time
+import datetime
+from email import utils
 import youtube_dl
 from ytrss.core.downloader import Downloader
 
@@ -90,7 +93,8 @@ class Element(object):
                 elif bool(re.search("^http(s)?://(www.)?youtube.com/watch\\?v="
                                     "[A-Za-z0-9_\\-]{11}$", intro)):
                     m_result = re.match("http(s)?://(www.)?youtube.com/watch\\?"
-                                        "v=(?P<code>[A-Za-z0-9_\\-]{11})", intro)
+                                        "v=(?P<code>[A-Za-z0-9_\\-]{11})"
+                                        "", intro)
                     self.__code = m_result.group('code')
                 elif bool(re.search("^http(s)?://youtu.be/[A-Za-z0-9_\\-]"
                                     "{11}$", intro)):
@@ -103,12 +107,13 @@ class Element(object):
                         tab = Element.__from_string(intro)
                         self.__code = tab['code']
                         try:
-                            self.destination = tab['destination']
+                            self.destination_dir = tab['destination']
                         except KeyError:
                             pass
                     except InvalidStringJSONParseError:
                         raise InvalidParameterElementError("Problem with"
-                                                           "parsing json string")
+                                                           "parsing "
+                                                           "json string")
                 else:
                     raise InvalidParameterElementError("Unknow string [{text}]"
                                                        "".format(text=intro))
@@ -255,6 +260,28 @@ class Element(object):
                 return False
             tmp_other = Element(other)
             return tmp_other == self
+
+    def get_json_description(self):
+        """
+        Retrun movie's description in JSON format
+
+        @return: movie's description
+        @rtype: str
+        """
+        now_day = datetime.datetime.now()
+        nowtuple = now_day.timetuple()
+        nowtimestamp = time.mktime(nowtuple)
+        formated_date = utils.formatdate(nowtimestamp)
+        result = {
+            'url': self.url,
+            'code': self.code,
+            'title': self.title,
+            'uploader': self.author,
+            'description': self.desc,
+            'image': self.img_url,
+            'data': formated_date
+        }
+        return json.dumps(result)
 
     def __str__(self):
         """
