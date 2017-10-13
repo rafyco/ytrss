@@ -105,10 +105,11 @@ Changelog
 ~~~
 
 0.2.0
+^^^^^
 
 -  Files download to specific directory
 -  Read data of downloaded movie
--  Generate RSS channle of downloaded movie
+-  Generate RSS channel for downloaded movie
 
 0.1
 ~~~
