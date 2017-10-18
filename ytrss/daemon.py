@@ -49,6 +49,7 @@ from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.subs import prepare_urls
 from ytrss.ytdown import download_all_movie
+from ytrss.rssgenerate import rss_generate
 
 
 def daemon_main():
@@ -62,8 +63,14 @@ def daemon_main():
                 prepare_urls(settings)
             except SystemExit:
                 pass
+            downloaded = 0
             try:
-                download_all_movie(settings)
+                downloaded = download_all_movie(settings)
+            except SystemExit:
+                pass
+            try:
+                if downloaded > 0:
+                    rss_generate(settings)
             except SystemExit:
                 pass
         except SettingException:

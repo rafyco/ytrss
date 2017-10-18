@@ -159,6 +159,7 @@ class YTSettings(object):
 
         self.urls = []
         self.playlists = []
+        self.__podcast = None
 
         self.__parse_data(data)
 
@@ -189,6 +190,9 @@ class YTSettings(object):
         self.history_file = self.__conf_file_path("download_yt_history.txt")
         self.err_file = self.__conf_file_path("download_yt.txt.err")
         self.cache_path = self.__conf_file_path("cache")
+
+        if 'podcasts' in data:
+            self.__podcast = data['podcasts']
 
     def __str__(self):
         """
@@ -277,3 +281,39 @@ class YTSettings(object):
                 self.playlists.append(elem)
             else:
                 self.urls.append(elem)
+
+    def get_podcast_information(self, folder_name):
+        """
+        Retrun podcast information from json files
+
+        @param self: object handle
+        @type self: L{YTSettings}
+        @param folder_name: name of rendering directory
+        @type folder_name: src
+        @return: data of rendering directory
+        @rtype: dict
+        """
+        if 'url_prefix' in self.__podcast:
+            url_prefix = self.__podcast['url_prefix']
+        else:
+            url_prefix = ""
+        result = {
+            "title": "unknown title",
+            "author": "Nobody",
+            "language": "pl-pl",
+            "link": "http://youtube.com",
+            "desc": "No description",
+            "url_prefix" : url_prefix,
+            "img": None
+        }
+
+        if folder_name not in self.__podcast:
+            return result
+
+        information = self.__podcast[folder_name]
+
+        for key in result.keys():
+            if key in information:
+                result[key] = information[key]
+
+        return result

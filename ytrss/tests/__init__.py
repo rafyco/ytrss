@@ -43,5 +43,9 @@ class TestYTRSSModule(unittest.TestCase):  # pylint: disable=R0904
         self.assertEqual(result.total_errors, 0,
                          "Found code style errors (and warnings).")
 
+    def test_doctest(self):
+        """ Documentation tests. """
+        pass
+        
 if __name__ == "__main__":
     unittest.main()

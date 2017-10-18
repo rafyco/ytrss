@@ -43,6 +43,7 @@ import logging
 from argparse import ArgumentParser
 from ytrss import get_version
 from ytrss.subs import prepare_urls
+from ytrss.rssgenerate import rss_generate
 from ytrss.core import UrlRememberer
 from ytrss.core import DownloadQueue
 from ytrss.core.settings import YTSettings
@@ -67,9 +68,12 @@ def download_all_movie(settings):
 
     @param settings: Settings handle
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @return: count of downloaded movies
+    @rtype: int
     """
     logging.info("download movie from urls")
-    locker = Locker('lock_ytdown2')
+    locker = Locker('lock_ytdown')
+    downloaded = 0
     try:
         locker.lock()
     except LockerError:
@@ -97,6 +101,7 @@ def download_all_movie(settings):
                 # finish ok
                 print("finish ok")
                 history_file.add_element(elem)
+                downloaded = downloaded + 1
             else:
                 # finish error
                 print("finish error")
@@ -117,6 +122,7 @@ def download_all_movie(settings):
         locker.unlock()
         print("Unexpected Error: {}".format(ex))
         raise ex
+    return downloaded
 
 
 def __option_args(argv=None):
@@ -147,6 +153,9 @@ def __option_args(argv=None):
     parser.add_argument("-d", "--download", action="store_true",
                         dest="download_run", default=False,
                         help="Download all movies to output path")
+    parser.add_argument("-g", "--generate-podcast", action="store_true",
+                        dest="generate_podcast", default=False,
+                        help="Generate Podcast files")
     parser.add_argument("urls", nargs='*', default=[], type=str,
                         help="Url to download.")
     try:
@@ -183,11 +192,15 @@ def main(argv=None):
     if options.daemon_run or options.download_run:
         prepare_urls(settings)
 
+    downloaded = 0
     if options.download_run:
-        download_all_movie(settings)
+        downloaded = download_all_movie(settings)
+
+    if downloaded > 0 or options.generate_podcast:
+        rss_generate(settings)
 
     if (len(options.urls) < 1 and not options.download_run and
-            not options.daemon_run):
+            not options.daemon_run and not options.generate_podcast):
         print("Require url to download")
         exit(1)
 

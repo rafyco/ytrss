@@ -19,18 +19,17 @@
 #                                                                         #
 ###########################################################################
 """
-Command line program to checking movie's URL in subscription.
+Command line program to generation Podcast in files.
 
-Program checking subscription and playlist from config and save it
-to downloading file. It's recomended to add this file to crontab or call
-it manually.
+Program to generate podcast in files. It require mp3 files and json files.
+That can be generate by ytrss program.
 
 Example usage
 =============
 
 To invoke program type in your console::
 
-    python -m ytrss.subs
+    python -m ytrss.rssgenerate
 
 for more option call program with flag C{--help}
 """
@@ -38,12 +37,14 @@ for more option call program with flag C{--help}
 from __future__ import unicode_literals
 from __future__ import print_function
 import logging
+import json
+import io
+import os
 from argparse import ArgumentParser
 from ytrss import get_version
-from ytrss.core import DownloadQueue
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
-from ytrss.core.url_finder import URLFinder
+from ytrss.core.podcast import Podcast
 try:
     import argcomplete
 except ImportError:
@@ -78,22 +79,34 @@ def __option_args(argv=None):
     return options
 
 
-def prepare_urls(settings):
+def rss_generate(settings):
     """
-    Prepare urls for downloader.
+    Generate podcast file.
 
     @param settings: Settings handle
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
     """
-    logging.info("Prepare new urls")
-    finder = URLFinder(settings)
-    elements = finder.get_elements()
-    queue = DownloadQueue(settings)
-    for element in elements:
-        if queue.queue_mp3(element):
-            print("Nowy element: {}".format(element.url))
-        else:
-            logging.info("Element istnieje: %s", element.url)
+    for dirname in os.listdir(settings.output):
+        podcast = Podcast(dirname, settings.get_podcast_information(dirname))
+        for filename in os.listdir(os.path.join(settings.output, dirname)):
+            if filename.endswith(".json"):
+                movie = filename[0:len(filename) - 5]
+                json_file = os.path.join(settings.output,
+                                         dirname,
+                                         movie + ".json")
+                mp3_file = os.path.join(settings.output,
+                                        dirname,
+                                        movie + ".mp3")
+                if os.path.isfile(json_file) and os.path.isfile(mp3_file):
+                    with open(json_file) as data_file:
+                        data = json.load(data_file)
+                    podcast.add_item(data=data,
+                                     filename=movie,
+                                     dirname=dirname)
+        podcast_file = os.path.join(settings.output, dirname, "podcast.xml")
+        file_handler = io.open(podcast_file, "w", encoding="utf-8")
+        file_handler.write(podcast.generate())
+        file_handler.close()
 
 
 def main(argv=None):
@@ -113,7 +126,7 @@ def main(argv=None):
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
-    prepare_urls(settings)
+    rss_generate(settings)
 
 
 if __name__ == "__main__":

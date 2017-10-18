@@ -62,7 +62,7 @@ class YTDown(object):
         if 'destination_dir' in url:
             self.destination_dir = url['destination_dir']
         else:
-            self.destination_dir = "send"
+            self.destination_dir = "other"
         self.link_type = link_type
         if self.link_type != "user" and self.link_type != "playlist":
             raise AttributeError("link_type must be 'user' or 'playlist'")
