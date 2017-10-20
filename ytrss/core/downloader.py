@@ -85,8 +85,10 @@ class Downloader(object):
 
         logging.info("url: %s", self.url.url)
         file_name = "{} - {}".format(self.url.author, self.url.title)
+        command = self.settings.args + ['-o',
+                                        "{}.mp3".format(file_name),
+                                        self.url.url]
         try:
-            command = ['-o', "{}.mp3".format(file_name), self.url.url]
             youtube_dl.main(command)
         except SystemExit as ex:
             if ex.code is None:

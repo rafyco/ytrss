@@ -81,7 +81,7 @@ class URLFinder(object):
             logging.debug("add playlist url: %s", url)
             self.tab.append(YTDown(url, link_type="playlist"))
         else:
-            logging.error("Unknown type of playlist: {}".format(type(url)))
+            logging.error("Unknown type of playlist: %s", type(url))
 
     def get_elements(self):
         """

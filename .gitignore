@@ -1,2 +1,6 @@
 *.pyc
 ytrss_docs
+build/
+dist/
+ytrss.egg-info
+.ropeproject/

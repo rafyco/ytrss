@@ -40,13 +40,6 @@ version = __import__('ytrss').get_version()
 
 data_files = []
 
-if not(sys.platform.lower().startswith('win')):
-    try:
-        data_files.append(('/etc/init.d', ['scripts/ytrss']))
-    except Exception:
-        print("Warning: Cannot install 'ytrss' service on your computer")
-        print("         Try install with root privileges")
-
 setup(
     name='ytrss',
     version=version,
@@ -73,7 +66,6 @@ setup(
         'daemonocle',
         'pep8'
     ],
-    data_files=data_files,
     entry_points={
         'console_scripts': [
             'ytdown = ytrss.ytdown:main',

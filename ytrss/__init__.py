@@ -44,9 +44,10 @@ information you can find L{here<ytrss.core.settings>}.
 
 YTRSS allow you to run a few command-line tool.
 
-    - L{ytrss_daemon<ytrss.daemon>}
-    - L{ytdown<ytrss.ytdown>}
-    - L{ytrss_subs<ytrss.subs>}
+    - L{ytrss.daemon}
+    - L{ytrss.ytdown}
+    - L{ytrss.subs}
+    - L{ytrss.rssgenerate}
 
 """
 
