@@ -97,9 +97,9 @@ class PodcastItem(object):
     This class prepare one movie description.
     """
 
-    def __init__(self, args, filename, name, url_prefix):
-        self.__args = args
-        self.__filename = filename
+    def __init__(self, movie, name, url_prefix):
+        self.__args = movie.data
+        self.__filename = movie.name
         self.__name = name
         self.__prefix = url_prefix
 
@@ -179,21 +179,27 @@ class Podcast(object):
         self.__filename = filename
         self.__items = []
 
-    def add_item(self, data, filename, dirname):
+    @property
+    def limit(self):
+        """
+        Limit of displayed files.
+        """
+        if 'limit' not in self.__data:
+            return 100
+        return self.__data['limit']
+
+    def add_item(self, movie, dirname):
         """
         Add item to podcast source.
 
         @param self: object handle
         @type self: L{Podcast}
-        @param data: dictionary with information about item
-        @type data: dict
-        @param filename: name of movie file
-        @type filename: str
+        @param movie: movie's file
+        @type movie: L{Movie<ytrss.core.movie.Movie>}
         @param dirname: name of directory
         @type dirname: str
         """
-        self.__items.append(PodcastItem(data,
-                                        filename,
+        self.__items.append(PodcastItem(movie,
                                         dirname,
                                         url_prefix=self.__data['url_prefix']))
 

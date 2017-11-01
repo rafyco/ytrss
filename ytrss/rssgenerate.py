@@ -37,7 +37,6 @@ for more option call program with flag C{--help}
 from __future__ import unicode_literals
 from __future__ import print_function
 import logging
-import json
 import io
 import os
 from argparse import ArgumentParser
@@ -45,6 +44,8 @@ from ytrss import get_version
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.core.podcast import Podcast
+from ytrss.core.movie import Movie
+from ytrss.core.movie import MovieFileError
 try:
     import argcomplete
 except ImportError:
@@ -79,6 +80,30 @@ def __option_args(argv=None):
     return options
 
 
+def list_elements_in_dir(dirname, settings, limit=100):
+    """
+    Return list of movie in directory.
+
+    @param dirname: name of directory
+    @type dirname: str
+    @param settings: Settings handle
+    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @param limit: max number of file in directory
+    @type limit: num
+    @return: list of movie in directory
+    @rtype: list
+    """
+    result = []
+    for filename in os.listdir(os.path.join(settings.output, dirname)):
+        if filename.endswith(".json") and limit > 0:
+            try:
+                movie = Movie(settings, dirname, filename[0:len(filename) - 5])
+                result.append(movie)
+            except MovieFileError:
+                pass
+    return result
+
+
 def rss_generate(settings):
     """
     Generate podcast file.
@@ -87,22 +112,12 @@ def rss_generate(settings):
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
     """
     for dirname in os.listdir(settings.output):
+        print("Generate Podcast: {}".format(dirname))
         podcast = Podcast(dirname, settings.get_podcast_information(dirname))
-        for filename in os.listdir(os.path.join(settings.output, dirname)):
-            if filename.endswith(".json"):
-                movie = filename[0:len(filename) - 5]
-                json_file = os.path.join(settings.output,
-                                         dirname,
-                                         movie + ".json")
-                mp3_file = os.path.join(settings.output,
-                                        dirname,
-                                        movie + ".mp3")
-                if os.path.isfile(json_file) and os.path.isfile(mp3_file):
-                    with open(json_file) as data_file:
-                        data = json.load(data_file)
-                    podcast.add_item(data=data,
-                                     filename=movie,
-                                     dirname=dirname)
+        for movie in list_elements_in_dir(dirname, settings, podcast.limit):
+            print("add item: {}".format(movie.name))
+            podcast.add_item(movie=movie,
+                             dirname=dirname)
         podcast_file = os.path.join(settings.output, dirname, "podcast.xml")
         file_handler = io.open(podcast_file, "w", encoding="utf-8")
         file_handler.write(podcast.generate())

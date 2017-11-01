@@ -91,7 +91,7 @@ def prepare_urls(settings):
     queue = DownloadQueue(settings)
     for element in elements:
         if queue.queue_mp3(element):
-            print("Nowy element: {}".format(element.url))
+            print("Nowy element: {} [{}]".format(element.title, element.code))
         else:
             logging.info("Element istnieje: %s", element.url)
 
