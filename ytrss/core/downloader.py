@@ -85,9 +85,8 @@ class Downloader(object):
         os.chdir(cache_path)
 
         logging.info("url: %s", self.url.url)
-        file_name = "{} - {}".format(self.url.author, self.url.title)
         command = self.settings.args + ['-o',
-                                        "{}.mp3".format(file_name),
+                                        "{}.mp3".format(self.url.code),
                                         self.url.url]
         try:
             youtube_dl.main(command)
@@ -98,8 +97,8 @@ class Downloader(object):
                 status = ex.code  # pylint: disable=E0012,R0204
 
         finded = False
-        full_file_name = "{}.mp3".format(file_name)
-        metadate_name = "{}.json".format(file_name)
+        full_file_name = "{}.mp3".format(self.url.code)
+        metadate_name = "{}.json".format(self.url.code)
         if os.path.isfile(full_file_name):
             source_path = os.path.join(cache_path, full_file_name)
             destination_path = os.path.join(self.output_path,

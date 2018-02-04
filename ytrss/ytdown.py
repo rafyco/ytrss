@@ -194,7 +194,10 @@ def main(argv=None):
 
     downloaded = 0
     if options.download_run:
-        downloaded = download_all_movie(settings)
+        try:
+            downloaded = download_all_movie(settings)
+        except Exception:  # pylint: disable=W0703
+            rss_generate(settings)
 
     if downloaded > 0 or options.generate_podcast:
         rss_generate(settings)
