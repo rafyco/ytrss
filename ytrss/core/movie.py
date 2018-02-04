@@ -76,11 +76,6 @@ class Movie(object):
     def json(self):
         """
         Return path to json file.
-
-        @param self: object handle
-        @type self: L{Movie<ytrss.core.movie.Movie>}
-        @return path to json file
-        @rtype: str
         """
         return os.path.join(self.__settings.output,
                             self.dirname,
@@ -90,11 +85,6 @@ class Movie(object):
     def mp3(self):
         """
         Return path to mp3 file.
-
-        @param self: object handle
-        @type self: L{Movie<ytrss.core.movie.Movie>}
-        @return path to mp3 file
-        @rtype: str
         """
         return os.path.join(self.__settings.output,
                             self.dirname,
@@ -104,11 +94,6 @@ class Movie(object):
     def data(self):
         """
         Return data array.
-
-        @param self: object handle
-        @type self: L{Movie<ytrss.core.movie.Movie>}
-        @return data array
-        @rtype: list
         """
         if self.__data is None:
             with open(self.json) as data_file:

@@ -39,7 +39,7 @@ class YTDown(object):
     @ivar code: Code for parsing source
     @type code: str
     @ivar destination_dir: Name of directory where movie should be save
-    @ivar destination_dir: str
+    @type destination_dir: str
     @ivar link_type: type of parsing source.
         (I{user} for subscription or I{playlist} for playlist)
     @type link_type: str
@@ -51,8 +51,8 @@ class YTDown(object):
 
         @param self: object handle
         @type self: L{YTDown}
-        @param code: code for parsing source
-        @type code: str
+        @param url: parameter for youtube movie
+        @type url: dict
         @param link_type: type of source [user|playlist]
         @type link_type: str
         @raise AttributeError: lint_type is not user or playlist

@@ -173,7 +173,7 @@ class Podcast(object):
         @type filename: str
         @param args: Dictionary of args described
             L{here<ytrss.core.podcast.Podcast>}
-        @para args: dict
+        @type args: dict
         """
         self.__data = args
         self.__filename = filename
