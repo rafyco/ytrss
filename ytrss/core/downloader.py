@@ -25,10 +25,12 @@ Download mp3 file from YouTube using I{youtube_dl} library.
 """
 
 from __future__ import unicode_literals
+from __future__ import print_function
 import os
 import shutil
 import logging
 import youtube_dl
+import ytrss
 
 
 class Downloader(object):
@@ -55,8 +57,9 @@ class Downloader(object):
         @param settings: settings handler
         @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
         @param url: URL to YouTube movie
-        @type url: str
+        @type url: L{Element<ytrss.core.element.Element>}
         """
+        assert isinstance(url, ytrss.core.element.Element)
         self.settings = settings
         self.url = url
         self.output_path = settings.output
@@ -81,26 +84,49 @@ class Downloader(object):
         current_path = os.getcwd()
         os.chdir(cache_path)
 
-        logging.info("url: %s", self.url)
+        logging.info("url: %s", self.url.url)
+        command = self.settings.args + ['-o',
+                                        "{}.mp3".format(self.url.code),
+                                        self.url.url]
         try:
-            command = ['--extract-audio', '--audio-format', 'mp3',
-                       '-o', "%(uploader)s - %(title)s.%(ext)s", self.url]
             youtube_dl.main(command)
         except SystemExit as ex:
             if ex.code is None:
                 status = 0
             else:
-                status = ex.code
+                status = ex.code  # pylint: disable=E0012,R0204
 
         finded = False
+        full_file_name = "{}.mp3".format(self.url.code)
+        metadate_name = "{}.json".format(self.url.code)
+        if os.path.isfile(full_file_name):
+            source_path = os.path.join(cache_path, full_file_name)
+            destination_path = os.path.join(self.output_path,
+                                            self.url.destination_dir,
+                                            full_file_name)
+            metadate_path = os.path.join(self.output_path,
+                                         self.url.destination_dir,
+                                         metadate_name)
+            try:
+                os.mkdir(self.output_path)
+            except OSError:
+                pass
+            try:
+                os.mkdir(os.path.join(self.output_path,
+                                      self.url.destination_dir))
+            except OSError:
+                pass
+            logging.debug("source_path: %s", source_path)
+            logging.debug("destination_path: %s", destination_path)
+            shutil.move(source_path, destination_path)
+            file_handler = open(metadate_path, 'w')
+            file_handler.write(self.url.get_json_description())
+            file_handler.close()
+            finded = True
+
         for find_file in os.listdir(cache_path):
             if find_file.endswith(".mp3"):
-                source_path = os.path.join(cache_path, find_file)
-                destination_path = os.path.join(self.output_path, find_file)
-                logging.debug("source_path: %s", source_path)
-                logging.debug("destination_path: %s", destination_path)
-                shutil.move(source_path, destination_path)
-                finded = True
+                print("Unknown file: {}".format(find_file))
 
         os.chdir(current_path)
         return status == 0 and finded

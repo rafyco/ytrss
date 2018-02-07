@@ -32,29 +32,53 @@ from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
 
 
-class TestLocker(unittest.TestCase):
+# This is tested class. Can have too many method
+class TestLocker(unittest.TestCase):  # pylint: disable=R0904
     """
     Locker tests.
 
     Testing for L{ytrss.core.locker} module
     """
-    def setUp(self):
-        """ Prepare container for tests. """
+
+    # Name defined in unittest library. Cannot be change
+    def setUp(self):  # pylint: disable=C0103
+        """
+        Prepare container for tests.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        """
         self.lockers = []
 
-    def tearDown(self):
-        """ Remove all locks after testing. """
+    # Name defined in unittest library. Cannot be change
+    def tearDown(self):  # pylint: disable=C0103
+        """
+        Remove all locks after testing.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        """
         for lock in self.lockers:
             cleaned_locker = Locker(lock)
             cleaned_locker.unlock()
 
     def prepare_locker(self, text):
-        """ Prepare locker object for testing. """
+        """
+        Prepare locker object for testing.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        """
         self.lockers.append(text)
         return Locker(text)
 
     def test_usage(self):
-        """ Testing usage of module. """
+        """
+        Testing usage of module.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        """
         tested_locker = self.prepare_locker("ytrss_module_test")
 
         self.assertFalse(tested_locker.is_lock())
@@ -64,7 +88,12 @@ class TestLocker(unittest.TestCase):
         self.assertFalse(tested_locker.is_lock())
 
     def test_double_lock(self):
-        """ Testing is double lock raise an error. """
+        """
+        Testing is double lock raise an error.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        """
         tested_locker = self.prepare_locker("ytrss_double_test")
 
         tested_locker.lock()
@@ -73,7 +102,12 @@ class TestLocker(unittest.TestCase):
         tested_locker.unlock()
 
     def test_double_unlock(self):
-        """ Locker should not raise an exception in case of double unlock. """
+        """
+        Locker should not raise an exception in case of double unlock.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        """
         tested_locker = self.prepare_locker("ytrss_double_unlock_test")
         self.assertFalse(tested_locker.is_lock())
         tested_locker.lock()
@@ -84,7 +118,12 @@ class TestLocker(unittest.TestCase):
         self.assertFalse(tested_locker.is_lock())
 
     def test_separation(self):
-        """ Testing if locker with different identify are not block each other. """
+        """
+        Testing if locker with different identify are not block each other.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        """
         tested_locker_1 = self.prepare_locker("ytrss_separation_1_test")
         tested_locker_2 = self.prepare_locker("ytrss_separation_2_test")
 
@@ -96,7 +135,12 @@ class TestLocker(unittest.TestCase):
         self.assertFalse(tested_locker_2.is_lock())
 
     def test_duplicate_instance(self):
-        """ Testing if locker with identical identify can block each other. """
+        """
+        Testing if locker with identical identify can block each other.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        """
         tested_locker_1 = self.prepare_locker("ytrss_duplicate_test")
         tested_locker_2 = self.prepare_locker("ytrss_duplicate_test")
         self.assertNotEqual(tested_locker_1, tested_locker_2)
@@ -115,7 +159,12 @@ class TestLocker(unittest.TestCase):
         self.assertFalse(tested_locker_2.is_lock())
 
     def test_path_locker(self):
-        """ Testing if locker can be hosted in specific direcotry. """
+        """
+        Testing if locker can be hosted in specific direcotry.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        """
         directory = os.path.join(tempfile.gettempdir(), "ytrss_test_path")
         try:
             os.makedirs(directory)
@@ -123,7 +172,8 @@ class TestLocker(unittest.TestCase):
             pass
         test_name = "ytrss_path_test"
         tested_locker = Locker(test_name, directory)
-        self.assertEqual(os.path.join(directory, test_name), tested_locker.file_path)
+        self.assertEqual(os.path.join(directory, test_name),
+                         tested_locker.file_path)
         tested_locker.lock()
         self.assertTrue(os.path.isfile(os.path.join(directory, test_name)))
         tested_locker.unlock()
@@ -134,6 +184,9 @@ class TestLocker(unittest.TestCase):
         """
         Testing if locker with directory not blocking another
         locker with the same idefify.
+
+        @param self: object handle
+        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
         """
         directory = os.path.join(tempfile.gettempdir(), "ytrss_test_path")
         try:

@@ -57,6 +57,7 @@ class Locker(object):
         be invoke.
 
     @ivar file_path: program's blocking file
+    @type file_path: str
     """
     def __init__(self, identify, direcotry=None):
         """

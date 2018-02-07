@@ -43,6 +43,11 @@ Configuration file is in a json format with following option:
     - I{subscription} - List of subscription.
         For more see: L{parsing function
         <ytrss.core.settings.YTSettings.__parse_subsctiptions>}
+    - I{arguments} - (optional) List of argument for C{youtube_dl} script
+    - I{podcasts} - (optional) Dictionary of directory settings
+        where key is dir name.
+        For more see: L{rss generator
+        <ytrss.core.settings.YTSettings.get_podcast_information>}
 
 Example file
 ============
@@ -80,12 +85,19 @@ class SettingException(Exception):
     pass
 
 
+class SettingsParseJSONError(Exception):
+    """ Settings parse JSON error. """
+    pass
+
+
 class YTSettings(object):
     """
     Parser settings for ytrss.
 
     Class read settings from parameters or from default conf file.
 
+    @ivar output: destination path
+    @type output: str
     @ivar url_rss: file with list of read urls
     @type url_rss: str
     @ivar download_file: file ready to download
@@ -98,12 +110,13 @@ class YTSettings(object):
     @type err_file: str
     @ivar cache_path: path to cache folder
     @type cache_path: str
+    @ivar args: argument for C{youtube_dl}
+    @type args: list
+    @ivar urls: list of subscription codes
+    @type urls: list
+    @ivar playlists: list of playlist codes
+    @type playlists: list
     """
-
-    urls = []
-    """ @cvar: list of subscription codes """
-    playlists = []
-    """ @cvar: list of playlist codes """
 
     def __init__(self, conf_file="", conf_str=""):
         """
@@ -131,16 +144,32 @@ class YTSettings(object):
             pass
 
         data = {}
-        if conf_str is not "":
-            data = json.load(conf_str)
+        if conf_str != "":
+            try:
+                data = json.load(conf_str)
+            except ValueError:
+                raise SettingsParseJSONError("Error parse exception")
         else:
             conf_find = self.__check_configuration_file(conf_file)
             logging.debug("Configuration file: %s", conf_find)
             with open(conf_find) as data_file:
                 data = json.load(data_file)
 
-        if data is {}:
+        if data == {}:
             raise SettingException
+
+        self.url_rss = None
+        self.download_file = None
+        self.url_backup = None
+        self.history_file = None
+        self.err_file = None
+        self.cache_path = None
+        self.output = None
+        self.args = None
+
+        self.urls = []
+        self.playlists = []
+        self.__podcast = None
 
         self.__parse_data(data)
 
@@ -163,6 +192,14 @@ class YTSettings(object):
             except OSError:
                 pass
 
+        if 'arguments' in data:
+            if isinstance(data['arguments'], list):
+                self.args = data['arguments']
+            else:
+                self.args = [data['arguments']]
+        else:
+            self.args = []
+
         self.__parse_subsctiptions(data['subscriptions'])
 
         self.url_rss = self.__conf_file_path("rss_remember.txt")
@@ -171,6 +208,9 @@ class YTSettings(object):
         self.history_file = self.__conf_file_path("download_yt_history.txt")
         self.err_file = self.__conf_file_path("download_yt.txt.err")
         self.cache_path = self.__conf_file_path("cache")
+
+        if 'podcasts' in data:
+            self.__podcast = data['podcasts']
 
     def __str__(self):
         """
@@ -184,9 +224,9 @@ class YTSettings(object):
         result = "Youtube configuration:\n\n"
         result += "output-file: %s\n" % self.output
         for elem in self.urls:
-            result += "\turlfile: %s\n" % elem
+            result += "\turlfile: %s\n" % elem.code
         for elem in self.playlists:
-            result += "\tplaylist: %s\n" % elem
+            result += "\tplaylist: %s\n" % elem.code
         return result
 
     def __conf_file_path(self, file_name):
@@ -222,7 +262,8 @@ class YTSettings(object):
         conf_file_path = self.__conf_file_path("config")
         if os.path.isfile(conf_file_path):
             return conf_file_path
-        elif not(sys.platform.lower().startswith('win')) and os.path.isfile("/etc/subs_config"):
+        elif (not sys.platform.lower().startswith('win') and
+              os.path.isfile("/etc/subs_config")):
             return "/etc/subs_config"
         else:
             raise SettingException("Cannot find configuration file.")
@@ -231,13 +272,16 @@ class YTSettings(object):
         """
         Save parsing information about subscriptions and playlists.
 
-        Information is a list of dict with following fileds.
+        Information is a list of dict with following fileds:
 
             - I{type [ url | playlist ]} - type of subscription code. C{url}
                 for usual subscription, C{playlist} for playlists.
                 (C{url} is default)
             - I{code} - identificator to source of movies. It can be extracted
                 from url.
+            - I{destination_dir} - name of direcotry where podcast should be
+                placed in I{output} directory.
+                (C{other} is default)
             - I{enabled} - Is element should be downloaded.
                 (C{True} is default)
 
@@ -255,6 +299,59 @@ class YTSettings(object):
             if 'enabled' in elem and not elem['enabled']:
                 continue
             if link_type == 'playlist':
-                self.playlists.append(elem['code'])
+                self.playlists.append(elem)
             else:
-                self.urls.append(elem['code'])
+                self.urls.append(elem)
+
+    def get_podcast_information(self, folder_name):
+        """
+        Retrun podcast information from json files
+
+        Information is dictionary of objects with following fields:
+
+            - I{title} - Name of podcast
+                (C{"unknown title"} is default)
+            - I{author} - Name of podcast author
+                (C{"Nobody"} is default)
+            - I{language} - Language of podcast
+                (C{"pl-pl"} is default)
+            - I{link} - Link to website
+                (C{"http://youtube.com"} is default)
+            - I{desc} - Description of source
+                (C{"No description"} is default)
+            - I{url_prefix} - Prefix for movie's url
+                (C{""} is default)
+            - I{img} - Image of movie
+                (C{None} is default)
+
+        @param self: object handle
+        @type self: L{YTSettings}
+        @param folder_name: name of rendering directory
+        @type folder_name: src
+        @return: data of rendering directory
+        @rtype: dict
+        """
+        if 'url_prefix' in self.__podcast:
+            url_prefix = self.__podcast['url_prefix']
+        else:
+            url_prefix = ""
+        result = {
+            "title": "unknown title",
+            "author": "Nobody",
+            "language": "pl-pl",
+            "link": "http://youtube.com",
+            "desc": "No description",
+            "url_prefix": url_prefix,
+            "img": None
+        }
+
+        if folder_name not in self.__podcast:
+            return result
+
+        information = self.__podcast[folder_name]
+
+        for key in result:
+            if key in information:
+                result[key] = information[key]
+
+        return result

@@ -40,7 +40,88 @@ for more option call program with flag C{--help}
 
 from __future__ import unicode_literals
 from __future__ import print_function
-from ytrss.ytdown import daemon
+import logging
+import time
+import sys
+from daemonocle import Daemon
+from daemonocle.exceptions import DaemonError
+from ytrss.core.settings import YTSettings
+from ytrss.core.settings import SettingException
+from ytrss.subs import prepare_urls
+from ytrss.ytdown import download_all_movie
+from ytrss.rssgenerate import rss_generate
+
+
+def daemon_main():
+    """
+    Daemon main function.
+    """
+    while True:
+        try:
+            settings = YTSettings()
+            try:
+                prepare_urls(settings)
+            except SystemExit:
+                pass
+            downloaded = 0
+            try:
+                downloaded = download_all_movie(settings)
+            except SystemExit:
+                pass
+            try:
+                if downloaded > 0:
+                    rss_generate(settings)
+            except SystemExit:
+                pass
+        except SettingException:
+            logging.error("Configuration file not exist.")
+        # This deamon, should ignore all exception and not stop script here
+        except Exception as ex:  # pylint: disable=W0703
+            logging.error("Unknown error: %s", ex)
+        # Wait 10 min.
+        time.sleep(60 * 10)
+
+
+def daemon_error_print():
+    """
+    Print error message in case of invalid argument.
+    """
+    print("[info] Usage: /etc/init.d/ytrss {start|stop|restart|status}")
+
+
+def daemon(argv=None):
+    """
+    Daemon script function.
+
+    This script turn on daemon.
+
+    @param argv: Option parameters
+    @type argv: list
+    """
+
+    daemon_tmp = Daemon(worker=daemon_main,
+                        pidfile='/var/run/daemonocle_example.pid')
+    if argv is None:
+        argv = sys.argv
+    logging.basicConfig(
+        filename='/var/log/ytrss_daemon.log',
+        level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s',
+    )
+    if len(argv) != 2:
+        daemon_error_print()
+        exit(1)
+    try:
+        if argv[1] == "start":
+            try:
+                YTSettings()
+            except SettingException:
+                print("Configuration file not exist.")
+                exit(1)
+        daemon_tmp.do_action(argv[1])
+        sys.exit(0)
+    except (DaemonError, IndexError):
+        daemon_error_print()
+        sys.exit(1)
 
 if __name__ == "__main__":
     daemon()

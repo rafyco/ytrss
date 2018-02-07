@@ -19,18 +19,17 @@
 #                                                                         #
 ###########################################################################
 """
-Command line program to checking movie's URL in subscription.
+Command line program to generation Podcast in files.
 
-Program checking subscription and playlist from config and save it
-to downloading file. It's recomended to add this file to crontab or call
-it manually.
+Program to generate podcast in files. It require mp3 files and json files.
+That can be generate by ytrss program.
 
 Example usage
 =============
 
 To invoke program type in your console::
 
-    python -m ytrss.subs
+    python -m ytrss.rssgenerate
 
 for more option call program with flag C{--help}
 """
@@ -38,12 +37,15 @@ for more option call program with flag C{--help}
 from __future__ import unicode_literals
 from __future__ import print_function
 import logging
+import io
+import os
 from argparse import ArgumentParser
 from ytrss import get_version
-from ytrss.core import DownloadQueue
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
-from ytrss.core.url_finder import URLFinder
+from ytrss.core.podcast import Podcast
+from ytrss.core.movie import Movie
+from ytrss.core.movie import MovieFileError
 try:
     import argcomplete
 except ImportError:
@@ -78,22 +80,46 @@ def __option_args(argv=None):
     return options
 
 
-def prepare_urls(settings):
+def list_elements_in_dir(dirname, settings):
     """
-    Prepare urls for downloader.
+    Return list of movie in directory.
+
+    @param dirname: name of directory
+    @type dirname: str
+    @param settings: Settings handle
+    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @return: list of movie in directory
+    @rtype: list
+    """
+    result = []
+    for filename in os.listdir(os.path.join(settings.output, dirname)):
+        if filename.endswith(".json"):
+            try:
+                movie = Movie(settings, dirname, filename[0:len(filename) - 5])
+                result.append(movie)
+            except MovieFileError:
+                pass
+    return result
+
+
+def rss_generate(settings):
+    """
+    Generate podcast file.
 
     @param settings: Settings handle
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
     """
-    logging.info("Prepare new urls")
-    finder = URLFinder(settings)
-    elements = finder.get_elements()
-    queue = DownloadQueue(settings)
-    for element in elements:
-        if queue.queue_mp3(element):
-            print("Nowy element: {} [{}]".format(element.title, element.code))
-        else:
-            logging.info("Element istnieje: %s", element.url)
+    for dirname in os.listdir(settings.output):
+        print("Generate Podcast: {}".format(dirname))
+        podcast = Podcast(dirname, settings.get_podcast_information(dirname))
+        for movie in list_elements_in_dir(dirname, settings):
+            print("add item: {}".format(movie.name))
+            podcast.add_item(movie=movie,
+                             dirname=dirname)
+        podcast_file = os.path.join(settings.output, dirname, "podcast.xml")
+        file_handler = io.open(podcast_file, "w", encoding="utf-8")
+        file_handler.write(podcast.generate())
+        file_handler.close()
 
 
 def main(argv=None):
@@ -113,7 +139,7 @@ def main(argv=None):
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
-    prepare_urls(settings)
+    rss_generate(settings)
 
 
 if __name__ == "__main__":

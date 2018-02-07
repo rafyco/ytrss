@@ -39,23 +39,27 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import os
 import sys
-import time
 import logging
 from argparse import ArgumentParser
 from ytrss import get_version
 from ytrss.subs import prepare_urls
+from ytrss.rssgenerate import rss_generate
+from ytrss.outdated import rss_delete_outdated
 from ytrss.core import UrlRememberer
 from ytrss.core import DownloadQueue
-from ytrss.core.downloader import Downloader
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
+from ytrss.core.settings import SettingsParseJSONError
 from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
-from daemonocle import Daemon
-from daemonocle.exceptions import DaemonError
 try:
     import argcomplete
 except ImportError:
+    pass
+
+
+class URLError(Exception):
+    """ Problem with URL """
     pass
 
 
@@ -65,9 +69,12 @@ def download_all_movie(settings):
 
     @param settings: Settings handle
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @return: count of downloaded movies
+    @rtype: int
     """
     logging.info("download movie from urls")
     locker = Locker('lock_ytdown')
+    downloaded = 0
     try:
         locker.lock()
     except LockerError:
@@ -76,8 +83,8 @@ def download_all_movie(settings):
     try:
         if not os.path.isfile(
                 settings.download_file) and not os.path.isfile(
-                settings.url_backup):
-            raise DaemonError
+                    settings.url_backup):
+            raise URLError
         urls = UrlRememberer(settings.download_file)
         urls.read_backup(settings.url_backup)
         urls.delete_file()
@@ -90,11 +97,12 @@ def download_all_movie(settings):
             if not history_file.is_new(elem):
                 print("URL {} cannot again download".format(elem))
                 continue
-            task = Downloader(settings, elem)
-            if task.download():
+
+            if elem.download(settings):
                 # finish ok
                 print("finish ok")
                 history_file.add_element(elem)
+                downloaded = downloaded + 1
             else:
                 # finish error
                 print("finish error")
@@ -107,7 +115,7 @@ def download_all_movie(settings):
         locker.unlock()
         print("Keyboard Interrupt by user.")
         sys.exit(1)
-    except DaemonError:
+    except URLError:
         locker.unlock()
         logging.debug("Cannot find url to download")
         sys.exit()
@@ -115,6 +123,7 @@ def download_all_movie(settings):
         locker.unlock()
         print("Unexpected Error: {}".format(ex))
         raise ex
+    return downloaded
 
 
 def __option_args(argv=None):
@@ -145,6 +154,12 @@ def __option_args(argv=None):
     parser.add_argument("-d", "--download", action="store_true",
                         dest="download_run", default=False,
                         help="Download all movies to output path")
+    parser.add_argument("-x", "--delete-outdate", action="store_true",
+                        dest="outdated", default=False,
+                        help="delete old files")
+    parser.add_argument("-g", "--generate-podcast", action="store_true",
+                        dest="generate_podcast", default=False,
+                        help="Generate Podcast files")
     parser.add_argument("urls", nargs='*', default=[], type=str,
                         help="Url to download.")
     try:
@@ -152,6 +167,31 @@ def __option_args(argv=None):
     except NameError:
         pass
     return parser.parse_args(argv)
+
+
+def main_work(settings, options):
+    """
+    Make all jobs for ytdown program.
+
+    @param settings: Settings handle
+    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @param option: option handle
+    @type option: unknown
+    """
+    downloaded = 0
+    force_rss = False
+    if options.download_run:
+        try:
+            downloaded = download_all_movie(settings)
+        except Exception:  # pylint: disable=W0703
+            force_rss = True
+
+    if force_rss or downloaded > 0 or options.outdated:
+        if rss_delete_outdated(settings) > 0:
+            force_rss = True
+
+    if force_rss or downloaded > 0 or options.generate_podcast:
+        rss_generate(settings)
 
 
 def main(argv=None):
@@ -170,6 +210,9 @@ def main(argv=None):
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
+    except SettingsParseJSONError:
+        print("Problem with JSON file.")
+        exit(2)
 
     if options.show_config:
         print(settings)
@@ -178,11 +221,11 @@ def main(argv=None):
     if options.daemon_run or options.download_run:
         prepare_urls(settings)
 
-    if options.download_run:
-        download_all_movie(settings)
+    main_work(settings, options)
 
     if (len(options.urls) < 1 and not options.download_run and
-            not options.daemon_run):
+            not options.daemon_run and not options.generate_podcast and
+            not options.outdated):
         print("Require url to download")
         exit(1)
 
@@ -192,71 +235,6 @@ def main(argv=None):
             print("Filmik zostanie pobrany: {}".format(url))
         else:
             print("Filmik nie zostanie pobrany: {}".format(url))
-
-
-def daemon_main():
-    """
-    Daemon main function.
-    """
-    while True:
-        try:
-            settings = YTSettings()
-            try:
-                prepare_urls(settings)
-            except SystemExit:
-                pass
-            try:
-                download_all_movie(settings)
-            except SystemExit:
-                pass
-        except SettingException:
-            logging.error("Configuration file not exist.")
-        except Exception as ex:
-            logging.error("Unknown error: {}".format(ex))
-        # Wait 10 min.
-        time.sleep(60 * 10)
-
-
-def daemon_error_print():
-    """
-    Print error message in case of invalid argument.
-    """
-    print("[info] Usage: /etc/init.d/ytrss {start|stop|restart|status}")
-
-
-def daemon(argv=None):
-    """
-    Daemon script function.
-
-    This script turn on daemon.
-
-    @param argv: Option parameters
-    @type argv: list
-    """
-    daemon = Daemon(worker=daemon_main,
-                    pidfile='/var/run/daemonocle_example.pid'
-                    )
-    if argv is None:
-        argv = sys.argv
-    logging.basicConfig(
-        filename='/var/log/ytrss_daemon.log',
-        level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s',
-    )
-    if len(argv) != 2:
-        daemon_error_print()
-        exit(1)
-    try:
-        if argv[1] == "start":
-            try:
-                YTSettings()
-            except SettingException:
-                print("Configuration file not exist.")
-                exit(1)
-        daemon.do_action(argv[1])
-        sys.exit(0)
-    except (DaemonError, IndexError):
-        daemon_error_print()
-        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -19,18 +19,17 @@
 #                                                                         #
 ###########################################################################
 """
-Command line program to checking movie's URL in subscription.
+Command line program to generation Podcast in files.
 
-Program checking subscription and playlist from config and save it
-to downloading file. It's recomended to add this file to crontab or call
-it manually.
+Program to generate podcast in files. It require mp3 files and json files.
+That can be generate by ytrss program.
 
 Example usage
 =============
 
 To invoke program type in your console::
 
-    python -m ytrss.subs
+    python -m ytrss.rssgenerate
 
 for more option call program with flag C{--help}
 """
@@ -38,12 +37,14 @@ for more option call program with flag C{--help}
 from __future__ import unicode_literals
 from __future__ import print_function
 import logging
+import os
+from datetime import datetime
+from datetime import timedelta
 from argparse import ArgumentParser
 from ytrss import get_version
-from ytrss.core import DownloadQueue
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
-from ytrss.core.url_finder import URLFinder
+from ytrss.rssgenerate import list_elements_in_dir
 try:
     import argcomplete
 except ImportError:
@@ -58,8 +59,7 @@ def __option_args(argv=None):
     @type argv: list
     @return: parsed arguments
     """
-    parser = ArgumentParser(description="Save urls from Youtube's "
-                                        "subscription or playlists to file.",
+    parser = ArgumentParser(description="Delete outdated elements",
                             prog='ytrss_subs')
     parser.add_argument("-v", "--version", action='version',
                         version='%(prog)s {}'.format(get_version()))
@@ -78,22 +78,33 @@ def __option_args(argv=None):
     return options
 
 
-def prepare_urls(settings):
+def rss_delete_outdated(settings):
     """
-    Prepare urls for downloader.
+    delete all outdated files
 
     @param settings: Settings handle
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @return: count of removed movies
+    @rtype: int
     """
-    logging.info("Prepare new urls")
-    finder = URLFinder(settings)
-    elements = finder.get_elements()
-    queue = DownloadQueue(settings)
-    for element in elements:
-        if queue.queue_mp3(element):
-            print("Nowy element: {} [{}]".format(element.title, element.code))
-        else:
-            logging.info("Element istnieje: %s", element.url)
+    result = 0
+    nowtimestamp = datetime.now()
+
+    for dirname in os.listdir(settings.output):
+        print("Checking file to delete: {}".format(dirname))
+        list_elements = list_elements_in_dir(dirname, settings)
+
+        for movie in list_elements:
+            try:
+                if nowtimestamp - movie.date > timedelta(days=15):
+                    movie.delete()
+                    result = result + 1
+                else:
+                    print("item: {} ({})".format(movie.date,
+                                                 movie.element.title))
+            except ValueError:
+                print("error: {}".format(movie.mp3))
+    return result
 
 
 def main(argv=None):
@@ -113,7 +124,7 @@ def main(argv=None):
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
-    prepare_urls(settings)
+    rss_delete_outdated(settings)
 
 
 if __name__ == "__main__":
