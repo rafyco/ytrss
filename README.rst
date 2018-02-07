@@ -104,6 +104,11 @@ Changelog
 0.2
 ~~~
 
+0.2.1
+^^^^^
+
+- Delete older files
+
 0.2.0
 ^^^^^
 
