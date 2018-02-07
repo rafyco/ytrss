@@ -69,7 +69,7 @@ class TestElement(unittest.TestCase):  # pylint: disable=R0904
             "code": "I-JxpVFlaos",
             "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
         }, {
-            "arg": {"code": "I-JxpVFlaos"},
+            "arg": {"code": "I-JxpVFlaos", "data": "today"},
             "code": "I-JxpVFlaos",
             "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
         }]

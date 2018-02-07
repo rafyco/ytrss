@@ -26,6 +26,9 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import json
 import os
+from datetime import datetime
+from email import utils
+from ytrss.core.element import Element
 
 
 class MovieFileError(Exception):
@@ -64,6 +67,8 @@ class Movie(object):
         @type name: str
         """
         self.__data = None
+        self.__date = None
+        self.__element = None
         self.__settings = settings
         self.dirname = dirname
         self.name = name
@@ -99,3 +104,31 @@ class Movie(object):
             with open(self.json) as data_file:
                 self.__data = json.load(data_file)
         return self.__data
+
+    @property
+    def element(self):
+        """
+        Element object.
+        """
+        if self.__element is None:
+            self.__element = Element(self.data, self.dirname)
+        return self.__element
+
+    @property
+    def date(self):
+        """
+        Date object.
+        """
+        if self.__date is None:
+            self.__date = datetime(*(utils.parsedate(self.element.date))[0:6])
+        return self.__date
+
+    def delete(self):
+        """
+        Delete movie.
+        @param self: object handle
+        @type self: L{Movie<ytrss.core.movie.Movie>}
+        """
+        print("delete: {}[{}]".format(self.element.date, self.element.title))
+        os.remove(self.mp3)
+        os.remove(self.json)

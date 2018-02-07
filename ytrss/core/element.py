@@ -62,6 +62,8 @@ class Element(object):
     @type author: str
     @ivar desc: movie's description
     @type desc: str
+    @ivar date: movie's create date
+    @type data: str
     @ivar img_url: url to thumbnail
     @type img_url: str
     """
@@ -77,12 +79,14 @@ class Element(object):
         self.__title = None
         self.__author = None
         self.__desc = None
+        self.__date = None
         self.__img_url = None
         self.__json_data = None
         self.destination_dir = destination_dir
         if isinstance(intro, dict):
             try:
                 self.__code = intro['code']
+                self.__date = intro['data']
             except KeyError:
                 raise InvalidParameterElementError("Invalid dictionary "
                                                    "structure")
@@ -190,6 +194,18 @@ class Element(object):
         return self.__desc
 
     @property
+    def date(self):
+        """
+        mvoie's create data
+        """
+        if self.__date is None:
+            now_day = datetime.datetime.now()
+            nowtuple = now_day.timetuple()
+            nowtimestamp = time.mktime(nowtuple)
+            self.__date = utils.formatdate(nowtimestamp)
+        return self.__date
+
+    @property
     def img_url(self):
         """
         image's ULR
@@ -268,10 +284,6 @@ class Element(object):
         @return: movie's description
         @rtype: str
         """
-        now_day = datetime.datetime.now()
-        nowtuple = now_day.timetuple()
-        nowtimestamp = time.mktime(nowtuple)
-        formated_date = utils.formatdate(nowtimestamp)
         result = {
             'url': self.url,
             'code': self.code,
@@ -279,7 +291,7 @@ class Element(object):
             'uploader': self.author,
             'description': self.desc,
             'image': self.img_url,
-            'data': formated_date
+            'data': self.date
         }
         return json.dumps(result)
 

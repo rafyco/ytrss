@@ -44,6 +44,7 @@ from argparse import ArgumentParser
 from ytrss import get_version
 from ytrss.subs import prepare_urls
 from ytrss.rssgenerate import rss_generate
+from ytrss.outdated import rss_delete_outdated
 from ytrss.core import UrlRememberer
 from ytrss.core import DownloadQueue
 from ytrss.core.settings import YTSettings
@@ -153,6 +154,9 @@ def __option_args(argv=None):
     parser.add_argument("-d", "--download", action="store_true",
                         dest="download_run", default=False,
                         help="Download all movies to output path")
+    parser.add_argument("-x", "--delete-outdate", action="store_true",
+                        dest="outdated", default=False,
+                        help="delete old files")
     parser.add_argument("-g", "--generate-podcast", action="store_true",
                         dest="generate_podcast", default=False,
                         help="Generate Podcast files")
@@ -163,6 +167,31 @@ def __option_args(argv=None):
     except NameError:
         pass
     return parser.parse_args(argv)
+
+
+def main_work(settings, options):
+    """
+    Make all jobs for ytdown program.
+
+    @param settings: Settings handle
+    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @param option: option handle
+    @type option: unknown
+    """
+    downloaded = 0
+    force_rss = False
+    if options.download_run:
+        try:
+            downloaded = download_all_movie(settings)
+        except Exception:  # pylint: disable=W0703
+            force_rss = True
+
+    if force_rss or downloaded > 0 or options.outdated:
+        if rss_delete_outdated(settings) > 0:
+            force_rss = True
+
+    if force_rss or downloaded > 0 or options.generate_podcast:
+        rss_generate(settings)
 
 
 def main(argv=None):
@@ -192,18 +221,11 @@ def main(argv=None):
     if options.daemon_run or options.download_run:
         prepare_urls(settings)
 
-    downloaded = 0
-    if options.download_run:
-        try:
-            downloaded = download_all_movie(settings)
-        except Exception:  # pylint: disable=W0703
-            rss_generate(settings)
-
-    if downloaded > 0 or options.generate_podcast:
-        rss_generate(settings)
+    main_work(settings, options)
 
     if (len(options.urls) < 1 and not options.download_run and
-            not options.daemon_run and not options.generate_podcast):
+            not options.daemon_run and not options.generate_podcast and
+            not options.outdated):
         print("Require url to download")
         exit(1)
 

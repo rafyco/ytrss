@@ -37,15 +37,14 @@ for more option call program with flag C{--help}
 from __future__ import unicode_literals
 from __future__ import print_function
 import logging
-import io
 import os
+from datetime import datetime
+from datetime import timedelta
 from argparse import ArgumentParser
 from ytrss import get_version
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
-from ytrss.core.podcast import Podcast
-from ytrss.core.movie import Movie
-from ytrss.core.movie import MovieFileError
+from ytrss.rssgenerate import list_elements_in_dir
 try:
     import argcomplete
 except ImportError:
@@ -60,8 +59,7 @@ def __option_args(argv=None):
     @type argv: list
     @return: parsed arguments
     """
-    parser = ArgumentParser(description="Save urls from Youtube's "
-                                        "subscription or playlists to file.",
+    parser = ArgumentParser(description="Delete outdated elements",
                             prog='ytrss_subs')
     parser.add_argument("-v", "--version", action='version',
                         version='%(prog)s {}'.format(get_version()))
@@ -80,46 +78,33 @@ def __option_args(argv=None):
     return options
 
 
-def list_elements_in_dir(dirname, settings):
+def rss_delete_outdated(settings):
     """
-    Return list of movie in directory.
-
-    @param dirname: name of directory
-    @type dirname: str
-    @param settings: Settings handle
-    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
-    @return: list of movie in directory
-    @rtype: list
-    """
-    result = []
-    for filename in os.listdir(os.path.join(settings.output, dirname)):
-        if filename.endswith(".json"):
-            try:
-                movie = Movie(settings, dirname, filename[0:len(filename) - 5])
-                result.append(movie)
-            except MovieFileError:
-                pass
-    return result
-
-
-def rss_generate(settings):
-    """
-    Generate podcast file.
+    delete all outdated files
 
     @param settings: Settings handle
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @return: count of removed movies
+    @rtype: int
     """
+    result = 0
+    nowtimestamp = datetime.now()
+
     for dirname in os.listdir(settings.output):
-        print("Generate Podcast: {}".format(dirname))
-        podcast = Podcast(dirname, settings.get_podcast_information(dirname))
-        for movie in list_elements_in_dir(dirname, settings):
-            print("add item: {}".format(movie.name))
-            podcast.add_item(movie=movie,
-                             dirname=dirname)
-        podcast_file = os.path.join(settings.output, dirname, "podcast.xml")
-        file_handler = io.open(podcast_file, "w", encoding="utf-8")
-        file_handler.write(podcast.generate())
-        file_handler.close()
+        print("Checking file to delete: {}".format(dirname))
+        list_elements = list_elements_in_dir(dirname, settings)
+
+        for movie in list_elements:
+            try:
+                if nowtimestamp - movie.date > timedelta(days=15):
+                    movie.delete()
+                    result = result + 1
+                else:
+                    print("item: {} ({})".format(movie.date,
+                                                 movie.element.title))
+            except ValueError:
+                print("error: {}".format(movie.mp3))
+    return result
 
 
 def main(argv=None):
@@ -139,7 +124,7 @@ def main(argv=None):
     except SettingException:
         print("Configuration file not exist.")
         exit(1)
-    rss_generate(settings)
+    rss_delete_outdated(settings)
 
 
 if __name__ == "__main__":
