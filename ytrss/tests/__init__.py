@@ -30,8 +30,8 @@ from __future__ import unicode_literals
 import unittest
 import os
 import pep8
-import ytrss
 from pylint.lint import Run
+import ytrss
 
 
 # This is tested class. Can have too many method

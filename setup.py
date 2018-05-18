@@ -63,7 +63,6 @@ setup(
     ],
     install_requires=[
         'youtube_dl',
-        'daemonocle',
         'pylint',
         'pep8'
     ],
