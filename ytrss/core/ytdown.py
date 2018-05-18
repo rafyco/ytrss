@@ -92,10 +92,15 @@ class YTDown(object):
         @return: list of movie urls
         @rtype: list
         """
-        xml_str = urlopen(address).read()
-        xmldoc = minidom.parseString(xml_str)
-        tags = xmldoc.getElementsByTagName('link')
         result = []
+        try:
+            xml_str = urlopen(address).read()
+            xmldoc = minidom.parseString(xml_str)
+            tags = xmldoc.getElementsByTagName('link')
+        # We want catch every exception in ulr like invalid channel or web
+        except Exception:  # pylint: disable=W0703
+            logging.error("Problem with url: %s", address)
+            return result
         iterator = 0
         for elem in tags:
             if iterator != 0 and iterator != 1:
