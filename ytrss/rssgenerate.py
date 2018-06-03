@@ -37,6 +37,7 @@ for more option call program with flag C{--help}
 from __future__ import unicode_literals
 from __future__ import print_function
 import logging
+import sys
 import io
 import os
 from argparse import ArgumentParser
@@ -110,16 +111,18 @@ def rss_generate(settings):
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
     """
     for dirname in os.listdir(settings.output):
-        print("Generate Podcast: {}".format(dirname))
-        podcast = Podcast(dirname, settings.get_podcast_information(dirname))
-        for movie in list_elements_in_dir(dirname, settings):
-            print("add item: {}".format(movie.name))
-            podcast.add_item(movie=movie,
-                             dirname=dirname)
-        podcast_file = os.path.join(settings.output, dirname, "podcast.xml")
-        file_handler = io.open(podcast_file, "w", encoding="utf-8")
-        file_handler.write(podcast.generate())
-        file_handler.close()
+        if os.path.isdir(os.path.join(settings.output, dirname)):
+            print("Generate Podcast: {}".format(dirname))
+            podcast = Podcast(dirname,
+                              settings.get_podcast_information(dirname))
+            for movie in list_elements_in_dir(dirname, settings):
+                print("add item: {}".format(movie.name))
+                podcast.add_item(movie=movie,
+                                 dirname=dirname)
+            podcast_file = os.path.join(settings.output, dirname, "podcast.xml")
+            file_handler = io.open(podcast_file, "w", encoding="utf-8")
+            file_handler.write(podcast.generate())
+            file_handler.close()
 
 
 def main(argv=None):
@@ -129,6 +132,11 @@ def main(argv=None):
     @param argv: Option parameters
     @type argv: list
     """
+    try:
+        reload(sys)
+        sys.setdefaultencoding("utf8")  # pylint: disable=E1101
+    except NameError:  # Only python 2.7 need this
+        pass
     options = __option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s '
                                '- %(levelname)s - %(message)s',

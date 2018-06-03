@@ -38,6 +38,7 @@ for more option call program with flag C{--help}
 from __future__ import unicode_literals
 from __future__ import print_function
 import logging
+import sys
 from argparse import ArgumentParser
 from ytrss import get_version
 from ytrss.core import DownloadQueue
@@ -103,6 +104,11 @@ def main(argv=None):
     @param argv: Option parameters
     @type argv: list
     """
+    try:
+        reload(sys)
+        sys.setdefaultencoding("utf8")  # pylint: disable=E1101
+    except NameError:  # Only python 2.7 need this
+        pass
     options = __option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s '
                                '- %(levelname)s - %(message)s',

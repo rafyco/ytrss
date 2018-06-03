@@ -87,7 +87,7 @@ def encode_str(text):
     @return: encoded string
     @rtype: str
     """
-    return urllib.quote(text, safe='')
+    return urllib.quote(text.encode("utf8"), safe='')
 
 
 class PodcastItem(object):
