@@ -98,10 +98,13 @@ class PodcastItem(object):
     """
 
     def __init__(self, movie, name, url_prefix):
-        self.__args = movie.data
-        self.__filename = movie.name
-        self.__name = name
-        self.__prefix = url_prefix
+        try:
+            self.__args = movie.data
+            self.__filename = movie.name
+            self.__name = name
+            self.__prefix = url_prefix
+        except ValueError:
+            raise ValueError("Cannot create podcast item")
 
     def __str__(self):
         return ("<item>\n"

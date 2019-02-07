@@ -116,9 +116,12 @@ def rss_generate(settings):
             podcast = Podcast(dirname,
                               settings.get_podcast_information(dirname))
             for movie in list_elements_in_dir(dirname, settings):
-                print("add item: {}".format(movie.name))
-                podcast.add_item(movie=movie,
-                                 dirname=dirname)
+                try:
+                    podcast.add_item(movie=movie,
+                                     dirname=dirname)
+                    print("add item: {}".format(movie.name))
+                except ValueError:
+                    print("Cannot add item")
             podcast_file = os.path.join(settings.output, dirname, "podcast.xml")
             file_handler = io.open(podcast_file, "w", encoding="utf-8")
             file_handler.write(podcast.generate())
