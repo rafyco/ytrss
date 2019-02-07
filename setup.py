@@ -62,6 +62,7 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
+        'astroid==1.5.3',
         'youtube_dl==2017.10.7',
         'pylint==1.7.4',
         'pep8==1.7.1'
