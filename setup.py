@@ -63,7 +63,7 @@ setup(
     ],
     install_requires=[
         'youtube_dl==2017.10.7',
-        'pylint==1.9.1',
+        'pylint==1.7.4',
         'pep8==1.7.1'
     ],
     entry_points={
