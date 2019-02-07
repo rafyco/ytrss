@@ -62,9 +62,9 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
-        'youtube_dl',
-        'pylint',
-        'pep8'
+        'youtube_dl==2017.10.7',
+        'pylint==1.9.1',
+        'pep8==1.7.1'
     ],
     entry_points={
         'console_scripts': [
