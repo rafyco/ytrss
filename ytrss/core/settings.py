@@ -144,9 +144,11 @@ class YTSettings(object):
             pass
 
         data = {}
+        conf_find = ""
         if conf_str != "":
             try:
                 data = json.load(conf_str)
+                conf_find = conf_str
             except ValueError:
                 raise SettingsParseJSONError("Error parse exception")
         else:
@@ -172,6 +174,7 @@ class YTSettings(object):
         self.__podcast = None
 
         self.__parse_data(data)
+        self.__conf_find = conf_find
 
     def __parse_data(self, data):
         """
@@ -212,6 +215,23 @@ class YTSettings(object):
         if 'podcasts' in data:
             self.__podcast = data['podcasts']
 
+    @staticmethod
+    def __print_url_name(elem):
+        """
+        Print infromation from dictionary
+
+        @param elem: url information
+        @type elem: L{dict}
+        @return: formated name of url
+        @rtype: str
+        """
+        name = ""
+        try:
+            name = "{} ({})".format(elem['name'], elem['code'])
+        except ValueError:
+            name = elem['code']
+        return name
+
     def __str__(self):
         """
         Display settings information.
@@ -222,11 +242,13 @@ class YTSettings(object):
         @rtype: str
         """
         result = "Youtube configuration:\n\n"
+        result += "configuration file: {} \n".format(self.__conf_find)
+        result += "configuration path: {}\n".format(self.conf_path)
         result += "output-file: %s\n" % self.output
         for elem in self.urls:
-            result += "\turlfile: %s\n" % elem.code
+            result += "\turlfile: %s\n" % self.__print_url_name(elem)
         for elem in self.playlists:
-            result += "\tplaylist: %s\n" % elem.code
+            result += "\tplaylist: %s\n" % self.__print_url_name(elem)
         return result
 
     def __conf_file_path(self, file_name):
