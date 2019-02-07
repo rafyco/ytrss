@@ -2,5 +2,7 @@
 ytrss_docs
 build/
 dist/
+envs/
+.eggs/
 ytrss.egg-info
 .ropeproject/
