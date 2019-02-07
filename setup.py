@@ -57,7 +57,6 @@ setup(
         'Environment :: Console',
         'Development Status :: 3 - Alpha',
         'Topic :: Multimedia :: Sound/Audio',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
