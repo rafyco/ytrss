@@ -36,6 +36,27 @@ def read_description(module_name):
             break
     return result
 
+CURRENT_PYTHON = sys.version_info[:2]
+REQUIRED_PYTHON = (3, 4)
+
+if CURRENT_PYTHON < REQUIRED_PYTHON:
+    sys.stderr.write("""
+==========================
+Unsupported Python version
+==========================
+
+This version of YTRSS requires Python {}.{}, but you're trying to
+install it on Python {}.{}.
+This may be because you are using a version of pip that doesn't
+understand the python_requires classifier. Make sure you
+have Python {}.{} or newer, then try again:
+
+    $ python3 -m pip install --upgrade pip setuptools
+    $ pip3 install ytrss
+    
+""".format(*(REQUIRED_PYTHON + CURRENT_PYTHON + REQUIRED_PYTHON)))
+    sys.exit(1)
+
 version = __import__('ytrss').get_version()
 
 data_files = []
@@ -47,6 +68,7 @@ setup(
     author="Rafal Kobel",
     author_email="rafalkobel@rafyco.pl",
     description=read_description('ytrss'),
+    python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
     long_description=open("README.rst").read(),
     url="https://github.com/rafyco/ytrss",
     packages=find_packages(),
@@ -64,12 +86,22 @@ setup(
         'astroid==1.5.3',
         'youtube_dl==2017.10.7',
         'pylint==1.7.4',
-        'pep8==1.7.1'
+        'pep8==1.7.1',
+        'Sphinx==1.8.4',
+        'sphinx-epytext==0.0.4'
     ],
     entry_points={
         'console_scripts': [
             'ytdown = ytrss.ytdown:main',
         ]
+    },
+    command_options={
+        'build_spninx': {
+            'project': ('setup.py', 'ytrss'),
+            'version': ('setup.py', version),
+            'release': ('setup.py', version),
+            'source_dir': ('setup.py', 'docs')
+        }
     },
     platforms="Any",
     keywords="youtube, console, download, rss, mp3, service"
