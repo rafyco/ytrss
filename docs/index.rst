@@ -16,10 +16,13 @@ Remember that this library have no secure podcast file from other viewers.
 You public it on your own responsibility. Please make sure that autor of your
 favourite movies allows you to make podcast from his files.
 
+.. include:: ../README.rst
+
 .. toctree::
     :maxdepth: 3
 
     changelog
     modules
+    license
 
 

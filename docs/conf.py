@@ -43,6 +43,7 @@ release = ytrss.get_version()
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.githubpages',
+    'sphinx_epytext',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

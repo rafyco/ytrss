@@ -41,7 +41,6 @@ class YTDown(object):
     @ivar destination_dir: Name of directory where movie should be save
     @type destination_dir: str
     @ivar link_type: type of parsing source.
-        (I{user} for subscription or I{playlist} for playlist)
     @type link_type: str
     """
 
