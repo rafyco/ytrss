@@ -36,6 +36,27 @@ def read_description(module_name):
             break
     return result
 
+CURRENT_PYTHON = sys.version_info[:2]
+REQUIRED_PYTHON = (3, 4)
+
+if CURRENT_PYTHON < REQUIRED_PYTHON:
+    sys.stderr.write("""
+==========================
+Unsupported Python version
+==========================
+
+This version of YTRSS requires Python {}.{}, but you're trying to
+install it on Python {}.{}.
+This may be because you are using a version of pip that doesn't
+understand the python_requires classifier. Make sure you
+have Python {}.{} or newer, then try again:
+
+    $ python3 -m pip install --upgrade pip setuptools
+    $ pip3 install ytrss
+    
+""".format(*(REQUIRED_PYTHON + CURRENT_PYTHON + REQUIRED_PYTHON)))
+    sys.exit(1)
+
 version = __import__('ytrss').get_version()
 
 data_files = []
@@ -47,6 +68,7 @@ setup(
     author="Rafal Kobel",
     author_email="rafalkobel@rafyco.pl",
     description=read_description('ytrss'),
+    python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
     long_description=open("README.rst").read(),
     url="https://github.com/rafyco/ytrss",
     packages=find_packages(),
