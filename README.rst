@@ -98,44 +98,6 @@ For testing module write:
 
     python setup.py test
 
-Changelog
----------
-
-0.2
-~~~
-
-0.2.1
-^^^^^
-
-- Delete older files
-
-0.2.0
-^^^^^
-
--  Files download to specific directory
--  Read data of downloaded movie
--  Generate RSS channel for downloaded movie
-
-0.1
-~~~
-
-0.1.5
-^^^^^
-
--  Daemon for linux
-
-0.1.4
-^^^^^
-
--  Support for python3
--  Reduce commands to one prog
-
-0.1.3 
-^^^^^
-
--  First working version.
--  Unit test.
-
 Author
 ------
 

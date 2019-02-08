@@ -71,6 +71,14 @@ setup(
             'ytdown = ytrss.ytdown:main',
         ]
     },
+    command_options={
+        'build_spninx': {
+            'project': ('setup.py', 'ytrss'),
+            'version': ('setup.py', version),
+            'release': ('setup.py', version),
+            'source_dir': ('setup.py', 'docs')
+        }
+    },
     platforms="Any",
     keywords="youtube, console, download, rss, mp3, service"
 )
