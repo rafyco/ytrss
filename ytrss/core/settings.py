@@ -29,7 +29,7 @@ For MS Windows
 
 For Linux (and other systems)
 
-    - I{/etc/subs_config}
+    - I{/etc/ytrss/config}
     - I{~/.config/ytrss/config}
 
 In some case you can set file path in constructor or read data in json format.
@@ -134,6 +134,8 @@ class YTSettings(object):
         conf_path = ""
         if sys.platform.lower().startswith('win'):
             conf_path = os.path.join("~\\YTRSS", conf_path)
+        elif os.path.isfile("/etc/ytrss/config"):
+            conf_path = os.path.join("/etc/ytrss", conf_path)
         else:
             conf_path = os.path.join("~/.config/ytrss", conf_path)
         self.conf_path = os.path.expanduser(conf_path)
@@ -285,8 +287,8 @@ class YTSettings(object):
         if os.path.isfile(conf_file_path):
             return conf_file_path
         elif (not sys.platform.lower().startswith('win') and
-              os.path.isfile("/etc/subs_config")):
-            return "/etc/subs_config"
+              os.path.isfile("/etc/ytrss/config")):
+            return "/etc/ytrss/config"
         else:
             raise SettingException("Cannot find configuration file.")
 
