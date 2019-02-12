@@ -1,2 +1,2 @@
-include README.md, scripts/*
+include README.rst, scripts/*
 exclude *.orig *.pyc

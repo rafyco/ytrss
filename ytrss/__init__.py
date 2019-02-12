@@ -32,7 +32,7 @@ From PyPI repository::
 
 From sources::
 
-    git clone git@bitbucket.org:rafyco/ytrss.git
+    git clone git@github.com:rafyco/ytrss.git
     cd ytrss
     python setup.py install
 
