@@ -71,6 +71,12 @@ setup(
     python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
     long_description=open("README.rst").read(),
     url="https://github.com/rafyco/ytrss",
+    project_urls={
+        "Source": "https://github.com/rafyco/ytrss",
+        "Tracker": "https://github.com/rafyco/ytrss/issues",
+        "Changelog": "https://github.com/rafyco/ytrss/blob/master/dosc/changelog.rst",
+        "Documentation": "https://ytrss.readthedocs.io"
+    },
     packages=find_packages(),
     include_package_data=True,
     package_dir={'ytrss': 'ytrss'},
