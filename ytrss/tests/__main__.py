@@ -32,6 +32,7 @@ import unittest
 from ytrss.tests import TestYTRSSModule
 from ytrss.tests.locker_test import TestLocker
 from ytrss.tests.element_test import TestElement
+from ytrss.tests.podcast_test import TestPodcast
 
 
 if __name__ == "__main__":
