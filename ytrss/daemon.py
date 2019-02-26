@@ -43,13 +43,32 @@ from __future__ import print_function
 import logging
 import time
 import sys
-from daemonocle import Daemon
-from daemonocle.exceptions import DaemonError
 from ytrss.core.settings import YTSettings
 from ytrss.core.settings import SettingException
 from ytrss.subs import prepare_urls
 from ytrss.ytdown import download_all_movie
 from ytrss.rssgenerate import rss_generate
+try:
+    from daemonocle import Daemon
+    from daemonocle.exceptions import DaemonError
+except ImportError:
+    print("""
+Import Error: cannot load daemonocle.
+
+Deamon can't run without daemonocle package. Please try invoke:
+
+    pip3 install daemonocle
+    """)
+    sys.exit(2)
+
+
+if sys.platform.lower().startswith('win'):
+    print("""
+Daemon doesn't work on Windows. Please run it on linux, or invoke:
+
+    ytdown -d
+    """)
+    sys.exit(1)
 
 
 def daemon_main():
