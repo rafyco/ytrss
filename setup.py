@@ -57,17 +57,18 @@ have Python {}.{} or newer, then try again:
 """.format(*(REQUIRED_PYTHON + CURRENT_PYTHON + REQUIRED_PYTHON)))
     sys.exit(1)
 
-version = __import__('ytrss').get_version()
+package_name = 'ytrss'
+version = __import__(package_name).get_version()
 
 data_files = []
 
 setup(
-    name='ytrss',
+    name=package_name,
     version=version,
     license='GNU',
     author="Rafal Kobel",
     author_email="rafalkobel@rafyco.pl",
-    description=read_description('ytrss'),
+    description=read_description(package_name),
     python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
     long_description=open("README.rst").read(),
     url="https://github.com/rafyco/ytrss",
@@ -80,17 +81,22 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_dir={'ytrss': 'ytrss'},
-    test_suite='ytrss.tests.__main__',
     classifiers=[
         'Environment :: Console',
         'Development Status :: 3 - Alpha',
         'Topic :: Multimedia :: Sound/Audio',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.5',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
         'astroid==1.5.3',
         'youtube_dl==2017.10.7',
+    ],
+    test_suite='ytrss.tests.__main__',
+    tests_require=[
         'pylint==1.7.4',
         'pep8==1.7.1',
         'Sphinx==1.8.4',
@@ -103,7 +109,7 @@ setup(
     },
     command_options={
         'build_spninx': {
-            'project': ('setup.py', 'ytrss'),
+            'project': ('setup.py', package_name),
             'version': ('setup.py', version),
             'release': ('setup.py', version),
             'source_dir': ('setup.py', 'docs')

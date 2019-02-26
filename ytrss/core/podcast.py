@@ -32,6 +32,7 @@ try:
     import urllib.request as urllib  # pylint: disable=E0611,F0401
 except ImportError:
     import urllib
+import logging
 import re
 
 
@@ -55,12 +56,11 @@ def desc_format(text):
                     "(?:%[0-9a-fA-F][0-9a-fA-F]))+",
                     r"<a href='\g<0>'>\g<0></a>",
                     result)
-    result = re.sub(r"\/redirect(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|"
-                    "(?:%[0-9a-zA-Z][0-9a-zA-Z]))+(?:q=(?P<url>[A-Za-z0-9%.]+))+"
-                    "(?:&[a-zA-Z=&$-_@.+]+)*",
+    result = re.sub(r"\/redirect(?:[a-zA-Z0-9$-_@.&!*\(\)]*)(?:q=(?P<url>[A-Za-z0-9%.]+))+"
+                    "(?:[a-zA-Z0-9$-_@.&!*,]*)",
                     r"<a href='\g<url>'>\g<url></a>",
                     result)
-    result = re.sub(r"\/redirect(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|"
+    result = re.sub(r"\/(?:redirect|watch)(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|"
                     "(?:%[0-9a-zA-Z][0-9a-zA-Z]))+",
                     r"<a href='https://youtube.com\g<0>'>\g<0></a>",
                     result)
@@ -105,6 +105,7 @@ class PodcastItem(object):
     """
 
     def __init__(self, movie, name, url_prefix):
+        self.__desc = None
         try:
             self.__args = movie.data
             self.__filename = movie.name
@@ -113,7 +114,15 @@ class PodcastItem(object):
         except ValueError:
             raise ValueError("Cannot create podcast item")
 
+    @property
+    def description(self):
+        """ Formated description of podcast item. """
+        if self.__desc is None:
+            self.__desc = desc_format(self.__args['description'])
+        return self.__desc
+
     def __str__(self):
+        logging.debug("item print: %s", self.__args['code'])
         return ("<item>\n"
                 "<title>{title}</title>\n"
                 "<image>\n"
@@ -140,7 +149,7 @@ class PodcastItem(object):
                 "").format(title=format_str(self.__args['title']),
                            url=self.__args['url'],
                            author=format_str(self.__args['uploader']),
-                           description=desc_format(self.__args['description']),
+                           description=self.description,
                            img=self.__args['image'],
                            name=self.__name,
                            prefix=self.__prefix,
