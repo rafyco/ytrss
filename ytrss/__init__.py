@@ -56,6 +56,6 @@ from __future__ import unicode_literals
 
 def get_version():
     """ Get version of ytrss package. """
-    return "0.2.5"
+    return "0.2.6"
 
 __version__ = get_version()
