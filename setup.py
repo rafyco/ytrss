@@ -94,13 +94,13 @@ setup(
     install_requires=[
         'astroid==1.5.3',
         'youtube_dl==2017.10.7',
+        'Sphinx==1.8.4',
+        'sphinx-epytext==0.0.4',
     ],
     test_suite='ytrss.tests.__main__',
     tests_require=[
         'pylint==1.7.4',
         'pep8==1.7.1',
-        'Sphinx==1.8.4',
-        'sphinx-epytext==0.0.4'
     ],
     entry_points={
         'console_scripts': [
