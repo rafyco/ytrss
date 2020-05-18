@@ -160,6 +160,9 @@ def __option_args(argv=None):
     parser.add_argument("-g", "--generate-podcast", action="store_true",
                         dest="generate_podcast", default=False,
                         help="Generate Podcast files")
+    parser.add_argument("-t", "--test", action="store_true",
+                        dest="test_scenario", default=False,
+                        help="start test scenario, check if download works")
     parser.add_argument("urls", nargs='*', default=[], type=str,
                         help="Url to download.")
     try:
@@ -167,6 +170,18 @@ def __option_args(argv=None):
     except NameError:
         pass
     return parser.parse_args(argv)
+
+
+def test_scenario():
+    """
+    Perform test scenario,
+    """
+    print("Hello world")
+    from ytrss.core.ytdown import YTDown
+    test_url = "https://www.youtube.com/user/wideoprezentacje"
+    yt_down = YTDown({ "code": "UCViVL2aOkLWKcFVi0_p6u6g"})
+    for url in yt_down.get_urls():
+        print(f"url: {url}")
 
 
 def main_work(settings, options):
@@ -210,6 +225,11 @@ def main(argv=None):
     logging.basicConfig(format='%(asctime)s - %(name)s - '
                                '%(levelname)s - %(message)s',
                         level=options.logLevel)
+
+    if options.test_scenario:
+        test_scenario()
+        exit()
+
     try:
         settings = YTSettings(options.configuration)
     except SettingException:

@@ -93,7 +93,7 @@ setup(
     ],
     install_requires=[
         'astroid==1.5.3',
-        'youtube_dl==2017.10.7',
+        'youtube_dl==2020.05.08',
         'Sphinx==1.8.4',
         'sphinx-epytext==0.0.4',
     ],

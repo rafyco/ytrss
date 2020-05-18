@@ -58,10 +58,7 @@ class YTDown(object):
         """
         assert isinstance(url, dict)
         self.code = url['code']
-        if 'destination_dir' in url:
-            self.destination_dir = url['destination_dir']
-        else:
-            self.destination_dir = "other"
+        self.destination_dir = url.get('destination_dir', "other")
         self.link_type = link_type
         if self.link_type != "user" and self.link_type != "playlist":
             raise AttributeError("link_type must be 'user' or 'playlist'")
