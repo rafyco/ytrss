@@ -178,8 +178,13 @@ def test_scenario():
     """
     print("Hello world")
     from ytrss.core.ytdown import YTDown
-    test_url = "https://www.youtube.com/user/wideoprezentacje"
-    yt_down = YTDown({ "code": "UCViVL2aOkLWKcFVi0_p6u6g"})
+    print("user")
+    yt_down = YTDown({"code": "UCViVL2aOkLWKcFVi0_p6u6g"})
+    for url in yt_down.get_urls():
+        print(f"url: {url}")
+
+    print("playlist")
+    yt_down = YTDown({"code": "PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6"}, link_type="playlist")
     for url in yt_down.get_urls():
         print(f"url: {url}")
 

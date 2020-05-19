@@ -97,12 +97,12 @@ class YTDown(object):
         except Exception:  # pylint: disable=W0703
             logging.error("Problem with url: %s", address)
             return result
-        iterator = 0
         for elem in tags:
-            if iterator != 0 and iterator != 1:
-                url = elem.getAttribute("href")
+            url = elem.getAttribute("href")
+            if "watch?v=" in url:
                 result.append(url)
-            iterator = iterator + 1
+            else:
+                logging.debug(f"Not valid url from rss: {url}")
         return result
 
     def get_urls(self):
