@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -35,23 +34,19 @@ To invoke program type in your console::
 for more option call program with flag C{--help}
 """
 
-from __future__ import unicode_literals
-from __future__ import print_function
 import logging
 import sys
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
+from typing import Sequence, Optional
+
 from ytrss import get_version
-from ytrss.core import DownloadQueue
-from ytrss.core.settings import YTSettings
-from ytrss.core.settings import SettingException
+from ytrss.configuration.factory import configuration_factory
+from ytrss.database.download_queue import DownloadQueue
+from ytrss.configuration.configuration import ConfigurationException, Configuration
 from ytrss.core.url_finder import URLFinder
-try:
-    import argcomplete
-except ImportError:
-    pass
 
 
-def __option_args(argv=None):
+def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
     """
     Parsing argument for command line program.
 
@@ -71,24 +66,16 @@ def __option_args(argv=None):
                                  'ERROR', 'CRITICAL'],
                         help="Set the logging level")
 
-    try:
-        argcomplete.autocomplete(parser)
-    except NameError:
-        pass
-    options = parser.parse_args(argv)
-    return options
+    return parser.parse_args(argv)
 
 
-def prepare_urls(settings):
+def prepare_urls(settings: Configuration) -> None:
     """
     Prepare urls for downloader.
-
-    @param settings: Settings handle
-    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
     """
     logging.info("Prepare new urls")
-    finder = URLFinder(settings)
-    elements = finder.get_elements()
+    finder = URLFinder(settings.sources)
+    elements = finder.elements
     queue = DownloadQueue(settings)
     for element in elements:
         if queue.queue_mp3(element):
@@ -97,28 +84,23 @@ def prepare_urls(settings):
             logging.info("Element istnieje: %s", element.url)
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> None:
     """
     Main function for command line program.
 
     @param argv: Option parameters
     @type argv: list
     """
-    try:
-        reload(sys)
-        sys.setdefaultencoding("utf8")  # pylint: disable=E1101
-    except NameError:  # Only python 2.7 need this
-        pass
     options = __option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s '
                                '- %(levelname)s - %(message)s',
                         level=options.logLevel)
     logging.debug("Debug mode: Run")
     try:
-        settings = YTSettings(options.configuration)
-    except SettingException:
+        settings = configuration_factory(options.configuration)
+    except ConfigurationException:
         print("Configuration file not exist.")
-        exit(1)
+        sys.exit(1)
     prepare_urls(settings)
 
 

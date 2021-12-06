@@ -18,5 +18,16 @@
 #                                                                         #
 ###########################################################################
 """
-Module with additional class for ytrss tools.
+Testing module ytrss.
+
+TestCase checking module files. It should be conform to PEP8.
+
+@see: L{ytrss}
 """
+
+from __future__ import unicode_literals
+import unittest
+
+
+if __name__ == "__main__":
+    unittest.main()

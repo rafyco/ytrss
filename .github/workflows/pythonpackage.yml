@@ -6,32 +6,78 @@ on:
       - master
 
 jobs:
-  CI-tests:
 
+  style:
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.6, 3.7]
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python setup.py install
-    - name: Test with pytest
-      run: python setup.py test
-    - name: Build documentation
-      run: |
-        pip install .[documentation]
-        python setup.py build_sphinx
-    - name: Run console program
-      run: |
-        python -m ytrss.ytdown --version
-        python -m ytrss.ytdown --help
-        python -m ytrss.ytdown --show
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run:
+          pip install tox
+      - name: Check style
+        run: |
+          tox -e style
+
+  unittests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run:
+          pip install tox
+      - name: Test with pytest
+        run: |
+          tox -e unittests
+
+  typping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run:
+          pip install tox
+      - name: Checks typping
+        run: |
+          tox -e typping 
+
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run:
+          pip install tox
+      - name: Build documentation
+        run: |
+          tox -e documentation
+
+  execute:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run:
+          pip install tox
+      - name: Run console program
+        run: |
+          tox -e execute

@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -21,7 +20,7 @@
 """
 Locking program module
 
-This modul allow you to blocking program for make more of one instance.
+This module allows you to block program for make more of one instance.
 
 Example of usage::
 
@@ -42,14 +41,14 @@ Example of usage::
 import os
 import logging
 import tempfile
+from typing import Optional
 
 
 class LockerError(Exception):
     """ Locker exception """
-    pass
 
 
-class Locker(object):
+class Locker:
     """
     Class for blocking running program
 
@@ -59,7 +58,7 @@ class Locker(object):
     @ivar file_path: program's blocking file
     @type file_path: str
     """
-    def __init__(self, identify, direcotry=None):
+    def __init__(self, identify: str, directory: Optional[str] = None):
         """
         Locker constructor
 
@@ -67,17 +66,17 @@ class Locker(object):
         @type self: L{Locker}
         @param identify: identification of blocking application
         @type identify: str
-        @param direcotry: path to direcotory with blocking file
-            (if direcotry is C{None} file will be in temporary path)
+        @param directory: path to directory with blocking file
+            (if directory is C{None} file will be in temporary path)
         """
-        if direcotry is None:
+        if directory is None:
             tmp = tempfile.gettempdir()
         else:
-            tmp = direcotry
+            tmp = directory
         self.file_path = os.path.join(tmp, identify)
         logging.debug("lock path: %s", self.file_path)
 
-    def is_lock(self):
+    def is_lock(self) -> bool:
         """
         Is program lock.
 
@@ -88,7 +87,7 @@ class Locker(object):
         """
         return os.path.isfile(self.file_path)
 
-    def lock(self):
+    def lock(self) -> None:
         """
         Lock program.
 
@@ -101,12 +100,13 @@ class Locker(object):
             raise LockerError
         open(self.file_path, 'a').close()
 
-    def unlock(self):
+    def unlock(self) -> None:
         """
         Unlock program.
 
         @param self: object handle
         @type self: L{Locker}
+
         @warn: This method not raise any exception.
         """
         logging.debug("Unlock program: %s", self.file_path)

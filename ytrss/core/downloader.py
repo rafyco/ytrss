@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -24,16 +23,18 @@ Download mp3 file from YouTube using I{youtube_dl} library.
 @see: U{https://rg3.github.io/youtube-dl/}
 """
 
-from __future__ import unicode_literals
-from __future__ import print_function
 import os
+import json
 import shutil
 import logging
+from typing import Dict, Any, Sequence
+
 import youtube_dl
-import ytrss
+
+from ytrss.configuration.configuration import Configuration
 
 
-class Downloader(object):
+class Downloader:
     """
     Download mp3 file from YouTube.
 
@@ -41,71 +42,62 @@ class Downloader(object):
     moved to output file. Output and cache folder are describe in
     L{YTSettings<ytrss.core.settings.YTSettings>} object.
 
-    @ivar settings: Setting object
-    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
-    @ivar url: URL to download
-    @type url: str
+    @ivar configuration: Setting object
+    @type configuration: L{YTSettings<ytrss.core.settings.YTSettings>}
     @ivar output_path: Path to output folder
     @type output_path: str
     """
-    def __init__(self, settings, url):
+    def __init__(self, configuration: Configuration) -> None:
         """
         Downloader constructor.
-
-        @param self: object handler
-        @type self: L{Downloader}
-        @param settings: settings handler
-        @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
-        @param url: URL to YouTube movie
-        @type url: L{Element<ytrss.core.element.Element>}
         """
-        assert isinstance(url, ytrss.core.element.Element)
-        self.settings = settings
-        self.url = url
-        self.output_path = settings.output
+        self.configuration = configuration
+        self.output_path = configuration.output
 
-    def download(self):
-        """
-        Download YouTube movie.
-
-        Function download movie, convert to mp3 and move to output file.
-
-        @param self: object handler
-        @type self: L{Downloader}
-        @return: C{True} if success, C{False} otherwise
-        @rtype: Boolean
-        """
-        status = 0
-        cache_path = self.settings.cache_path
+    @classmethod
+    def __invoke_ytdl(cls, args: Sequence[str]) -> int:
         try:
-            os.makedirs(cache_path)
-        except OSError:
-            pass
-        current_path = os.getcwd()
-        os.chdir(cache_path)
-
-        logging.info("url: %s", self.url.url)
-        command = self.settings.args + ['-o',
-                                        "{}.mp3".format(self.url.code),
-                                        self.url.url]
-        try:
-            youtube_dl.main(command)
+            youtube_dl.main(args)
+            status = 0
         except SystemExit as ex:
             if ex.code is None:
                 status = 0
             else:
                 status = ex.code  # pylint: disable=E0012,R0204
+        return status
+
+    def download(
+            self,
+            code: str,
+            url: str,
+            destination_dir: str,
+            json_info: Dict[str, Any]
+    ) -> bool:
+        """
+        Download YouTube movie.
+
+        Function download movie, convert to mp3 and move to output file.
+        """
+        try:
+            os.makedirs(self.configuration.cache_path)
+        except OSError:
+            pass
+        current_path = os.getcwd()
+        os.chdir(self.configuration.cache_path)
+
+        logging.info("url: %s", url)
+        status = self.__invoke_ytdl(self.configuration.args + ['-o', f"{code}.mp3", url])
 
         finded = False
-        full_file_name = "{}.mp3".format(self.url.code)
-        metadate_name = "{}.json".format(self.url.code)
+        full_file_name = f"{code}.mp3"
+        metadate_name = f"{code}.json"
         if os.path.isfile(full_file_name):
-            source_path = os.path.join(cache_path, full_file_name)
+            source_path = os.path.join(self.configuration.cache_path, full_file_name)
             destination_path = os.path.join(self.output_path,
-                                            self.url.destination_dir,
+                                            destination_dir,
                                             full_file_name)
             metadate_path = os.path.join(self.output_path,
-                                         self.url.destination_dir,
+                                         destination_dir,
                                          metadate_name)
             try:
                 os.mkdir(self.output_path)
@@ -113,20 +105,19 @@ class Downloader(object):
                 pass
             try:
                 os.mkdir(os.path.join(self.output_path,
-                                      self.url.destination_dir))
+                                      destination_dir))
             except OSError:
                 pass
             logging.debug("source_path: %s", source_path)
             logging.debug("destination_path: %s", destination_path)
             shutil.move(source_path, destination_path)
-            file_handler = open(metadate_path, 'w')
-            file_handler.write(self.url.get_json_description())
-            file_handler.close()
+            with open(metadate_path, 'w') as file_handler:
+                file_handler.write(json.dumps(json_info))
             finded = True
 
-        for find_file in os.listdir(cache_path):
+        for find_file in os.listdir(self.configuration.cache_path):
             if find_file.endswith(".mp3"):
-                print("Unknown file: {}".format(find_file))
+                print(f"Unknown file: {find_file}")
 
         os.chdir(current_path)
         return status == 0 and finded

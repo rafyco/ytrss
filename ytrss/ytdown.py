@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -19,7 +18,7 @@
 #                                                                         #
 ###########################################################################
 """
-Add one or more URL address to downlad file.
+Add one or more URL addresses to download file.
 
 Example usage
 =============
@@ -35,43 +34,45 @@ or::
 for more option call program with flag C{--help}
 """
 
-from __future__ import unicode_literals
-from __future__ import print_function
 import os
 import sys
 import logging
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
+from typing import Optional, Sequence, Callable
+
 from ytrss import get_version
+from ytrss.configuration.entity.source import Source
+from ytrss.configuration.factory import configuration_factory
+from ytrss.configuration.json.json_configuration import ConfigurationParseJSONError
+from ytrss.database.database_file_config import DatabaseFileConfig
+from ytrss.database.download_queue import DownloadQueue
+from ytrss.database.url_remember import UrlRememberer
 from ytrss.subs import prepare_urls
 from ytrss.rssgenerate import rss_generate
-from ytrss.outdated import rss_delete_outdated
-from ytrss.core import UrlRememberer
-from ytrss.core import DownloadQueue
-from ytrss.core.settings import YTSettings
-from ytrss.core.settings import SettingException
-from ytrss.core.settings import SettingsParseJSONError
+from ytrss.configuration.configuration import ConfigurationException, Configuration
 from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
-try:
-    import argcomplete
-except ImportError:
-    pass
+from ytrss.core.ytdown import YTDown
 
 
 class URLError(Exception):
     """ Problem with URL """
-    pass
 
 
-def download_all_movie(settings):
+# pylint: disable=R0915
+def download_all_movie(
+        configuration: Configuration,
+        on_success: Optional[Callable[[], None]] = None
+) -> int:
     """
     Download all movie saved in download_file.
 
-    @param settings: Settings handle
-    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @param configuration: Settings handle
+    @param on_success: callback invoked on success
     @return: count of downloaded movies
-    @rtype: int
     """
+    file_config = DatabaseFileConfig(configuration)
+
     logging.info("download movie from urls")
     locker = Locker('lock_ytdown')
     downloaded = 0
@@ -82,36 +83,44 @@ def download_all_movie(settings):
         sys.exit(1)
     try:
         if not os.path.isfile(
-                settings.download_file) and not os.path.isfile(
-                    settings.url_backup):
+                file_config.download_file) and not os.path.isfile(
+                    file_config.url_backup) and not os.path.isfile(
+                        file_config.next_time):
             raise URLError
-        urls = UrlRememberer(settings.download_file)
-        urls.read_backup(settings.url_backup)
-        urls.delete_file()
-        urls.save_as(settings.url_backup)
+        download_file = UrlRememberer(file_config.download_file)
+        download_file.read_backup(file_config.url_backup)
+        download_file.read_backup(file_config.next_time)
+        download_file.delete_file()
+        download_file.save_as(file_config.url_backup)
+        next_time_file = UrlRememberer(file_config.next_time)
 
-        error_file = UrlRememberer(settings.err_file)
-        history_file = UrlRememberer(settings.history_file)
+        error_file = UrlRememberer(file_config.err_file)
+        history_file = UrlRememberer(file_config.history_file)
 
-        for elem in urls.database:
-            if not history_file.is_new(elem):
-                print("URL {} cannot again download".format(elem))
+        for movie in download_file.database:
+            if not history_file.is_new(movie):
+                print("URL {} cannot again download".format(movie))
                 continue
-
-            if elem.download(settings):
+            if not movie.is_ready:
+                print("movie is not ready to download")
+                next_time_file.add_movie(movie)
+                continue
+            if movie.download(configuration):
                 # finish ok
                 print("finish ok")
-                history_file.add_element(elem)
+                history_file.add_movie(movie)
+                if on_success is not None:
+                    on_success()
                 downloaded = downloaded + 1
             else:
                 # finish error
                 print("finish error")
-                error_file.add_element(elem)
+                error_file.add_movie(movie)
 
         locker.unlock()
 
-        os.remove(settings.url_backup)
-    except KeyboardInterrupt as ex:
+        os.remove(file_config.url_backup)
+    except KeyboardInterrupt:
         locker.unlock()
         print("Keyboard Interrupt by user.")
         sys.exit(1)
@@ -126,7 +135,7 @@ def download_all_movie(settings):
     return downloaded
 
 
-def __option_args(argv=None):
+def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
     """
     Parsing argument for command line program.
 
@@ -165,67 +174,54 @@ def __option_args(argv=None):
                         help="start test scenario, check if download works")
     parser.add_argument("urls", nargs='*', default=[], type=str,
                         help="Url to download.")
-    try:
-        argcomplete.autocomplete(parser)
-    except NameError:
-        pass
     return parser.parse_args(argv)
 
 
-def test_scenario():
+def test_scenario() -> None:
     """
     Perform test scenario,
     """
-    print("Hello world")
-    from ytrss.core.ytdown import YTDown
     print("user")
-    yt_down = YTDown({"code": "UCViVL2aOkLWKcFVi0_p6u6g"})
-    for url in yt_down.get_urls():
+    yt_down = YTDown(Source.from_json(dict(code="UCViVL2aOkLWKcFVi0_p6u6g")))
+    for url in yt_down.movies:
         print(f"url: {url}")
 
     print("playlist")
-    yt_down = YTDown({"code": "PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6"}, link_type="playlist")
-    for url in yt_down.get_urls():
+    yt_down = YTDown(Source.from_json(dict(
+        code="PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6",
+        type="playlist"
+    )))
+    for url in yt_down.movies:
         print(f"url: {url}")
 
 
-def main_work(settings, options):
+def main_work(configuration: Configuration, options: Namespace) -> None:
     """
     Make all jobs for ytdown program.
 
-    @param settings: Settings handle
-    @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
-    @param option: option handle
-    @type option: unknown
+    @param configuration: Settings handle
+    @type configuration: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @param options: option handle
+    @type options: unknown
     """
-    downloaded = 0
     force_rss = False
     if options.download_run:
         try:
-            downloaded = download_all_movie(settings)
+            download_all_movie(configuration, lambda: rss_generate(configuration))
         except Exception:  # pylint: disable=W0703
             force_rss = True
 
-    if force_rss or downloaded > 0 or options.outdated:
-        if rss_delete_outdated(settings) > 0:
-            force_rss = True
-
-    if force_rss or downloaded > 0 or options.generate_podcast:
-        rss_generate(settings)
+    if force_rss or options.generate_podcast:
+        rss_generate(configuration)
 
 
-def main(argv=None):
+def main(argv: Optional[Sequence[str]] = None) -> None:
     """
     Main function for command line program.
 
     @param argv: Option parameters
     @type argv: list
     """
-    try:
-        reload(sys)
-        sys.setdefaultencoding("utf8")  # pylint: disable=E1101
-    except NameError:  # Only python 2.7 need this
-        pass
     options = __option_args(argv)
     logging.basicConfig(format='%(asctime)s - %(name)s - '
                                '%(levelname)s - %(message)s',
@@ -233,31 +229,31 @@ def main(argv=None):
 
     if options.test_scenario:
         test_scenario()
-        exit()
+        sys.exit()
 
     try:
-        settings = YTSettings(options.configuration)
-    except SettingException:
-        print("Configuration file not exist.")
-        exit(1)
-    except SettingsParseJSONError:
+        settings = configuration_factory(options.configuration)
+    except ConfigurationParseJSONError:
         print("Problem with JSON file.")
-        exit(2)
+        sys.exit(2)
+    except ConfigurationException:
+        print("Configuration file not exist.")
+        sys.exit(1)
 
     if options.show_config:
         print(settings)
-        exit()
+        sys.exit()
 
     if options.daemon_run or options.download_run:
         prepare_urls(settings)
 
     main_work(settings, options)
 
-    if (len(options.urls) < 1 and not options.download_run and
-            not options.daemon_run and not options.generate_podcast and
-            not options.outdated):
+    if (len(options.urls) < 1 and not options.download_run
+            and not options.daemon_run and not options.generate_podcast
+            and not options.outdated):
         print("Require url to download")
-        exit(1)
+        sys.exit(1)
 
     queue = DownloadQueue(settings)
     for url in options.urls:

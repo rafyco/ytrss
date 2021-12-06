@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -43,23 +42,12 @@ from __future__ import print_function
 import logging
 import time
 import sys
-from ytrss.core.settings import YTSettings
-from ytrss.core.settings import SettingException
+
+from ytrss.configuration.configuration import ConfigurationException
+from ytrss.configuration.factory import configuration_factory
+from ytrss.rssgenerate import rss_generate
 from ytrss.subs import prepare_urls
 from ytrss.ytdown import download_all_movie
-from ytrss.rssgenerate import rss_generate
-try:
-    from daemonocle import Daemon
-    from daemonocle.exceptions import DaemonError
-except ImportError:
-    print("""
-Import Error: cannot load daemonocle.
-
-Deamon can't run without daemonocle package. Please try invoke:
-
-    pip3 install daemonocle
-    """)
-    sys.exit(2)
 
 
 if sys.platform.lower().startswith('win'):
@@ -71,28 +59,22 @@ Daemon doesn't work on Windows. Please run it on linux, or invoke:
     sys.exit(1)
 
 
-def daemon_main():
+def daemon_main() -> None:
     """
     Daemon main function.
     """
     while True:
         try:
-            settings = YTSettings()
+            configuration = configuration_factory()
             try:
-                prepare_urls(settings)
-            except SystemExit:
-                pass
-            downloaded = 0
-            try:
-                downloaded = download_all_movie(settings)
+                prepare_urls(configuration)
             except SystemExit:
                 pass
             try:
-                if downloaded > 0:
-                    rss_generate(settings)
+                download_all_movie(configuration, lambda: rss_generate(configuration))
             except SystemExit:
                 pass
-        except SettingException:
+        except ConfigurationException:
             logging.error("Configuration file not exist.")
         # This deamon, should ignore all exception and not stop script here
         except Exception as ex:  # pylint: disable=W0703
@@ -101,46 +83,20 @@ def daemon_main():
         time.sleep(60 * 10)
 
 
-def daemon_error_print():
-    """
-    Print error message in case of invalid argument.
-    """
-    print("[info] Usage: /etc/init.d/ytrss {start|stop|restart|status}")
-
-
-def daemon(argv=None):
+def daemon() -> None:
     """
     Daemon script function.
 
     This script turn on daemon.
 
-    @param argv: Option parameters
-    @type argv: list
     """
 
-    daemon_tmp = Daemon(worker=daemon_main,
-                        pidfile='/var/run/daemonocle_example.pid')
-    if argv is None:
-        argv = sys.argv
     logging.basicConfig(
         filename='/var/log/ytrss_daemon.log',
         level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s',
     )
-    if len(argv) != 2:
-        daemon_error_print()
-        exit(1)
-    try:
-        if argv[1] == "start":
-            try:
-                YTSettings()
-            except SettingException:
-                print("Configuration file not exist.")
-                exit(1)
-        daemon_tmp.do_action(argv[1])
-        sys.exit(0)
-    except (DaemonError, IndexError):
-        daemon_error_print()
-        sys.exit(1)
+    daemon_main()
+
 
 if __name__ == "__main__":
     daemon()

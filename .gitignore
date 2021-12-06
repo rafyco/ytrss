@@ -6,3 +6,6 @@ envs/
 .eggs/
 ytrss.egg-info
 .ropeproject/
+.tox
+
+.idea

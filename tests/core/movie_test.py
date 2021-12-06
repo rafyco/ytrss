@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -26,14 +25,14 @@ Testing Element module
 
 from __future__ import unicode_literals
 import unittest
-from ytrss.core.element import Element
-from ytrss.core.element import InvalidParameterElementError
+from ytrss.core.movie import Movie
+from ytrss.core.movie import InvalidParameterMovieError
 
 
 # This is tested class. Can have too many method
-class TestElement(unittest.TestCase):  # pylint: disable=R0904
+class TestMovie(unittest.TestCase):  # pylint: disable=R0904
     """
-    Locker tests.
+    Movie tests.
 
     Testing for L{ytrss.core.element} module
     """
@@ -75,7 +74,7 @@ class TestElement(unittest.TestCase):  # pylint: disable=R0904
         }]
 
         for elem in test_suites:
-            test_elem = Element(elem['arg'])
+            test_elem = Movie(elem['arg'])
             self.assertEqual(test_elem.code, elem['code'])
             self.assertEqual(test_elem.url, elem['url'])
 
@@ -97,8 +96,8 @@ class TestElement(unittest.TestCase):  # pylint: disable=R0904
             ['this', 'should', 'not', 'work']
         ]
         for elem in test_suites:
-            with self.assertRaises(InvalidParameterElementError):
-                Element(elem)
+            with self.assertRaises(InvalidParameterMovieError):
+                Movie(elem)
 
     def test_comparation(self):
         """
@@ -121,8 +120,8 @@ class TestElement(unittest.TestCase):  # pylint: disable=R0904
             "ob2": "http://youtu.be/I-JxpVFlaos",
         }]
         for elem in test_suites:
-            elem1 = Element(elem['ob1'])
-            elem2 = Element(elem['ob2'])
+            elem1 = Movie(elem['ob1'])
+            elem2 = Movie(elem['ob2'])
             self.assertEqual(elem1,
                              elem2,
                              "Not equal [{} != {}".format(elem['ob1'],
@@ -135,12 +134,13 @@ class TestElement(unittest.TestCase):  # pylint: disable=R0904
         @param self: object handle
         @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
-        elem1 = Element("I-JxpVFlaos")
+        elem1 = Movie("I-JxpVFlaos")
         element_string = elem1.to_string()
-        elem2 = Element(element_string)
+        elem2 = Movie(element_string)
         self.assertEqual(elem1, elem2)
         self.assertEqual(elem1.code, "I-JxpVFlaos")
         self.assertEqual(elem2.code, "I-JxpVFlaos")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -18,5 +18,17 @@
 #                                                                         #
 ###########################################################################
 """
-Module with additional class for ytrss tools.
+Configuration factory
 """
+
+from typing import Optional
+
+from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.json.json_configuration import JsonConfiguration
+
+
+def configuration_factory(configuration_file: Optional[str] = None) -> Configuration:
+    """
+    Method that creates global configuration object
+    """
+    return JsonConfiguration(configuration_file if configuration_file is not None else "")

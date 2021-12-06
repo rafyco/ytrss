@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -22,17 +21,16 @@
 Module to download list of YouTube movie ulrs from codes.
 """
 
-from __future__ import unicode_literals
 import logging
-try:
-    # This library should be using by Python2
-    from urllib.request import urlopen  # pylint: disable=E0611,F0401
-except ImportError:
-    from urllib import urlopen
+from typing import List
+from urllib.request import urlopen
 from xml.dom import minidom
 
+from ytrss.configuration.entity.source import Source
+from ytrss.core.movie import Movie
 
-class YTDown(object):
+
+class YTDown:
     """
     Class to download list of YouTube movie urls.
 
@@ -44,76 +42,52 @@ class YTDown(object):
     @type link_type: str
     """
 
-    def __init__(self, url, link_type='user'):
+    def __init__(self, source: Source) -> None:
         """
         YTDown constructor.
 
         @param self: object handle
         @type self: L{YTDown}
-        @param url: parameter for youtube movie
-        @type url: dict
-        @param link_type: type of source [user|playlist]
-        @type link_type: str
+        @param source: parameter for youtube movie
+        @type source: dict
         @raise AttributeError: lint_type is not user or playlist
         """
-        assert isinstance(url, dict)
-        self.code = url['code']
-        self.destination_dir = url.get('destination_dir', "other")
-        self.link_type = link_type
-        if self.link_type != "user" and self.link_type != "playlist":
+        self.code = source.code
+        self.destination_dir = source.destination_dir
+        self.link_type = source.type
+        if self.link_type != "user" and self.link_type != "playlist" and self.link_type != "default":
             raise AttributeError("link_type must be 'user' or 'playlist'")
 
-    def __build_url(self):
+    @property
+    def source_url(self) -> str:
         """
         Build url to rss source from id save in object.
-
-        @param self: object handle
-        @type self: L{YTDown}
-        @return: url to rss
-        @rtype: str
         """
-        patern = "channel_id"
+        pattern = "channel_id"
         if self.link_type == 'playlist':
-            patern = "playlist_id"
-        return ("https://www.youtube.com/feeds/videos.xml?"
-                "{}={}".format(patern, self.code))
+            pattern = "playlist_id"
+        return f"https://www.youtube.com/feeds/videos.xml?{pattern}={self.code}"
 
-    @staticmethod
-    def __youtube_list_from_address(address):
+    @property
+    def movies(self) -> List[Movie]:
         """
-        Get movie urls from rss address.
+        Get movie urls for object.
+        """
+        logging.debug("URL: %s", self.source_url)
 
-        @param address: address to playlist or subscription rss.
-        @type address: list
-        @return: list of movie urls
-        @rtype: list
-        """
-        result = []
+        result: List[Movie] = []
         try:
-            xml_str = urlopen(address).read()
+            xml_str = urlopen(self.source_url).read()
             xmldoc = minidom.parseString(xml_str)
             tags = xmldoc.getElementsByTagName('link')
         # We want catch every exception in ulr like invalid channel or web
         except Exception:  # pylint: disable=W0703
-            logging.error("Problem with url: %s", address)
+            logging.error("Problem with url: %s", self.source_url)
             return result
         for elem in tags:
-            url = elem.getAttribute("href")
+            url: str = elem.getAttribute("href")
             if "watch?v=" in url:
-                result.append(url)
+                result.append(Movie(url, destination_dir=self.destination_dir))
             else:
-                logging.debug(f"Not valid url from rss: {url}")
+                logging.debug("Not valid url from rss: %s", url)
         return result
-
-    def get_urls(self):
-        """
-        Get movie urls for object.
-
-        @param self: object handle
-        @type self: L{YTDown}
-        @return: list of movie urls
-        @rtype: list
-        """
-        url = self.__build_url()
-        logging.debug("URL: %s", url)
-        return YTDown.__youtube_list_from_address(url)

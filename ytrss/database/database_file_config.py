@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -18,22 +17,20 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-"""
-CommandLine interface for test.
+import os
 
-For checking tests call::
-
-    python -m ytrss.tests
-"""
-
-# pylint: disable=W0611
-from __future__ import unicode_literals
-import unittest
-from ytrss.tests import TestYTRSSModule
-from ytrss.tests.locker_test import TestLocker
-from ytrss.tests.element_test import TestElement
-from ytrss.tests.podcast_test import TestPodcast
+from ytrss.configuration.configuration import Configuration
 
 
-if __name__ == "__main__":
-    unittest.main()
+class DatabaseFileConfig:
+    """
+    Object with database files destinations.
+    """
+
+    def __init__(self, configuration: Configuration):
+        self.url_rss = os.path.join(configuration.config_path, "rss_remember.txt")
+        self.download_file = os.path.join(configuration.config_path, "download_yt.txt")
+        self.next_time = os.path.join(configuration.config_path, "download_yt_next.txt")
+        self.url_backup = os.path.join(configuration.config_path, "download_yt_last.txt")
+        self.history_file = os.path.join(configuration.config_path, "download_yt_history.txt")
+        self.err_file = os.path.join(configuration.config_path, "download_yt.txt.err")

@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -22,68 +21,47 @@
 Finding YouTube movie urls.
 """
 
-from __future__ import unicode_literals
 import logging
+from typing import Optional, Union, List, Sequence
+
+from ytrss.configuration.entity.source import Source
 from ytrss.core.ytdown import YTDown
-from ytrss.core.element import Element
+from ytrss.core.movie import Movie
 
 
-class URLFinder(object):
+class URLFinder:
     """
     Finding YouTube movie urls from configuration.
 
     @ivar tab: table with source's urls
     @type tab: list
     """
-    def __init__(self, settings=None):
+    def __init__(self, sources: Optional[Sequence[Source]] = None) -> None:
         """
         URLFinder constructor.
-
-        @param self: handle object
-        @type self: L{URLFinder}
-        @param settings: configuration settings
-        @type settings: {ytrss.core.settings.YTSettings}
         """
-        self.tab = []
-        if settings is not None:
-            self.add_user_url(settings.urls)
-            self.add_playlist_url(settings.playlists)
+        self.tab: List[YTDown] = []
+        if sources is not None:
+            self.add_user_url(sources)
 
-    def add_user_url(self, url):
+    def add_user_url(self, source: Union[Source, Sequence[Source]]) -> None:
         """
         Add subscription code url.
 
         @param self: handle object
         @type self: L{URLFinder}
-        @param url: subscription's code
-        @type url: str
+        @param source: subscription's code
+        @type source: str
         """
-        if isinstance(url, list):
-            for elem in url:
+        if isinstance(source, Source):
+            logging.debug("add user source: %s, [type: %s]", source.name, source.type)
+            self.tab.append(YTDown(source))
+        else:
+            for elem in source:
                 self.add_user_url(elem)
-        else:
-            logging.debug("add user url: %s", url)
-            self.tab.append(YTDown(url, link_type="user"))
 
-    def add_playlist_url(self, url):
-        """
-        Add playlist code url.
-
-        @param self: handle object
-        @type self: L{URLFinder}
-        @param url: playlist's code
-        @type url: str
-        """
-        if isinstance(url, list):
-            for elem in url:
-                self.add_playlist_url(elem)
-        elif isinstance(url, dict):
-            logging.debug("add playlist url: %s", url)
-            self.tab.append(YTDown(url, link_type="playlist"))
-        else:
-            logging.error("Unknown type of playlist: %s", type(url))
-
-    def get_elements(self):
+    @property
+    def elements(self) -> List[Movie]:
         """
         Get urls to YouTube movies.
 
@@ -95,9 +73,7 @@ class URLFinder(object):
         urls = []
         for elem in self.tab:
             logging.debug("Contener: %s", elem)
-            addresses = elem.get_urls()
-            for address in addresses:
-                logging.debug("El: %s", address)
-                urls.append(Element(address,
-                                    destination_dir=elem.destination_dir))
+            for movie in elem.movies:
+                logging.debug("El: %s", movie.url)
+                urls.append(movie)
         return urls

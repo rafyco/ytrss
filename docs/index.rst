@@ -15,6 +15,5 @@ More information
     :maxdepth: 3
 
     modules
-    license
 
 

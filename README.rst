@@ -7,8 +7,8 @@ Program to automatic download YouTube files by ``youtube_dl`` scripts.
 .. image:: https://img.shields.io/badge/author-Rafa%C5%82%20Kobel-blue.svg
     :target: https://rafyco.pl
 
-.. image:: https://img.shields.io/travis/rafyco/ytrss.svg
-   :target: https://travis-ci.org/rafyco/ytrss
+.. image:: https://github.com/rafyco/ytrss/actions/workflows/pythonpackage.yml/badge.svg?branch=master
+   :target: https://github.com/rafyco/ytrss/actions/workflows/pythonpackage.yml
 
 .. image:: https://img.shields.io/readthedocs/ytrss.svg
    :target: https://ytrss.readthedocs.io
