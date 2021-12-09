@@ -9,3 +9,4 @@ ytrss.egg-info
 .tox
 
 .idea
+!.idea/vcs.xml
