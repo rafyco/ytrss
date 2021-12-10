@@ -63,8 +63,10 @@ def daemon_main() -> None:
     """
     Daemon main function.
     """
+    logging.info("Start daemon")
     while True:
         try:
+            logging.info("Analysis started")
             configuration = configuration_factory()
             try:
                 prepare_urls(configuration)
@@ -74,9 +76,10 @@ def daemon_main() -> None:
                 download_all_movie(configuration, lambda: rss_generate(configuration))
             except SystemExit:
                 pass
+            logging.info("Analysis finnish")
         except ConfigurationException:
             logging.error("Configuration file not exist.")
-        # This deamon, should ignore all exception and not stop script here
+        # This daemon, should ignore all exception and not stop script here
         except Exception as ex:  # pylint: disable=W0703
             logging.error("Unknown error: %s", ex)
         # Wait 10 min.
@@ -91,10 +94,27 @@ def daemon() -> None:
 
     """
 
+    handlers = []
+
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    console.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s]: %(message)s"))
+    handlers.append(console)
+
+    try:
+        file_handler = logging.FileHandler("/var/log/ytrss.daemon.log", mode="w")
+        handlers.append(file_handler)
+    except PermissionError:
+        logging.error("Permission problem with file")
+
     logging.basicConfig(
-        filename='/var/log/ytrss_daemon.log',
         level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s',
+        handlers=handlers
     )
+
+    logging.info("testowy log: info")
+    logging.error("testowy log: error")
+
     daemon_main()
 
 

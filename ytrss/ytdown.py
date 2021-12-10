@@ -235,6 +235,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         # pylint: disable=W0703
         except Exception as ex:
             print(f"Cannot create configuration file: {ex}")
+            sys.exit(1)
         sys.exit(0)
 
     if options.test_scenario:
