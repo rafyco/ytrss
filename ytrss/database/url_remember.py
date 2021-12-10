@@ -79,6 +79,7 @@ class UrlRememberer:
             return
         with open(self.file_name, 'a') as file_handle:
             file_handle.writelines(movie.to_string() + '\n')
+        logging.debug("Add %s to file: %s", movie.to_string(), self.file_name)
         self.file_data = f"{self.file_data}\n{movie.to_string()}\n"
 
     def is_new(self, movie: Movie) -> bool:

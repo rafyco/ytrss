@@ -30,7 +30,7 @@ from ytrss.configuration.entity.source import Source
 from ytrss.core.movie import Movie
 
 
-class YTDown:
+class SourceDownloader:
     """
     Class to download list of YouTube movie urls.
 
@@ -47,7 +47,7 @@ class YTDown:
         YTDown constructor.
 
         @param self: object handle
-        @type self: L{YTDown}
+        @type self: L{SourceDownloader}
         @param source: parameter for youtube movie
         @type source: dict
         @raise AttributeError: lint_type is not user or playlist

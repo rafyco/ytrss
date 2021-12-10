@@ -47,12 +47,12 @@ from ytrss.configuration.json.json_configuration import ConfigurationParseJSONEr
 from ytrss.database.database_file_config import DatabaseFileConfig
 from ytrss.database.download_queue import DownloadQueue
 from ytrss.database.url_remember import UrlRememberer
-from ytrss.subs import prepare_urls
-from ytrss.rssgenerate import rss_generate
+from ytrss.finder.algoritms import prepare_urls
+from ytrss.podcast.algoritms import rss_generate
 from ytrss.configuration.configuration import ConfigurationException, Configuration
 from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
-from ytrss.core.ytdown import YTDown
+from ytrss.download.source_downloader import SourceDownloader
 
 
 class URLError(Exception):
@@ -182,12 +182,12 @@ def test_scenario() -> None:
     Perform test scenario,
     """
     print("user")
-    yt_down = YTDown(Source.from_json(dict(code="UCViVL2aOkLWKcFVi0_p6u6g")))
+    yt_down = SourceDownloader(Source.from_json(dict(code="UCViVL2aOkLWKcFVi0_p6u6g")))
     for url in yt_down.movies:
         print(f"url: {url}")
 
     print("playlist")
-    yt_down = YTDown(Source.from_json(dict(
+    yt_down = SourceDownloader(Source.from_json(dict(
         code="PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6",
         type="playlist"
     )))

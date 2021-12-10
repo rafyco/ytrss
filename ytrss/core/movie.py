@@ -34,7 +34,7 @@ from email import utils
 import youtube_dl
 from ytrss.configuration.configuration import Configuration
 
-from ytrss.core.downloader import Downloader
+from ytrss.download.downloader import Downloader
 
 
 class InvalidStringJSONParseError(Exception):
@@ -91,13 +91,14 @@ class Movie:
                 elif bool(re.search("^{", arg)) and bool(re.search("}$",
                                                                    arg)):
                     try:
-                        tab = Movie.__from_string(arg)
-                        self.__code = tab['code']
+                        tab = json.load(StringIO(arg))
                         try:
-                            self.destination_dir = tab['destination']
+                            self.__code = tab['code']
                         except KeyError:
-                            pass
-                    except InvalidStringJSONParseError:
+                            InvalidParameterMovieError("json has no code parameter")
+                        self.destination_dir = tab.get('destination', "")
+
+                    except JSONDecodeError:
                         raise InvalidParameterMovieError("Problem with"
                                                          "parsing "
                                                          "json string")

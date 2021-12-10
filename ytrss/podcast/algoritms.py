@@ -34,45 +34,17 @@ for more option call program with flag C{--help}
 """
 
 import logging
-import sys
 import io
 import os
-from argparse import ArgumentParser, Namespace
-from typing import Optional, Sequence
+from typing import Iterator
 
-from ytrss import get_version
-from ytrss.configuration.configuration import ConfigurationException, Configuration
-from ytrss.configuration.factory import configuration_factory
+from ytrss.configuration.configuration import Configuration
 from ytrss.podcast.podcast import Podcast
 from ytrss.core.downloaded_movie import DownloadedMovie
 from ytrss.core.downloaded_movie import MovieFileError
 
 
-def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
-    """
-    Parsing argument for command line program.
-
-    @param argv: Option parameters
-    @type argv: list
-    @return: parsed arguments
-    """
-    parser = ArgumentParser(description="Save urls from Youtube's "
-                                        "subscription or playlists to file.",
-                            prog='ytrss_subs')
-    parser.add_argument("-v", "--version", action='version',
-                        version='%(prog)s {}'.format(get_version()))
-    parser.add_argument("-c", "--conf", dest="configuration",
-                        help="configuration file", default="", metavar="FILE")
-    parser.add_argument("-l", "--log", dest="logLevel",
-                        choices=['DEBUG', 'INFO', 'WARNING',
-                                 'ERROR', 'CRITICAL'],
-                        help="Set the logging level")
-
-    options = parser.parse_args(argv)
-    return options
-
-
-def list_elements_in_dir(dirname: str, settings: Configuration) -> Sequence[DownloadedMovie]:
+def list_elements_in_dir(dirname: str, settings: Configuration) -> Iterator[DownloadedMovie]:
     """
     Return list of movie in directory.
 
@@ -83,15 +55,13 @@ def list_elements_in_dir(dirname: str, settings: Configuration) -> Sequence[Down
     @return: list of movie in directory
     @rtype: list
     """
-    result = []
     for filename in os.listdir(os.path.join(settings.output, dirname)):
         if filename.endswith(".json"):
             try:
                 movie = DownloadedMovie(settings, dirname, filename[0:len(filename) - 5])
-                result.append(movie)
+                yield movie
             except MovieFileError:
                 pass
-    return result
 
 
 def rss_generate(settings: Configuration) -> None:
@@ -119,27 +89,3 @@ def rss_generate(settings: Configuration) -> None:
             file_handler = io.open(podcast_file, "w", encoding="utf-8")
             file_handler.write(podcast.generate())
             file_handler.close()
-
-
-def main(argv: Optional[Sequence[str]] = None) -> None:
-    """
-    Main function for command line program.
-
-    @param argv: Option parameters
-    @type argv: list
-    """
-    options = __option_args(argv)
-    logging.basicConfig(format='%(asctime)s - %(name)s '
-                               '- %(levelname)s - %(message)s',
-                        level=options.logLevel)
-    logging.debug("Debug mode: Run")
-    try:
-        settings = configuration_factory(options.configuration)
-    except ConfigurationException:
-        print("Configuration file not exist.")
-        sys.exit(1)
-    rss_generate(settings)
-
-
-if __name__ == "__main__":
-    main()

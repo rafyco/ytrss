@@ -45,8 +45,8 @@ import sys
 
 from ytrss.configuration.configuration import ConfigurationException
 from ytrss.configuration.factory import configuration_factory
-from ytrss.rssgenerate import rss_generate
-from ytrss.subs import prepare_urls
+from ytrss.podcast.algoritms import rss_generate
+from ytrss.finder.algoritms import prepare_urls
 from ytrss.ytdown import download_all_movie
 
 

@@ -22,10 +22,10 @@ Finding YouTube movie urls.
 """
 
 import logging
-from typing import Optional, Union, List, Sequence
+from typing import Optional, Union, List, Sequence, Iterator
 
 from ytrss.configuration.entity.source import Source
-from ytrss.core.ytdown import YTDown
+from ytrss.download.source_downloader import SourceDownloader
 from ytrss.core.movie import Movie
 
 
@@ -40,7 +40,7 @@ class URLFinder:
         """
         URLFinder constructor.
         """
-        self.tab: List[YTDown] = []
+        self.tab: List[SourceDownloader] = []
         if sources is not None:
             self.add_user_url(sources)
 
@@ -55,13 +55,13 @@ class URLFinder:
         """
         if isinstance(source, Source):
             logging.debug("add user source: %s, [type: %s]", source.name, source.type)
-            self.tab.append(YTDown(source))
+            self.tab.append(SourceDownloader(source))
         else:
             for elem in source:
                 self.add_user_url(elem)
 
     @property
-    def elements(self) -> List[Movie]:
+    def movies(self) -> Iterator[Movie]:
         """
         Get urls to YouTube movies.
 
@@ -70,10 +70,8 @@ class URLFinder:
         @return: List of elements to download
         @rtype: L{Element<ytrss.core.element.Element>}
         """
-        urls = []
         for elem in self.tab:
             logging.debug("Contener: %s", elem)
             for movie in elem.movies:
                 logging.debug("El: %s", movie.url)
-                urls.append(movie)
-        return urls
+                yield movie

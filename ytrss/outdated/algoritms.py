@@ -33,40 +33,12 @@ To invoke program type in your console::
 for more option call program with flag C{--help}
 """
 
-import sys
-import logging
 import os
 from datetime import datetime
 from datetime import timedelta
-from argparse import ArgumentParser, Namespace
-from typing import Sequence, Optional
 
-from ytrss import get_version
-from ytrss.configuration.configuration import ConfigurationException, Configuration
-from ytrss.configuration.factory import configuration_factory
-from ytrss.rssgenerate import list_elements_in_dir
-
-
-def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
-    """
-    Parsing argument for command line program.
-
-    @param argv: Option parameters
-    @type argv: list
-    @return: parsed arguments
-    """
-    parser = ArgumentParser(description="Delete outdated elements",
-                            prog='ytrss_subs')
-    parser.add_argument("-v", "--version", action='version',
-                        version='%(prog)s {}'.format(get_version()))
-    parser.add_argument("-c", "--conf", dest="configuration",
-                        help="configuration file", default="", metavar="FILE")
-    parser.add_argument("-l", "--log", dest="logLevel",
-                        choices=['DEBUG', 'INFO', 'WARNING',
-                                 'ERROR', 'CRITICAL'],
-                        help="Set the logging level")
-
-    return parser.parse_args(argv)
+from ytrss.configuration.configuration import Configuration
+from ytrss.podcast.algoritms import list_elements_in_dir
 
 
 def rss_delete_outdated(settings: Configuration) -> int:
@@ -82,7 +54,7 @@ def rss_delete_outdated(settings: Configuration) -> int:
     nowtimestamp = datetime.now()
 
     for dirname in os.listdir(settings.output):
-        print("Checking file to delete: {}".format(dirname))
+        print(f"Checking file to delete: {dirname}")
         list_elements = list_elements_in_dir(dirname, settings)
 
         for movie in list_elements:
@@ -91,32 +63,7 @@ def rss_delete_outdated(settings: Configuration) -> int:
                     movie.delete()
                     result = result + 1
                 else:
-                    print("item: {} ({})".format(movie.date,
-                                                 movie.element.title))
+                    print(f"item: {movie.date} ({movie.element.title})")
             except ValueError:
-                print("error: {}".format(movie.mp3))
+                print(f"error: {movie.mp3}")
     return result
-
-
-def main(argv: Optional[Sequence[str]] = None) -> None:
-    """
-    Main function for command line program.
-
-    @param argv: Option parameters
-    @type argv: list
-    """
-    options = __option_args(argv)
-    logging.basicConfig(format='%(asctime)s - %(name)s '
-                               '- %(levelname)s - %(message)s',
-                        level=options.logLevel)
-    logging.debug("Debug mode: Run")
-    try:
-        settings = configuration_factory(options.configuration)
-    except ConfigurationException:
-        print("Configuration file not exist.")
-        sys.exit(1)
-    rss_delete_outdated(settings)
-
-
-if __name__ == "__main__":
-    main()
