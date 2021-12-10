@@ -33,7 +33,7 @@ from io import StringIO
 from email import utils
 import youtube_dl
 from ytrss.configuration.configuration import Configuration
-
+from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
 from ytrss.download.downloader import Downloader
 
 
@@ -50,7 +50,7 @@ class Movie:
     Movie's data.
     """
 
-    def __init__(self, arg: Union[str, Dict[str, Any]], destination_dir: str = "other") -> None:
+    def __init__(self, arg: Union[str, Dict[str, Any]], destination_dir: str = DEFAULT_PODCAST_DIR) -> None:
         """
         Element constructor.
 

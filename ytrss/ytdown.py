@@ -41,6 +41,7 @@ from argparse import ArgumentParser, Namespace
 from typing import Optional, Sequence, Callable
 
 from ytrss import get_version
+from ytrss.configuration.algoritms import create_configuration
 from ytrss.configuration.entity.source import Source
 from ytrss.configuration.factory import configuration_factory
 from ytrss.configuration.json.json_configuration import ConfigurationParseJSONError
@@ -148,8 +149,10 @@ def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
                             prog='ytdown')
     parser.add_argument("-v", "--version", action='version',
                         version='%(prog)s {}'.format(get_version()))
-    parser.add_argument("-c", "--conf", dest="configuration",
+    parser.add_argument("-c", "--conf", dest="config_file",
                         help="configuration file", default="", metavar="FILE")
+    parser.add_argument("--create-configuration", dest="create_config",
+                        help="create default configuration", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",
                         choices=['DEBUG', 'INFO', 'WARNING',
                                  'ERROR', 'CRITICAL'],
@@ -226,12 +229,21 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     logging.basicConfig(format='%(asctime)s - %(name)s - '
                                '%(levelname)s - %(message)s',
                         level=options.logLevel)
+    if options.create_config is not None:
+        try:
+            create_configuration(options.create_config)
+        # pylint: disable=W0703
+        except Exception as ex:
+            print(f"Cannot create configuration file: {ex}")
+        sys.exit(0)
 
     if options.test_scenario:
         test_scenario()
         sys.exit()
 
     try:
+        configuration = configuration_factory(options.config_file)
+    except ConfigurationError:
         settings = configuration_factory(options.configuration)
     except ConfigurationParseJSONError:
         print("Problem with JSON file.")
@@ -241,13 +253,13 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         sys.exit(1)
 
     if options.show_config:
-        print(settings)
+        print(configuration)
         sys.exit()
 
     if options.daemon_run or options.download_run:
-        prepare_urls(settings)
+        prepare_urls(configuration)
 
-    main_work(settings, options)
+    main_work(configuration, options)
 
     if (len(options.urls) < 1 and not options.download_run
             and not options.daemon_run and not options.generate_podcast
@@ -255,7 +267,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         print("Require url to download")
         sys.exit(1)
 
-    queue = DownloadQueue(settings)
+    queue = DownloadQueue(configuration)
     for url in options.urls:
         if queue.queue_mp3(url):
             print("Filmik zostanie pobrany: {}".format(url))

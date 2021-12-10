@@ -88,8 +88,8 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
-        'astroid == 2.5',
-        'youtube_dl == 2021.6.6',
+        'astroid ~= 2.5',
+        'youtube_dl ~= 2021.6.6',
     ],
     extras_require={
         "unittests": [

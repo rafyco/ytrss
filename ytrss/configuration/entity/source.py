@@ -22,6 +22,8 @@ Module with source data object
 """
 from typing import Dict, Any
 
+from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
+
 
 class Source:
     """
@@ -33,7 +35,7 @@ class Source:
     def __init__(self) -> None:
         self.code: str = "none"
         self.type: str = "default"
-        self.destination_dir: str = "other"
+        self.destination_dir: str = DEFAULT_PODCAST_DIR
         self.name: str = "<unknown>"
         self.enable: bool = True
 

@@ -1,2 +1,2 @@
-include README.rst, scripts/*
-exclude *.orig *.pyc
+include README.rst scripts/* ytrss/configuration/*.json ytrss/configuration/*.yml
+exclude *.orig *.pyc tests
