@@ -20,15 +20,41 @@
 """
 Configuration factory
 """
-
+import os
+import sys
 from typing import Optional
 
-from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.configuration import Configuration, ConfigurationError
 from ytrss.configuration.json.json_configuration import JsonConfiguration
 
 
 def configuration_factory(configuration_file: Optional[str] = None) -> Configuration:
     """
     Method that creates global configuration object
+
+    File are read from the first of the following location.
+
+    For MS Windows
+
+        - I{~/YTRSS/config.json}
+
+    For Linux (and other systems)
+
+        - I{/etc/ytrss/config.json}
+        - I{~/.config/ytrss/config.json}
+
     """
-    return JsonConfiguration(configuration_file if configuration_file is not None else "")
+    if configuration_file is not None and os.path.isfile(configuration_file):
+        return JsonConfiguration(configuration_file)
+
+    if (sys.platform.lower().startswith('win')
+            and os.path.isfile("~\\YTRSS\\config.json")):
+        return JsonConfiguration("~\\YTRSS\\config.json")
+
+    if os.path.isfile("/etc/ytrss/config.json"):
+        return JsonConfiguration("/etc/ytrss/config.json")
+
+    if os.path.isfile("~/.config/ytrss/conf.json"):
+        return JsonConfiguration("~/.config/ytrss.conf.json")
+
+    raise ConfigurationError("Cannot find configuration file")

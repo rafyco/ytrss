@@ -58,8 +58,7 @@ def list_elements_in_dir(dirname: str, settings: Configuration) -> Iterator[Down
     for filename in os.listdir(os.path.join(settings.output, dirname)):
         if filename.endswith(".json"):
             try:
-                movie = DownloadedMovie(settings, dirname, filename[0:len(filename) - 5])
-                yield movie
+                yield DownloadedMovie(settings, dirname, filename[0:len(filename) - 5])
             except MovieFileError:
                 pass
 
@@ -71,20 +70,20 @@ def rss_generate(settings: Configuration) -> None:
     @param settings: Settings handle
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
     """
-    for dirname in os.listdir(settings.output):
-        if os.path.isdir(os.path.join(settings.output, dirname)):
-            print("Generate Podcast: {}".format(dirname))
-            podcast = Podcast(dirname,
-                              settings.get_podcast_information(dirname))
-            for movie in list_elements_in_dir(dirname, settings):
+    for dir_name in os.listdir(settings.output):
+        if os.path.isdir(os.path.join(settings.output, dir_name)):
+            print("Generate Podcast: {}".format(dir_name))
+            podcast = Podcast(dir_name,
+                              settings.get_podcast_information(dir_name))
+            for movie in list_elements_in_dir(dir_name, settings):
                 logging.debug("item: %s", movie.name)
                 try:
                     podcast.add_item(movie=movie,
-                                     dirname=dirname)
+                                     dir_name=dir_name)
                     print("add item: %s" % movie.name)
                 except ValueError:
                     print("Cannot add item")
-            podcast_file = os.path.join(settings.output, dirname, "podcast.xml")
+            podcast_file = os.path.join(settings.output, dir_name, "podcast.xml")
             logging.debug("try to save: %s", podcast_file)
             file_handler = io.open(podcast_file, "w", encoding="utf-8")
             file_handler.write(podcast.generate())

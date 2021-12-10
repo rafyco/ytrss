@@ -128,7 +128,7 @@ class Podcast:
         self.__filename = filename
         self.__items: List[_Item] = []
 
-    def add_item(self, movie: DownloadedMovie, dirname: str) -> None:
+    def add_item(self, movie: DownloadedMovie, dir_name: str) -> None:
         """
         Add item to podcast source.
 
@@ -136,11 +136,11 @@ class Podcast:
         @type self: L{Podcast}
         @param movie: movie's file
         @type movie: L{Movie<ytrss.core.movie.Movie>}
-        @param dirname: name of directory
-        @type dirname: str
+        @param dir_name: name of directory
+        @type dir_name: str
         """
         self.__items.append(_Item(movie,
-                                  dirname,
+                                  dir_name,
                                   url_prefix=self.__podcast_info.url_prefix))
 
     def generate(self) -> str:
@@ -170,8 +170,8 @@ class Podcast:
                       f"<url>{self.__podcast_info.img}</url>\n"
                       f"<link>{self.__podcast_info.link}</link>\n"
                       f"</image>\n")
-        for elem in self.__items:
-            result = "{}\n{}".format(result, elem)
+        for item in self.__items:
+            result = f"{result}\n{item}"
         result = (f"{result}"
                   f"</channel>\n"
                   f"</rss>\n")

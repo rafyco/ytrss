@@ -44,13 +44,12 @@ from ytrss import get_version
 from ytrss.configuration.algoritms import create_configuration
 from ytrss.configuration.entity.source import Source
 from ytrss.configuration.factory import configuration_factory
-from ytrss.configuration.json.json_configuration import ConfigurationParseJSONError
 from ytrss.database.database_file_config import DatabaseFileConfig
 from ytrss.database.download_queue import DownloadQueue
 from ytrss.database.url_remember import UrlRememberer
 from ytrss.finder.algoritms import prepare_urls
 from ytrss.podcast.algoritms import rss_generate
-from ytrss.configuration.configuration import ConfigurationException, Configuration
+from ytrss.configuration.configuration import ConfigurationError, Configuration
 from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
 from ytrss.download.source_downloader import SourceDownloader
@@ -243,13 +242,8 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         sys.exit()
 
     try:
-        configuration = configuration_factory(options.config_file)
+        configuration = configuration_factory(options.configuration)
     except ConfigurationError:
-        settings = configuration_factory(options.configuration)
-    except ConfigurationParseJSONError:
-        print("Problem with JSON file.")
-        sys.exit(2)
-    except ConfigurationException:
         print("Configuration file not exist.")
         sys.exit(1)
 

@@ -33,18 +33,18 @@ class URLFinder:
     """
     Finding YouTube movie urls from configuration.
 
-    @ivar tab: table with source's urls
-    @type tab: list
+    @ivar __sources: table with source's urls
+    @type __sources: list
     """
     def __init__(self, sources: Optional[Sequence[Source]] = None) -> None:
         """
         URLFinder constructor.
         """
-        self.tab: List[SourceDownloader] = []
+        self.__sources: List[SourceDownloader] = []
         if sources is not None:
-            self.add_user_url(sources)
+            self.__add_source(sources)
 
-    def add_user_url(self, source: Union[Source, Sequence[Source]]) -> None:
+    def __add_source(self, source: Union[Source, Sequence[Source]]) -> None:
         """
         Add subscription code url.
 
@@ -55,10 +55,10 @@ class URLFinder:
         """
         if isinstance(source, Source):
             logging.debug("add user source: %s, [type: %s]", source.name, source.type)
-            self.tab.append(SourceDownloader(source))
+            self.__sources.append(SourceDownloader(source))
         else:
             for elem in source:
-                self.add_user_url(elem)
+                self.__add_source(elem)
 
     @property
     def movies(self) -> Iterator[Movie]:
@@ -70,8 +70,8 @@ class URLFinder:
         @return: List of elements to download
         @rtype: L{Element<ytrss.core.element.Element>}
         """
-        for elem in self.tab:
-            logging.debug("Contener: %s", elem)
-            for movie in elem.movies:
-                logging.debug("El: %s", movie.url)
+        for source in self.__sources:
+            logging.debug("Container: %s", source)
+            for movie in source.movies:
+                logging.debug("El: %s", movie)
                 yield movie

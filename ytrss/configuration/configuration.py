@@ -78,8 +78,8 @@ from ytrss.configuration.entity.podcast_info import PodcastInfo
 from ytrss.configuration.entity.source import Source
 
 
-class ConfigurationException(Exception):
-    """ Settings exception. """
+class ConfigurationError(Exception):
+    """ Configuration error. """
 
 
 class Configuration(metaclass=abc.ABCMeta):
