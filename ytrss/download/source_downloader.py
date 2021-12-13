@@ -22,7 +22,7 @@ Module to download list of YouTube movie ulrs from codes.
 """
 
 import logging
-from typing import List
+from typing import List, Iterable
 from urllib.request import urlopen
 from xml.dom import minidom
 
@@ -69,7 +69,7 @@ class SourceDownloader:
         return f"https://www.youtube.com/feeds/videos.xml?{pattern}={self.code}"
 
     @property
-    def movies(self) -> List[Movie]:
+    def movies(self) -> Iterable[Movie]:
         """
         Get movie urls for object.
         """
@@ -87,7 +87,7 @@ class SourceDownloader:
         for elem in tags:
             url: str = elem.getAttribute("href")
             if "watch?v=" in url:
-                result.append(Movie(url, destination_dir=self.destination_dir))
+                yield Movie(url, destination_dir=self.destination_dir)
             else:
                 logging.debug("Not valid url from rss: %s", url)
         return result

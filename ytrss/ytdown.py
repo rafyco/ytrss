@@ -171,30 +171,9 @@ def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
     parser.add_argument("-g", "--generate-podcast", action="store_true",
                         dest="generate_podcast", default=False,
                         help="Generate Podcast files")
-    parser.add_argument("-t", "--test", action="store_true",
-                        dest="test_scenario", default=False,
-                        help="start test scenario, check if download works")
     parser.add_argument("urls", nargs='*', default=[], type=str,
                         help="Url to download.")
     return parser.parse_args(argv)
-
-
-def test_scenario() -> None:
-    """
-    Perform test scenario,
-    """
-    print("user")
-    yt_down = SourceDownloader(Source.from_json(dict(code="UCViVL2aOkLWKcFVi0_p6u6g")))
-    for url in yt_down.movies:
-        print(f"url: {url}")
-
-    print("playlist")
-    yt_down = SourceDownloader(Source.from_json(dict(
-        code="PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6",
-        type="playlist"
-    )))
-    for url in yt_down.movies:
-        print(f"url: {url}")
 
 
 def main_work(configuration: Configuration, options: Namespace) -> None:
@@ -236,10 +215,6 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
             print(f"Cannot create configuration file: {ex}")
             sys.exit(1)
         sys.exit(0)
-
-    if options.test_scenario:
-        test_scenario()
-        sys.exit()
 
     try:
         configuration = configuration_factory(options.configuration)
