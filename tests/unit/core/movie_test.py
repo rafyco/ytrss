@@ -25,6 +25,9 @@ Testing Element module
 
 from __future__ import unicode_literals
 import unittest
+
+from typing import List, Dict, Any
+
 from ytrss.core.movie import Movie
 from ytrss.core.movie import InvalidParameterMovieError
 
@@ -36,14 +39,14 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
 
     Testing for L{ytrss.core.element} module
     """
-    def test_input_argument_parse(self):
+    def test_input_argument_parse(self) -> None:
         """
         Testing usage of module.
 
         @param self: object handle
         @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
-        test_suites = [{
+        test_suites: List[Dict[str, Any]] = [{
             "arg": "https://www.youtube.com/watch?v=I-JxpVFlaos",
             "code": "I-JxpVFlaos",
             "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
@@ -78,14 +81,14 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
             self.assertEqual(test_elem.code, elem['code'])
             self.assertEqual(test_elem.url, elem['url'])
 
-    def test_invalid_argument(self):
+    def test_invalid_argument(self) -> None:
         """
         Testing invalid argument element.
 
         @param self: object handle
         @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
-        test_suites = [
+        test_suites: List[Any] = [
             "https://www.youtube.com/watch?w=I-JxpVFlaos",
             "https://www.youtube.com/watch?v=I-JxpVFlaosfs",
             "https://www.youdupe.com/watch?v=I-JxpVFlaos",
@@ -99,7 +102,7 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
             with self.assertRaises(InvalidParameterMovieError):
                 Movie(elem)
 
-    def test_comparation(self):
+    def test_comparation(self) -> None:
         """
         Testing comparation elements.
 
@@ -127,7 +130,7 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
                              "Not equal [{} != {}".format(elem['ob1'],
                                                           elem['ob2']))
 
-    def test_serialization(self):
+    def test_serialization(self) -> None:
         """
         Testing serialization methods.
 
@@ -140,7 +143,3 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
         self.assertEqual(elem1, elem2)
         self.assertEqual(elem1.code, "I-JxpVFlaos")
         self.assertEqual(elem2.code, "I-JxpVFlaos")
-
-
-if __name__ == "__main__":
-    unittest.main()

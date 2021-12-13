@@ -27,6 +27,9 @@ from __future__ import unicode_literals
 import os
 import unittest
 import tempfile
+
+from typing import List
+
 from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
 
@@ -40,17 +43,17 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
     """
 
     # Name defined in unittest library. Cannot be change
-    def setUp(self):  # pylint: disable=C0103
+    def setUp(self) -> None:  # pylint: disable=C0103
         """
         Prepare container for tests.
 
         @param self: object handle
         @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
         """
-        self.lockers = []
+        self.lockers: List[str] = []
 
     # Name defined in unittest library. Cannot be change
-    def tearDown(self):  # pylint: disable=C0103
+    def tearDown(self) -> None:  # pylint: disable=C0103
         """
         Remove all locks after testing.
 
@@ -61,22 +64,21 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
             cleaned_locker = Locker(lock)
             cleaned_locker.unlock()
 
-    def prepare_locker(self, text):
+    def prepare_locker(self, text: str) -> Locker:
         """
         Prepare locker object for testing.
 
         @param self: object handle
-        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
+        @param text: Identity of locker
         """
         self.lockers.append(text)
         return Locker(text)
 
-    def test_usage(self):
+    def test_usage(self) -> None:
         """
         Testing usage of module.
 
         @param self: object handle
-        @type self: L{TestLocker<ytrss.tests.locker_test.TestLocker>}
         """
         tested_locker = self.prepare_locker("ytrss_module_test")
 
@@ -86,7 +88,7 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
         tested_locker.unlock()
         self.assertFalse(tested_locker.is_lock())
 
-    def test_double_lock(self):
+    def test_double_lock(self) -> None:
         """
         Testing is double lock raise an error.
 
@@ -100,7 +102,7 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
             tested_locker.lock()
         tested_locker.unlock()
 
-    def test_double_unlock(self):
+    def test_double_unlock(self) -> None:
         """
         Locker should not raise an exception in case of double unlock.
 
@@ -116,7 +118,7 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
         tested_locker.unlock()
         self.assertFalse(tested_locker.is_lock())
 
-    def test_separation(self):
+    def test_separation(self) -> None:
         """
         Testing if locker with different identify are not block each other.
 
@@ -133,7 +135,7 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
         self.assertTrue(tested_locker_1.is_lock())
         self.assertFalse(tested_locker_2.is_lock())
 
-    def test_duplicate_instance(self):
+    def test_duplicate_instance(self) -> None:
         """
         Testing if locker with identical identify can block each other.
 
@@ -157,7 +159,7 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
         self.assertFalse(tested_locker_1.is_lock())
         self.assertFalse(tested_locker_2.is_lock())
 
-    def test_path_locker(self):
+    def test_path_locker(self) -> None:
         """
         Testing if locker can be hosted in specific direcotry.
 
@@ -179,7 +181,7 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
         self.assertFalse(os.path.isfile(os.path.join(directory, test_name)))
         os.rmdir(directory)
 
-    def test_separation_direcotry(self):
+    def test_separation_direcotry(self) -> None:
         """
         Testing if locker with directory not blocking another
         locker with the same idefify.

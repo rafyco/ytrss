@@ -24,7 +24,8 @@ Testing Podcast module.
 """
 
 import unittest
-from ytrss.podcast.podcast import desc_format
+
+from ytrss.podcast.helpers import desc_format
 
 
 class TestPodcast(unittest.TestCase):  # pylint: disable=R0904
@@ -34,7 +35,7 @@ class TestPodcast(unittest.TestCase):  # pylint: disable=R0904
     Testing for L{ytrss.core.podcast} module
     """
 
-    def test_description_file(self):
+    def test_description_file(self) -> None:
         """
         Check podcast description formater
 

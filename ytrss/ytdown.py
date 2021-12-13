@@ -42,7 +42,6 @@ from typing import Optional, Sequence, Callable
 
 from ytrss import get_version
 from ytrss.configuration.algoritms import create_configuration
-from ytrss.configuration.entity.source import Source
 from ytrss.configuration.factory import configuration_factory
 from ytrss.database.database_file_config import DatabaseFileConfig
 from ytrss.database.download_queue import DownloadQueue
@@ -52,7 +51,6 @@ from ytrss.podcast.algoritms import rss_generate
 from ytrss.configuration.configuration import ConfigurationError, Configuration
 from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
-from ytrss.download.source_downloader import SourceDownloader
 
 
 class URLError(Exception):
