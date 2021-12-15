@@ -24,11 +24,12 @@ import os
 import sys
 from typing import Optional
 
+from ytrss.configuration.algoritms import create_configuration
 from ytrss.configuration.configuration import Configuration, ConfigurationError
 from ytrss.configuration.json.json_configuration import JsonConfiguration
 
 
-def configuration_factory(configuration_file: Optional[str] = None) -> Configuration:
+def configuration_factory(configuration_file: Optional[str] = None, should_create: bool = False) -> Configuration:
     """
     Method that creates global configuration object
 
@@ -55,6 +56,13 @@ def configuration_factory(configuration_file: Optional[str] = None) -> Configura
         return JsonConfiguration("/etc/ytrss/config.json")
 
     if os.path.isfile("~/.config/ytrss/conf.json"):
-        return JsonConfiguration("~/.config/ytrss.conf.json")
+        return JsonConfiguration("~/.config/ytrss/conf.json")
+
+    if should_create:
+        if sys.platform.lower().startswith('win'):
+            create_configuration("~\\YTRSS\\config.json")
+            return JsonConfiguration("~\\YTRSS\\config.json")
+        create_configuration("~/.config/ytrss/conf.json")
+        return JsonConfiguration("~/.config/ytrss/conf.json")
 
     raise ConfigurationError("Cannot find configuration file")

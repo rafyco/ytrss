@@ -25,7 +25,7 @@ def create_configuration(config_file_name: str) -> None:
     """
     Create configuration file in selected path
     """
-    if os.path.isfile(config_file_name):
+    if os.path.isfile(os.path.expanduser(config_file_name)):
         raise FileExistsError(f"file {config_file_name} exists")
 
     try:
@@ -34,5 +34,5 @@ def create_configuration(config_file_name: str) -> None:
         pass
 
     data = pkgutil.get_data(__name__, "default_config.json")
-    with open(config_file_name, "w") as config_file:
+    with open(os.path.expanduser(config_file_name), "w+") as config_file:
         config_file.write(data.decode("utf-8"))

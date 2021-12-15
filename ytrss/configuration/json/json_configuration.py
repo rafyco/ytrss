@@ -74,7 +74,7 @@ code of example file::
 import os
 import json
 
-from ytrss.configuration.configuration import ConfigurationError
+from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError
 from ytrss.configuration.json.data_configuration import DataConfiguration
 
 
@@ -82,7 +82,7 @@ class JsonConfigurationParseError(ConfigurationError):
     """ Settings parse JSON error. """
 
 
-class JsonConfigurationFileNotExistsError(ConfigurationError):
+class JsonConfigurationFileNotExistsError(ConfigurationFileNotExistsError):
     """ Json configuration file not exists. """
 
 
@@ -101,10 +101,13 @@ class JsonConfiguration(DataConfiguration):
         @raise JsonConfigurationFileNotExistsError: In case when conf_file not exists
         @raise JsonConfigurationParseError: In case of error in parsing
         """
-        if not os.path.isfile(conf_file):
+        if not os.path.isfile(os.path.expanduser(conf_file)):
             raise ConfigurationError("File not exists")
-        with open(conf_file) as data_file:
-            data = json.load(data_file)
+        try:
+            with open(os.path.expanduser(conf_file)) as data_file:
+                data = json.load(data_file)
+        except FileNotFoundError:
+            raise JsonConfigurationFileNotExistsError()
 
         if data == {}:
             raise JsonConfigurationParseError("Cannot find data from file")

@@ -43,7 +43,7 @@ import logging
 import time
 import sys
 
-from ytrss.configuration.configuration import ConfigurationError
+from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError
 from ytrss.configuration.factory import configuration_factory
 from ytrss.podcast.algoritms import rss_generate
 from ytrss.finder.algoritms import prepare_urls
@@ -67,7 +67,7 @@ def daemon_main() -> None:
     while True:
         try:
             logging.info("Analysis started")
-            configuration = configuration_factory()
+            configuration = configuration_factory(should_create=True)
             try:
                 prepare_urls(configuration)
             except SystemExit:
@@ -77,8 +77,10 @@ def daemon_main() -> None:
             except SystemExit:
                 pass
             logging.info("Analysis finnish")
+        except ConfigurationFileNotExistsError:
+            logging.error("Configuration file not exists")
         except ConfigurationError:
-            logging.error("Configuration file not exist.")
+            logging.error("Configuration error.")
         # This daemon, should ignore all exception and not stop script here
         except Exception as ex:  # pylint: disable=W0703
             logging.error("Unknown error: %s", ex)

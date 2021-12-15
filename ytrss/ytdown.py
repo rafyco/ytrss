@@ -48,7 +48,8 @@ from ytrss.database.download_queue import DownloadQueue
 from ytrss.database.url_remember import UrlRememberer
 from ytrss.finder.algoritms import prepare_urls
 from ytrss.podcast.algoritms import rss_generate
-from ytrss.configuration.configuration import ConfigurationError, Configuration
+from ytrss.configuration.configuration import ConfigurationError, Configuration, \
+    ConfigurationFileNotExistsError
 from ytrss.core.locker import Locker
 from ytrss.core.locker import LockerError
 
@@ -205,7 +206,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     logging.basicConfig(format='%(asctime)s - %(name)s - '
                                '%(levelname)s - %(message)s',
                         level=options.logLevel)
-    if options.create_config is not None:
+    if options.create_config is not None and options.create_config != "":
         try:
             create_configuration(options.create_config)
         # pylint: disable=W0703
@@ -215,10 +216,13 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         sys.exit(0)
 
     try:
-        configuration = configuration_factory(options.configuration)
+        configuration = configuration_factory(options.config_file)
+    except ConfigurationFileNotExistsError:
+        print("File not exists")
+        sys.exit(1)
     except ConfigurationError:
         print("Configuration file not exist.")
-        sys.exit(1)
+        sys.exit(2)
 
     if options.show_config:
         print(configuration)

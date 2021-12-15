@@ -82,6 +82,10 @@ class ConfigurationError(Exception):
     """ Configuration error. """
 
 
+class ConfigurationFileNotExistsError(ConfigurationError):
+    """ File not found error. """
+
+
 class Configuration(metaclass=abc.ABCMeta):
     """
     Default settings for ytrss.
