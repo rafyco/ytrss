@@ -53,7 +53,7 @@ YTRSS allow you to run a few command-line tool.
 
 def get_version() -> str:
     """ Get version of ytrss package. """
-    return "0.2.7"
+    return "0.2.8"
 
 
 __version__ = get_version()
