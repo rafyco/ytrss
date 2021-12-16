@@ -50,7 +50,7 @@ jobs:
           pip install tox
       - name: Checks typping
         run: |
-          tox -e typping 
+          tox -e typing 
 
   documentation:
     runs-on: ubuntu-latest
