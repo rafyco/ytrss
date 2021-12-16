@@ -17,6 +17,22 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-"""
-Module with additional class for ytrss tools.
-"""
+import os.path
+import pkgutil
+
+
+def create_configuration(config_file_name: str) -> None:
+    """
+    Create configuration file in selected path
+    """
+    if os.path.isfile(os.path.expanduser(config_file_name)):
+        raise FileExistsError(f"file {config_file_name} exists")
+
+    try:
+        os.makedirs(config_file_name)
+    except OSError:
+        pass
+
+    data = pkgutil.get_data(__name__, "default_config.json")
+    with open(os.path.expanduser(config_file_name), "w+") as config_file:
+        config_file.write(data.decode("utf-8"))

@@ -17,6 +17,33 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-"""
-Module with additional class for ytrss tools.
-"""
+
+import unittest
+
+from ytrss.configuration.entity.source import Source
+from ytrss.download.source_downloader import SourceDownloader
+
+
+class TestFinder(unittest.TestCase):  # pylint: disable=R0904
+    """ Test of finder """
+
+    def test_user_find(self) -> None:
+        """ Test user finder. """
+        source = SourceDownloader(Source.from_json(dict(code="UCViVL2aOkLWKcFVi0_p6u6g")))
+        movies = list(source.movies)
+        self.assertGreater(len(movies), 0)
+        for movie in movies:
+            print(f"url: {movie}")
+            self.assertTrue(movie.url.startswith("https://www.youtube.com/watch?v="))
+
+    def test_playlist_find(self) -> None:
+        """ Test playlist finder. """
+        source = SourceDownloader(Source.from_json(dict(
+            code="PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6",
+            type="playlist"
+        )))
+        movies = list(source.movies)
+        self.assertGreater(len(movies), 0)
+        for movie in movies:
+            print(f"url: {movie}")
+            self.assertTrue(movie.url.startswith("https://www.youtube.com/watch?v="))

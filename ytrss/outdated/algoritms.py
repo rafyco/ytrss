@@ -18,5 +18,52 @@
 #                                                                         #
 ###########################################################################
 """
-Module with additional class for ytrss tools.
+Command line program to generation Podcast in files.
+
+Program to generate podcast in files. It require mp3 files and json files.
+That can be generate by ytrss program.
+
+Example usage
+=============
+
+To invoke program type in your console::
+
+    python -m ytrss.rssgenerate
+
+for more option call program with flag C{--help}
 """
+
+import os
+from datetime import datetime
+from datetime import timedelta
+
+from ytrss.configuration.configuration import Configuration
+from ytrss.podcast.algoritms import list_elements_in_dir
+
+
+def rss_delete_outdated(configuration: Configuration) -> int:
+    """
+    delete all outdated files
+
+    @param configuration: Settings handle
+    @type configuration: L{YTSettings<ytrss.core.settings.YTSettings>}
+    @return: count of removed movies
+    @rtype: int
+    """
+    result = 0
+    nowtimestamp = datetime.now()
+
+    for dirname in os.listdir(configuration.output):
+        print(f"Checking file to delete: {dirname}")
+        list_elements = list_elements_in_dir(dirname, configuration)
+
+        for movie in list_elements:
+            try:
+                if nowtimestamp - movie.date > timedelta(days=15):
+                    movie.delete()
+                    result = result + 1
+                else:
+                    print(f"item: {movie.date} ({movie.element.title})")
+            except ValueError:
+                print(f"error: {movie.mp3}")
+    return result

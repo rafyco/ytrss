@@ -18,5 +18,37 @@
 #                                                                         #
 ###########################################################################
 """
-Module with additional class for ytrss tools.
+Command line program to checking movie's URL in subscription.
+
+Program checking subscription and playlist from config and save it
+to downloading file. It's recomended to add this file to crontab or call
+it manually.
+
+Example usage
+=============
+
+To invoke program type in your console::
+
+    python -m ytrss.subs
+
+for more option call program with flag C{--help}
 """
+
+import logging
+from ytrss.database.download_queue import DownloadQueue
+from ytrss.configuration.configuration import Configuration
+from ytrss.finder.url_finder import URLFinder
+
+
+def prepare_urls(settings: Configuration) -> None:
+    """
+    Prepare urls for downloader.
+    """
+    logging.info("Prepare new urls")
+    finder = URLFinder(settings.sources)
+    queue = DownloadQueue(settings)
+    for movie in finder.movies:
+        if queue.queue_mp3(movie):
+            print(f"Nowy element: {movie.title} [{movie.code}]")
+        else:
+            logging.info("Element istnieje: %s", movie.url)

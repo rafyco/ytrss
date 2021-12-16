@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -20,9 +19,7 @@
 ###########################################################################
 
 from __future__ import unicode_literals
-import os
 import sys
-import codecs
 from setuptools import setup
 from setuptools import find_packages
 
@@ -36,8 +33,9 @@ def read_description(module_name):
             break
     return result
 
+
 CURRENT_PYTHON = sys.version_info[:2]
-REQUIRED_PYTHON = (3, 4)
+REQUIRED_PYTHON = (3, 6)
 
 if CURRENT_PYTHON < REQUIRED_PYTHON:
     sys.stderr.write("""
@@ -53,7 +51,7 @@ have Python {}.{} or newer, then try again:
 
     $ python3 -m pip install --upgrade pip setuptools
     $ pip3 install ytrss
-    
+
 """.format(*(REQUIRED_PYTHON + CURRENT_PYTHON + REQUIRED_PYTHON)))
     sys.exit(1)
 
@@ -86,22 +84,30 @@ setup(
         'Development Status :: 3 - Alpha',
         'Topic :: Multimedia :: Sound/Audio',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
-        'astroid==1.5.3',
-        'youtube_dl==2017.10.7',
-        'Sphinx==1.8.4',
-        'sphinx-epytext==0.0.4',
+        'astroid ~= 2.5',
+        'youtube_dl ~= 2021.6.6',
     ],
-    test_suite='ytrss.tests.__main__',
-    tests_require=[
-        'pylint==1.7.4',
-        'pep8==1.7.1',
-    ],
+    extras_require={
+        "unittests": [
+            "pytest"
+        ],
+        "style": [
+            "pylint == 2.5.3",
+            "pep8 == 1.7.1",
+            "pycodestyle == 2.8.0"
+        ],
+        "typing": [
+            "mypy == 0.910"
+        ],
+        "documentation": [
+            "Sphinx == 4.3.1",
+            "sphinx-epytext == 0.0.4"
+        ]
+    },
     entry_points={
         'console_scripts': [
             'ytdown = ytrss.ytdown:main',

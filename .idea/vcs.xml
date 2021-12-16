@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="IssueNavigationConfiguration">
+    <option name="links">
+      <list>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="(closes|ref) #([0-9]*)" />
+          <option name="linkRegexp" value="https://github.com/rafyco/ytrss/issues/$2" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="version (v[0-9]*.[0-9]*.[0-9]*)" />
+          <option name="linkRegexp" value="https://github.com/rafyco/ytrss/releases/tag/$1" />
+        </IssueNavigationLink>
+      </list>
+    </option>
+  </component>
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+  </component>
+</project>

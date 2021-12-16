@@ -6,3 +6,7 @@ envs/
 .eggs/
 ytrss.egg-info
 .ropeproject/
+.tox
+
+.idea
+!.idea/vcs.xml
