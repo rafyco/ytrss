@@ -220,7 +220,8 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     except ConfigurationFileNotExistsError:
         print("File not exists")
         sys.exit(1)
-    except ConfigurationError:
+    except ConfigurationError as ex:
+        logging.debug("%s: %s", type(ex), ex)
         print("Configuration file not exist.")
         sys.exit(2)
 

@@ -49,20 +49,20 @@ def configuration_factory(configuration_file: Optional[str] = None, should_creat
         return JsonConfiguration(configuration_file)
 
     if (sys.platform.lower().startswith('win')
-            and os.path.isfile("~\\YTRSS\\config.json")):
+            and os.path.isfile(os.path.expanduser("~\\YTRSS\\config.json"))):
         return JsonConfiguration("~\\YTRSS\\config.json")
 
     if os.path.isfile("/etc/ytrss/config.json"):
         return JsonConfiguration("/etc/ytrss/config.json")
 
-    if os.path.isfile("~/.config/ytrss/conf.json"):
-        return JsonConfiguration("~/.config/ytrss/conf.json")
+    if os.path.isfile(os.path.expanduser("~/.config/ytrss/config.json")):
+        return JsonConfiguration("~/.config/ytrss/config.json")
 
     if should_create:
         if sys.platform.lower().startswith('win'):
             create_configuration("~\\YTRSS\\config.json")
             return JsonConfiguration("~\\YTRSS\\config.json")
-        create_configuration("~/.config/ytrss/conf.json")
-        return JsonConfiguration("~/.config/ytrss/conf.json")
+        create_configuration("~/.config/ytrss/config.json")
+        return JsonConfiguration("~/.config/ytrss/config.json")
 
     raise ConfigurationError("Cannot find configuration file")
