@@ -20,74 +20,27 @@
 """
 Module to download list of YouTube movie ulrs from codes.
 """
+import abc
+from typing import Iterable
 
-import logging
-from typing import List, Iterable
-from urllib.request import urlopen
-from xml.dom import minidom
-
-from ytrss.configuration.entity.source import Source
 from ytrss.core.movie import Movie
 
 
-class SourceDownloader:
+class SourceDownloader(metaclass=abc.ABCMeta):
     """
     Class to download list of YouTube movie urls.
-
-    @ivar code: Code for parsing source
-    @type code: str
-    @ivar destination_dir: Name of directory where movie should be save
-    @type destination_dir: str
-    @ivar link_type: type of parsing source.
-    @type link_type: str
     """
 
-    def __init__(self, source: Source) -> None:
-        """
-        YTDown constructor.
-
-        @param self: object handle
-        @type self: L{SourceDownloader}
-        @param source: parameter for youtube movie
-        @type source: dict
-        @raise AttributeError: lint_type is not user or playlist
-        """
-        self.code = source.code
-        self.destination_dir = source.destination_dir
-        self.link_type = source.type
-        if self.link_type != "user" and self.link_type != "playlist" and self.link_type != "default":
-            raise AttributeError("link_type must be 'user' or 'playlist'")
-
     @property
+    @abc.abstractmethod
     def source_url(self) -> str:
         """
         Build url to rss source from id save in object.
         """
-        pattern = "channel_id"
-        if self.link_type == 'playlist':
-            pattern = "playlist_id"
-        return f"https://www.youtube.com/feeds/videos.xml?{pattern}={self.code}"
 
     @property
+    @abc.abstractmethod
     def movies(self) -> Iterable[Movie]:
         """
         Get movie urls for object.
         """
-        logging.debug("URL: %s", self.source_url)
-
-        result: List[Movie] = []
-        try:
-            xml_str = urlopen(self.source_url).read()
-            xmldoc = minidom.parseString(xml_str)
-            tags = xmldoc.getElementsByTagName('link')
-        # We want catch every exception in ulr like invalid channel or web
-        except Exception:  # pylint: disable=W0703
-            logging.error("Problem with url: %s", self.source_url)
-            return result
-        for elem in tags:
-            url: str = elem.getAttribute("href")
-            if "watch?v=" in url:
-                yield Movie(url, destination_dir=self.destination_dir)
-            else:
-                logging.debug("Not valid url from rss: %s", url)
-        return result

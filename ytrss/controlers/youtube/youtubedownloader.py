@@ -34,7 +34,7 @@ import youtube_dl
 from ytrss.configuration.configuration import Configuration
 
 
-class Downloader:
+class YouTubeDownloader:
     """
     Download mp3 file from YouTube.
 

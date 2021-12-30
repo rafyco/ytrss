@@ -25,6 +25,7 @@ import logging
 from typing import Optional, Union, List, Sequence, Iterator
 
 from ytrss.configuration.entity.source import Source
+from ytrss.core.factory import CoreFactory, CoreFactoryError
 from ytrss.download.source_downloader import SourceDownloader
 from ytrss.core.movie import Movie
 
@@ -55,7 +56,10 @@ class URLFinder:
         """
         if isinstance(source, Source):
             logging.debug("add user source: %s, [type: %s]", source.name, source.type)
-            self.__sources.append(SourceDownloader(source))
+            try:
+                self.__sources.append(CoreFactory.create_source_downloader(source))
+            except CoreFactoryError:
+                pass
         else:
             for elem in source:
                 self.__add_source(elem)

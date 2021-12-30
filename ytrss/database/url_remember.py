@@ -21,6 +21,7 @@ import logging
 import os
 from typing import List
 
+from ytrss.core.factory import CoreFactoryError, CoreFactory
 from ytrss.core.movie import InvalidParameterMovieError, Movie
 
 
@@ -57,9 +58,9 @@ class UrlRememberer:
                 self.file_data = file_handle.read()
             for elem in self.file_data.split('\n'):
                 try:
-                    tmp_elem = Movie(elem)
+                    tmp_elem = CoreFactory.create_movie(elem)
                     self.database.append(tmp_elem)
-                except InvalidParameterMovieError as ex:
+                except (InvalidParameterMovieError, CoreFactoryError) as ex:
                     logging.debug("Error: %s", ex)
 
         except IOError as ex:
@@ -145,7 +146,10 @@ class UrlRememberer:
                     file_data = file_handle.read()
                     for elem in file_data.split('\n'):
                         if elem != "":
-                            self.add_movie(Movie(elem))
+                            try:
+                                self.add_movie(CoreFactory.create_movie(elem))
+                            except CoreFactoryError as ex:
+                                logging.error("Exception: %s", ex)
             except IOError:
                 pass
             os.remove(backup_file)

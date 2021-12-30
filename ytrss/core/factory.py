@@ -17,33 +17,50 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+"""
+The module with factory of plugin objects
+"""
+from typing import Union, Dict, Any
 
-import unittest
-
+from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
 from ytrss.configuration.entity.source import Source
+from ytrss.controlers.youtube.downloaded_movie import YouTubeDownloadedMovie
+from ytrss.controlers.youtube.movie import YouTubeMovie
 from ytrss.controlers.youtube.source_downloader import YouTubeSourceDownloader
+from ytrss.core.downloaded_movie import DownloadedMovie
+from ytrss.core.movie import Movie
+from ytrss.download.source_downloader import SourceDownloader
 
 
-class TestFinder(unittest.TestCase):  # pylint: disable=R0904
-    """ Test of finder """
+class CoreFactoryError(Exception):
+    """
+    Core Factory Error
+    """
 
-    def test_user_find(self) -> None:
-        """ Test user finder. """
-        source = YouTubeSourceDownloader(Source.from_json(dict(code="UCViVL2aOkLWKcFVi0_p6u6g")))
-        movies = list(source.movies)
-        self.assertGreater(len(movies), 0)
-        for movie in movies:
-            print(f"url: {movie}")
-            self.assertTrue(movie.url.startswith("https://www.youtube.com/watch?v="))
 
-    def test_playlist_find(self) -> None:
-        """ Test playlist finder. """
-        source = YouTubeSourceDownloader(Source.from_json(dict(
-            code="PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6",
-            type="playlist"
-        )))
-        movies = list(source.movies)
-        self.assertGreater(len(movies), 0)
-        for movie in movies:
-            print(f"url: {movie}")
-            self.assertTrue(movie.url.startswith("https://www.youtube.com/watch?v="))
+class CoreFactory:
+    """
+    Set of factory method to create plugin objects
+    """
+
+    @staticmethod
+    def create_source_downloader(source: Source) -> SourceDownloader:
+        """
+        Create source downloader object from args
+        """
+        return YouTubeSourceDownloader(source)
+
+    @staticmethod
+    def create_movie(arg: Union[str, Dict[str, Any]], destination_dir: str = DEFAULT_PODCAST_DIR) -> Movie:
+        """
+        Create Movie object from args
+        """
+        return YouTubeMovie(arg, destination_dir)
+
+    @staticmethod
+    def create_downloaded_movie(settings: Configuration, dirname: str, name: str) -> DownloadedMovie:
+        """
+        Create DownloadedMovie object from args
+        """
+        return YouTubeDownloadedMovie(settings, dirname, name)

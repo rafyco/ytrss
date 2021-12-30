@@ -28,7 +28,7 @@ import unittest
 
 from typing import List, Dict, Any
 
-from ytrss.core.movie import Movie
+from ytrss.controlers.youtube.movie import YouTubeMovie
 from ytrss.core.movie import InvalidParameterMovieError
 
 
@@ -77,7 +77,7 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
         }]
 
         for elem in test_suites:
-            test_elem = Movie(elem['arg'])
+            test_elem = YouTubeMovie(elem['arg'])
             self.assertEqual(test_elem.code, elem['code'])
             self.assertEqual(test_elem.url, elem['url'])
 
@@ -100,7 +100,7 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
         ]
         for elem in test_suites:
             with self.assertRaises(InvalidParameterMovieError):
-                Movie(elem)
+                YouTubeMovie(elem)
 
     def test_comparation(self) -> None:
         """
@@ -123,8 +123,8 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
             "ob2": "http://youtu.be/I-JxpVFlaos",
         }]
         for elem in test_suites:
-            elem1 = Movie(elem['ob1'])
-            elem2 = Movie(elem['ob2'])
+            elem1 = YouTubeMovie(elem['ob1'])
+            elem2 = YouTubeMovie(elem['ob2'])
             self.assertEqual(elem1,
                              elem2,
                              "Not equal [{} != {}".format(elem['ob1'],
@@ -137,9 +137,9 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
         @param self: object handle
         @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
-        elem1 = Movie("I-JxpVFlaos")
+        elem1 = YouTubeMovie("I-JxpVFlaos")
         element_string = elem1.to_string()
-        elem2 = Movie(element_string)
+        elem2 = YouTubeMovie(element_string)
         self.assertEqual(elem1, elem2)
         self.assertEqual(elem1.code, "I-JxpVFlaos")
         self.assertEqual(elem2.code, "I-JxpVFlaos")

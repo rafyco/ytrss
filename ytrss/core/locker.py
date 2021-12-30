@@ -34,7 +34,7 @@ Example of usage::
     locker.unlock()
 
 @warn: Before out of program method -L{unlock() <Locker.unlock>} should
-    be invoke.
+    be invoked.
 
 """
 
