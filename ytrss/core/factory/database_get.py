@@ -17,7 +17,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-from typing import Optional, Sequence
+from ytrss.configuration.configuration import Configuration
+from ytrss.database.database_get import DatabaseGet
+from ytrss.database.file_db.file_database_get import FileDatabaseGet
 
 
-def main(args: Optional[Sequence[str]]) -> None: ...
+def create_database_get(settings: Configuration) -> DatabaseGet:
+    """
+    Create DatabasePut object from settings
+    """
+    return FileDatabaseGet(settings)

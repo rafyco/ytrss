@@ -39,7 +39,8 @@ import os
 from typing import Iterator
 
 from ytrss.configuration.configuration import Configuration
-from ytrss.core.factory import CoreFactoryError, CoreFactory
+from ytrss.core.factory import CoreFactoryError
+from ytrss.core.factory.downloaded_movie import create_downloaded_movie
 from ytrss.podcast.podcast import Podcast
 from ytrss.core.downloaded_movie import DownloadedMovie
 from ytrss.core.downloaded_movie import MovieFileError
@@ -59,7 +60,7 @@ def list_elements_in_dir(dirname: str, settings: Configuration) -> Iterator[Down
     for filename in os.listdir(os.path.join(settings.output, dirname)):
         if filename.endswith(".json"):
             try:
-                yield CoreFactory.create_downloaded_movie(settings, dirname, filename[0:len(filename) - 5])
+                yield create_downloaded_movie(settings, dirname, filename[0:len(filename) - 5])
             except (MovieFileError, CoreFactoryError):
                 pass
 

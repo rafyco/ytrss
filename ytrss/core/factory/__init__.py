@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-from typing import Optional, Sequence
-
-
-def main(args: Optional[Sequence[str]]) -> None: ...
+class CoreFactoryError(Exception):
+    """
+    Core Factory Error
+    """

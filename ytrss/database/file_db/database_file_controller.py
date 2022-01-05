@@ -21,7 +21,8 @@ import logging
 import os
 from typing import List
 
-from ytrss.core.factory import CoreFactoryError, CoreFactory
+from ytrss.core.factory import CoreFactoryError
+from ytrss.core.factory.movie import create_movie
 from ytrss.core.movie import InvalidParameterMovieError, Movie
 
 
@@ -29,7 +30,7 @@ class URLRemembererError(Exception):
     """ URLRememberer Exception. """
 
 
-class UrlRememberer:
+class DatabaseFileController:
     """
     Remember URLs or read it from file.
 
@@ -45,7 +46,7 @@ class UrlRememberer:
         UrlRememberer constructor.
 
         @param self: object handle
-        @type self: L{UrlRememberer}
+        @type self: L{DatabaseFileController}
         @param file_name: name of checking file
         @type file_name: str
         """
@@ -58,7 +59,7 @@ class UrlRememberer:
                 self.file_data = file_handle.read()
             for elem in self.file_data.split('\n'):
                 try:
-                    tmp_elem = CoreFactory.create_movie(elem)
+                    tmp_elem = create_movie(elem)
                     self.database.append(tmp_elem)
                 except (InvalidParameterMovieError, CoreFactoryError) as ex:
                     logging.debug("Error: %s", ex)
@@ -71,7 +72,7 @@ class UrlRememberer:
         Add address to base.
 
         @param self: object handle
-        @type self: L{UrlRememberer}
+        @type self: L{DatabaseFileController}
         @param movie: adding address
         @type movie: L{Element<ytrss.core.element.Element>}
         """
@@ -88,7 +89,7 @@ class UrlRememberer:
         Check is URL not exist in file.
 
         @param self: object handle
-        @type self: L{UrlRememberer}
+        @type self: L{DatabaseFileController}
         @param movie: element to check
         @type movie: L{Element<ytrss.core.element.Element>}
         @return: C{True} if address new, C{False} otherwise
@@ -107,7 +108,7 @@ class UrlRememberer:
         Save copy to file.
 
         @param self: object handle
-        @type self: L{UrlRememberer}
+        @type self: L{DatabaseFileController}
         @param file_name: path to save
         @type file_name: str
         """
@@ -120,11 +121,12 @@ class UrlRememberer:
         Delete file with data.
 
         @param self: object handle
-        @type self: L{UrlRememberer}
+        @type self: L{DatabaseFileController}
         """
         if self.file_name == "":
             return
-        os.remove(self.file_name)
+        if os.path.isfile(self.file_name):
+            os.remove(self.file_name)
         self.file_name = ""
         self.file_data = ""
 
@@ -133,7 +135,7 @@ class UrlRememberer:
         Merge with another file.
 
         @param self: object handle
-        @type self: L{UrlRememberer}
+        @type self: L{DatabaseFileController}
         @param backup_file: path to read data
         @type backup_file: str
 
@@ -147,7 +149,7 @@ class UrlRememberer:
                     for elem in file_data.split('\n'):
                         if elem != "":
                             try:
-                                self.add_movie(CoreFactory.create_movie(elem))
+                                self.add_movie(create_movie(elem))
                             except CoreFactoryError as ex:
                                 logging.error("Exception: %s", ex)
             except IOError:

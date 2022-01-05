@@ -29,7 +29,7 @@ def create_configuration(config_file_name: str) -> None:
         raise FileExistsError(f"file {config_file_name} exists")
 
     try:
-        os.makedirs(config_file_name)
+        os.makedirs(os.path.abspath(os.path.join(config_file_name, "..")))
     except OSError:
         pass
 

@@ -59,9 +59,9 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         self.__settings = settings
         self.dirname = dirname
         self.name = name
-        if not os.path.isfile(self.json):
+        if not os.path.isfile(self.__json):
             raise MovieJSONError
-        if not os.path.isfile(self.mp3):
+        if not os.path.isfile(self.__mp3):
             raise MovieMP3Error
 
     @property

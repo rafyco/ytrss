@@ -30,8 +30,8 @@ import tempfile
 
 from typing import List
 
-from ytrss.core.locker import Locker
-from ytrss.core.locker import LockerError
+from ytrss.database.file_db.locker import Locker
+from ytrss.database.file_db.locker import LockerError
 
 
 # This is tested class. Can have too many method
@@ -88,6 +88,16 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
         tested_locker.unlock()
         self.assertFalse(tested_locker.is_lock())
 
+    def test_usage_with(self) -> None:
+        """
+        Testing if lock works as a ContextManager
+        """
+        tested_locker = self.prepare_locker("ytrss_module_test")
+        self.assertFalse(tested_locker.is_lock())
+        with tested_locker:
+            self.assertTrue(tested_locker.is_lock())
+        self.assertFalse(tested_locker.is_lock())
+
     def test_double_lock(self) -> None:
         """
         Testing is double lock raise an error.
@@ -101,6 +111,20 @@ class TestLocker(unittest.TestCase):  # pylint: disable=R0904
         with self.assertRaises(LockerError):
             tested_locker.lock()
         tested_locker.unlock()
+
+    def test_double_lock_with(self) -> None:
+        """
+        Testing if lock works properly in ContextManager mode
+        """
+        tested_locker = self.prepare_locker("ytrss_double_test")
+        second_tested_locker = self.prepare_locker("ytrss_double_test")
+
+        self.assertFalse(tested_locker.is_lock())
+        with tested_locker:
+            self.assertTrue(tested_locker.is_lock())
+            with self.assertRaises(LockerError):
+                with second_tested_locker:
+                    print("nothing to do")
 
     def test_double_unlock(self) -> None:
         """

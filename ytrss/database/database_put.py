@@ -17,7 +17,18 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-from typing import Optional, Sequence
+import abc
+
+from ytrss.core.movie import Movie
 
 
-def main(args: Optional[Sequence[str]]) -> None: ...
+class DatabasePut(metaclass=abc.ABCMeta):
+    """
+    TODO: documentation
+    """
+
+    @abc.abstractmethod
+    def queue_mp3(self, movie: Movie) -> bool:
+        """
+        TODO: documentation
+        """

@@ -41,14 +41,15 @@ Example of usage::
 import os
 import logging
 import tempfile
-from typing import Optional
+from types import TracebackType
+from typing import Optional, ContextManager, Type
 
 
 class LockerError(Exception):
     """ Locker exception """
 
 
-class Locker:
+class Locker(ContextManager[None]):
     """
     Class for blocking running program
 
@@ -112,3 +113,16 @@ class Locker:
         logging.debug("Unlock program: %s", self.file_path)
         if self.is_lock():
             os.remove(self.file_path)
+
+    def __enter__(self) -> None:
+        self.lock()
+
+    def __exit__(
+            self,
+            exc_type: Optional[Type[BaseException]],
+            exc_value: Optional[BaseException],
+            exc_trackback: Optional[TracebackType]
+    ) -> None:
+        self.unlock()
+        if exc_value is not None:
+            raise exc_value

@@ -17,7 +17,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-from typing import Optional, Sequence
+from ytrss.configuration.configuration import Configuration
+from ytrss.controlers.youtube.downloaded_movie import YouTubeDownloadedMovie
+from ytrss.core.downloaded_movie import DownloadedMovie
 
 
-def main(args: Optional[Sequence[str]]) -> None: ...
+def create_downloaded_movie(settings: Configuration, dirname: str, name: str) -> DownloadedMovie:
+    """
+    Create DownloadedMovie object from args
+    """
+    return YouTubeDownloadedMovie(settings, dirname, name)

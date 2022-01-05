@@ -26,11 +26,12 @@ from typing import Optional
 
 from ytrss.configuration.configuration import Configuration
 from ytrss.core.movie import Movie
-from ytrss.database.database_file_config import DatabaseFileConfig
-from ytrss.database.url_remember import UrlRememberer
+from ytrss.database.file_db.database_file_config import DatabaseFileConfig
+from ytrss.database.database_put import DatabasePut
+from ytrss.database.file_db.database_file_controller import DatabaseFileController
 
 
-class DownloadQueue:
+class FileDatabasePut(DatabasePut):
     """
     Class saving urls to download.
 
@@ -39,7 +40,7 @@ class DownloadQueue:
     @ivar download_file: file ready to download
     @type download_file: str
     @ivar rememberer: object remembering urls
-    @type rememberer: L{UrlRememberer}
+    @type rememberer: L{DatabaseFileController}
     """
 
     def __init__(self, configuration: Configuration, base_file: Optional[str] = None):
@@ -47,7 +48,7 @@ class DownloadQueue:
         DownloadQueue constructor.
 
         @param self: object handle
-        @type self: L{DownloadQueue}
+        @type self: L{FileDatabaseGet}
         @param configuration: settings for DownloadQueue
         @type configuration: L{YTSettings<ytrss.core.settings.YTSettings>}
         @param base_file: path to file with remember subscription
@@ -58,27 +59,27 @@ class DownloadQueue:
         config_file = DatabaseFileConfig(configuration)
         self.url_rss = config_file.url_rss
         self.download_file = config_file.download_file
-        self.download_yt = UrlRememberer(self.download_file)
+        self.download_yt = DatabaseFileController(self.download_file)
         base_file = base_file if base_file is not None else config_file.url_rss
         logging.debug(base_file)
-        self.rememberer = UrlRememberer(base_file)
+        self.rememberer = DatabaseFileController(base_file)
 
-    def queue_mp3(self, address: Movie) -> bool:
+    def queue_mp3(self, movie: Movie) -> bool:
         """
         Add address to download.
 
         @param self: object handle
-        @type self: L{DownloadQueue}
-        @param address: adress to download
-        @type address: str
+        @type self: L{FileDatabaseGet}
+        @param movie: adress to download
+        @type movie: str
 
         @return: C{True} if C{address} can be downloaded, C{False} otherwise
         @rtype: Boolean
         """
-        logging.debug("DOWNLOAD: %s", address.url)
-        if self.rememberer.is_new(address):
-            logging.debug("Download address: %s", address.url)
-            self.download_yt.add_movie(address)
-            self.rememberer.add_movie(address)
+        logging.debug("DOWNLOAD: %s", movie.url)
+        if self.rememberer.is_new(movie):
+            logging.debug("Download address: %s", movie.url)
+            self.download_yt.add_movie(movie)
+            self.rememberer.add_movie(movie)
             return True
         return False

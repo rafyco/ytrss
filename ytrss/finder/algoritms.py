@@ -35,8 +35,9 @@ for more option call program with flag C{--help}
 """
 
 import logging
-from ytrss.database.download_queue import DownloadQueue
+
 from ytrss.configuration.configuration import Configuration
+from ytrss.core.factory.database_put import create_database_put
 from ytrss.finder.url_finder import URLFinder
 
 
@@ -46,7 +47,7 @@ def prepare_urls(settings: Configuration) -> None:
     """
     logging.info("Prepare new urls")
     finder = URLFinder(settings.sources)
-    queue = DownloadQueue(settings)
+    queue = create_database_put(settings)
     for movie in finder.movies:
         if queue.queue_mp3(movie):
             print(f"Nowy element: {movie.title} [{movie.code}]")
