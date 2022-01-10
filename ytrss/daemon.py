@@ -47,7 +47,7 @@ from ytrss.configuration.configuration import ConfigurationError, ConfigurationF
 from ytrss.configuration.factory import configuration_factory
 from ytrss.podcast.algoritms import rss_generate
 from ytrss.finder.algoritms import prepare_urls
-from ytrss.ytdown import download_all_movie
+from ytrss.client import download_all_movie
 
 
 if sys.platform.lower().startswith('win'):

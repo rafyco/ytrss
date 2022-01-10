@@ -112,6 +112,15 @@ def main_work(configuration: Configuration, options: Namespace) -> None:
         rss_generate(configuration)
 
 
+def main_deprecated(argv: Optional[Sequence[str]] = None) -> None:
+    """
+    Main function marked as deprecated
+    """
+    logging.warning("This command is deprecated. use 'ytrss' instead with the same parameter")
+    main(argv)
+    logging.warning("This command is deprecated. use 'ytrss' instead with the same parameter")
+
+
 def main(argv: Optional[Sequence[str]] = None) -> None:
     """
     Main function for command line program.

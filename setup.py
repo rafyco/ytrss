@@ -110,7 +110,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'ytdown = ytrss.ytdown:main',
+            'ytdown = ytrss.client:main_deprecated',
+            'ytrss = ytrss.client:main',
         ]
     },
     command_options={
