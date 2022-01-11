@@ -70,7 +70,7 @@ class _Item:
                 f"<link>{format_str(self.__get_arg('url'))}</link>\n"
                 f"<author>{format_str(self.__get_arg('uploader'))}</author>\n"
                 f"<itunes:author>{format_str(self.__get_arg('uploader'))}</itunes:author>\n"
-                f"<itunes:image href=\"{self.__get_arg('image')}\"/>\n"
+                f"<itunes:image href=\"{format_str(self.__get_arg('image'))}\"/>\n"
                 f"<description><![CDATA[\n"
                 f"{self.description}\n"
                 f"<br />\n"
