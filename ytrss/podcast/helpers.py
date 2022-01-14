@@ -21,9 +21,14 @@
 Podcast creator helpers
 """
 import re
+import time
+from datetime import datetime
+from email import utils
+
+from typing import Optional
 
 
-def desc_format(text: str) -> str:
+def format_desc(text: Optional[str]) -> str:
     """
     Format description.
 
@@ -35,6 +40,8 @@ def desc_format(text: str) -> str:
     @return: HTML formated string
     @rtype: str
     """
+    if text is None:
+        return ""
     result = text
     result = re.sub(r"[\w\.\+\-]+\@[\w]+\.[a-z]{2,3}",
                     r"<a href='mailto:\g<0>'>\g<0></a>",
@@ -57,7 +64,7 @@ def desc_format(text: str) -> str:
     return result
 
 
-def format_str(text: str) -> str:
+def format_str(text: Optional[str]) -> str:
     """
     Format some strings.
 
@@ -69,4 +76,15 @@ def format_str(text: str) -> str:
     @return: formatted text
     @rtype: str
     """
+    if text is None:
+        return ""
     return text.replace("&", "&amp;")
+
+
+def format_date(date: Optional[datetime]) -> str:
+    """
+    Format datetime to string
+    """
+    print_date = date if date is not None else datetime.now()
+    nowtimestamp = time.mktime(print_date.timetuple())
+    return utils.formatdate(nowtimestamp)

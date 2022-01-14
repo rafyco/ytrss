@@ -66,3 +66,45 @@ class DownloadedMovie(metaclass=abc.ABCMeta):
         @param self: object handle
         @type self: L{Movie<ytrss.core.movie.Movie>}
         """
+
+    @property
+    @abc.abstractmethod
+    def title(self) -> str:
+        """
+        Title of movie
+        """
+
+    @property
+    @abc.abstractmethod
+    def image(self) -> str:
+        """
+        image of movie
+        """
+
+    @property
+    @abc.abstractmethod
+    def url(self) -> str:
+        """
+        url of movie
+        """
+
+    @property
+    @abc.abstractmethod
+    def author(self) -> str:
+        """
+        author of the movie
+        """
+
+    @property
+    @abc.abstractmethod
+    def filename(self) -> str:
+        """
+        filename of movie
+        """
+
+    @property
+    @abc.abstractmethod
+    def description(self) -> str:
+        """
+        description of the movie
+        """

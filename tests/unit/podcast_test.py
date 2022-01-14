@@ -25,7 +25,7 @@ Testing Podcast module.
 
 import unittest
 
-from ytrss.podcast.helpers import desc_format
+from ytrss.podcast.helpers import format_desc
 
 
 class TestPodcast(unittest.TestCase):  # pylint: disable=R0904
@@ -94,7 +94,7 @@ class TestPodcast(unittest.TestCase):  # pylint: disable=R0904
             },
         ]
         for elem in samples:
-            result = desc_format(elem['text'])
+            result = format_desc(elem['text'])
             self.assertEqual(result, elem['predict'])
 
 

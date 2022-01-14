@@ -78,11 +78,10 @@ def rss_generate(settings: Configuration) -> None:
             podcast = Podcast(dir_name,
                               settings.get_podcast_information(dir_name))
             for movie in list_elements_in_dir(dir_name, settings):
-                logging.debug("item: %s", movie.name)
+                logging.debug("item: %s", movie.filename)
                 try:
-                    podcast.add_item(movie=movie,
-                                     dir_name=dir_name)
-                    print("add item: %s" % movie.name)
+                    podcast.add_item(movie=movie)
+                    print("add item: %s" % movie.filename)
                 except ValueError:
                     print("Cannot add item")
             podcast_file = os.path.join(settings.output, dir_name, "podcast.xml")

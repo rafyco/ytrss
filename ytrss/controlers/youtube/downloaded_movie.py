@@ -57,8 +57,8 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         self.__data: Optional[Dict[str, Any]] = None
         self.__movie: Optional[Movie] = None
         self.__settings = settings
-        self.dirname = dirname
-        self.name = name
+        self.__dirname = dirname
+        self.__name = name
         if not os.path.isfile(self.__json):
             raise MovieJSONError
         if not os.path.isfile(self.__mp3):
@@ -70,8 +70,8 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         Return path to json file.
         """
         return os.path.join(self.__settings.output,
-                            self.dirname,
-                            self.name + ".json")
+                            self.__dirname,
+                            self.__name + ".json")
 
     @property
     def __mp3(self) -> str:
@@ -79,8 +79,8 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         Return path to mp3 file.
         """
         return os.path.join(self.__settings.output,
-                            self.dirname,
-                            self.name + ".mp3")
+                            self.__dirname,
+                            self.__name + ".mp3")
 
     @property
     def data(self) -> Dict[str, Any]:
@@ -98,7 +98,7 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         Element object.
         """
         if self.__movie is None:
-            self.__movie = YouTubeMovie(self.data, self.dirname)
+            self.__movie = YouTubeMovie(self.data, self.__dirname)
         return self.__movie
 
     @property
@@ -110,6 +110,30 @@ class YouTubeDownloadedMovie(DownloadedMovie):
             parsed_data = utils.parsedate(self.element.date)
             self.__date = datetime(*(parsed_data[0:6])) if parsed_data is not None else datetime.now()
         return self.__date
+
+    @property
+    def title(self) -> str:
+        return self.data.get("title", "<no title>")
+
+    @property
+    def image(self) -> str:
+        return self.data.get("image")
+
+    @property
+    def url(self) -> str:
+        return self.data.get("url")
+
+    @property
+    def author(self) -> str:
+        return self.data.get("uploader")
+
+    @property
+    def filename(self) -> str:
+        return self.__name
+
+    @property
+    def description(self) -> str:
+        return self.data.get("description", "")
 
     def delete(self) -> None:
         """

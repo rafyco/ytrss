@@ -273,7 +273,7 @@ class YouTubeMovie(Movie):
             'uploader': self.author,
             'description': self.desc,
             'image': self.img_url,
-            'data': self.date
+            'date': self.date
         }
 
     def __str__(self) -> str:
