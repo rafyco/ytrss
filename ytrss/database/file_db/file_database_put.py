@@ -25,7 +25,7 @@ import logging
 from typing import Optional
 
 from ytrss.configuration.configuration import Configuration
-from ytrss.core.movie import Movie
+from ytrss.core.entity.movie import Movie
 from ytrss.database.file_db.database_file_config import DatabaseFileConfig
 from ytrss.database.database_put import DatabasePut
 from ytrss.database.file_db.database_file_controller import DatabaseFileController

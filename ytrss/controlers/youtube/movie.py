@@ -34,7 +34,7 @@ from email import utils
 import youtube_dl
 from ytrss.configuration.configuration import Configuration
 from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
-from ytrss.core.movie import Movie, InvalidParameterMovieError, InvalidStringJSONParseError
+from ytrss.core.entity.movie import Movie, InvalidParameterMovieError, InvalidStringJSONParseError
 from ytrss.controlers.youtube.youtube_downloader import YouTubeDownloader
 
 

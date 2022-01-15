@@ -23,7 +23,7 @@ Podcast's movie.
 import abc
 from datetime import datetime
 
-from ytrss.core.movie import Movie
+from ytrss.core.entity.movie import Movie
 
 
 class MovieFileError(Exception):

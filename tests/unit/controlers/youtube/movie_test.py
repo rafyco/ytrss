@@ -29,7 +29,7 @@ import unittest
 from typing import List, Dict, Any
 
 from ytrss.controlers.youtube.movie import YouTubeMovie
-from ytrss.core.movie import InvalidParameterMovieError
+from ytrss.core.entity.movie import InvalidParameterMovieError
 
 
 # This is tested class. Can have too many method

@@ -29,8 +29,8 @@ from typing import Any, Dict, Optional
 
 from ytrss.configuration.configuration import Configuration
 from ytrss.controlers.youtube.movie import YouTubeMovie
-from ytrss.core.downloaded_movie import DownloadedMovie, MovieJSONError, MovieMP3Error
-from ytrss.core.movie import Movie
+from ytrss.core.entity.downloaded_movie import DownloadedMovie, MovieJSONError, MovieMP3Error
+from ytrss.core.entity.movie import Movie
 
 
 class YouTubeDownloadedMovie(DownloadedMovie):

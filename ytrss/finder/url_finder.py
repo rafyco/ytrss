@@ -28,7 +28,7 @@ from ytrss.configuration.entity.source import Source
 from ytrss.core.factory import CoreFactoryError
 from ytrss.core.factory.source_downloader import create_source_downloader
 from ytrss.download.source_downloader import SourceDownloader
-from ytrss.core.movie import Movie
+from ytrss.core.entity.movie import Movie
 
 
 class URLFinder:

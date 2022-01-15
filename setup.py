@@ -88,6 +88,7 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
+        'pyyaml',
         'astroid ~= 2.5',
         'jinja2 ~= 3.0.3',
         'youtube_dl ~= 2021.6.6',

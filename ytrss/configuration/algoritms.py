@@ -33,6 +33,6 @@ def create_configuration(config_file_name: str) -> None:
     except OSError:
         pass
 
-    data = pkgutil.get_data(__name__, "default_config.json")
+    data = pkgutil.get_data(__name__, "default_config.yml")
     with open(os.path.expanduser(config_file_name), "w+") as config_file:
         config_file.write(data.decode("utf-8"))

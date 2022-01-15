@@ -19,7 +19,7 @@
 ###########################################################################
 import abc
 
-from ytrss.core.movie import Movie
+from ytrss.core.entity.movie import Movie
 
 
 class DatabasePut(metaclass=abc.ABCMeta):

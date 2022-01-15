@@ -19,7 +19,7 @@
 ###########################################################################
 from ytrss.configuration.configuration import Configuration
 from ytrss.controlers.youtube.downloaded_movie import YouTubeDownloadedMovie
-from ytrss.core.downloaded_movie import DownloadedMovie
+from ytrss.core.entity.downloaded_movie import DownloadedMovie
 
 
 def create_downloaded_movie(settings: Configuration, dirname: str, name: str) -> DownloadedMovie:

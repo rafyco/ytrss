@@ -159,8 +159,8 @@ class DataConfiguration(Configuration):
                     self.__sources.append(source)
 
         self.__podcast: Optional[Dict[str, Any]] = None
-        if 'podcasts' in conf_data:
-            self.__podcast = conf_data['podcasts']
+        if 'podcasts' in conf_data and 'outputs' in conf_data['podcasts']:
+            self.__podcast = conf_data['podcasts']['outputs']
 
     @staticmethod
     def __print_url_name(elem: Source) -> str:

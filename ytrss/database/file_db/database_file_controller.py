@@ -23,7 +23,7 @@ from typing import List
 
 from ytrss.core.factory import CoreFactoryError
 from ytrss.core.factory.movie import create_movie
-from ytrss.core.movie import InvalidParameterMovieError, Movie
+from ytrss.core.entity.movie import InvalidParameterMovieError, Movie
 
 
 class URLRemembererError(Exception):

@@ -22,7 +22,7 @@ from types import TracebackType
 
 from typing import ContextManager, Optional, Iterable, Type
 
-from ytrss.core.movie import Movie
+from ytrss.core.entity.movie import Movie
 
 
 class DatabaseGetOpen(metaclass=abc.ABCMeta):

@@ -42,8 +42,8 @@ from ytrss.configuration.configuration import Configuration
 from ytrss.core.factory import CoreFactoryError
 from ytrss.core.factory.downloaded_movie import create_downloaded_movie
 from ytrss.podcast.podcast import Podcast
-from ytrss.core.downloaded_movie import DownloadedMovie
-from ytrss.core.downloaded_movie import MovieFileError
+from ytrss.core.entity.downloaded_movie import DownloadedMovie
+from ytrss.core.entity.downloaded_movie import MovieFileError
 
 
 def list_elements_in_dir(dirname: str, settings: Configuration) -> Iterator[DownloadedMovie]:

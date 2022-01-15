@@ -21,7 +21,7 @@ from typing import Union, Dict, Any
 
 from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
 from ytrss.controlers.youtube.movie import YouTubeMovie
-from ytrss.core.movie import Movie
+from ytrss.core.entity.movie import Movie
 
 
 def create_movie(arg: Union[str, Dict[str, Any]],

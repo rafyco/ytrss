@@ -29,7 +29,7 @@ from jinja2 import Environment, FileSystemLoader
 
 import ytrss
 from ytrss.configuration.entity.podcast_info import PodcastInfo
-from ytrss.core.downloaded_movie import DownloadedMovie
+from ytrss.core.entity.downloaded_movie import DownloadedMovie
 from ytrss.podcast.helpers import format_str, format_desc, format_date
 
 

@@ -23,7 +23,7 @@ Module to download list of YouTube movie ulrs from codes.
 import abc
 from typing import Iterable
 
-from ytrss.core.movie import Movie
+from ytrss.core.entity.movie import Movie
 
 
 class SourceDownloader(metaclass=abc.ABCMeta):

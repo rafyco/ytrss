@@ -28,7 +28,7 @@ from xml.dom import minidom
 
 from ytrss.configuration.entity.source import Source
 from ytrss.controlers.youtube.movie import YouTubeMovie
-from ytrss.core.movie import Movie
+from ytrss.core.entity.movie import Movie
 from ytrss.download.source_downloader import SourceDownloader
 
 
