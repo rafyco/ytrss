@@ -1,0 +1,12 @@
+*.pyc
+*_docs
+build/
+dist/
+envs/
+.eggs/
+*.egg-info
+.ropeproject/
+.tox
+
+.idea
+!.idea/vcs.xml
