@@ -55,6 +55,7 @@ setup(
     project_urls={
         "Source": "https://github.com/rafyco/template-python-package",
         "Tracker": "https://github.com/rafyco/template-python-package/issues",
+        "Documentation": "https://template-python-package.readthedocs.io/en/latest/"
     },
     packages=find_packages(),
     include_package_data=True,
