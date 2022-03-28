@@ -1,10 +1,10 @@
 *.pyc
-ytrss_docs
+*_docs
 build/
 dist/
 envs/
 .eggs/
-ytrss.egg-info
+*.egg-info
 .ropeproject/
 .tox
 

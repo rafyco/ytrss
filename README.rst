@@ -64,7 +64,7 @@ download code and invoke command:
 
     python setup.py install
 
-To checking the installation you can use to call ``ytss``. Unittest can be also
+To checking the installation you can use to call ``ytrss``. Unittest can be also
 helpfull with verification.
 
 Unit test
@@ -83,3 +83,13 @@ Author
 ------
 
 Rafal Kobel rafalkobel@rafyco.pl
+
+
+.. image:: https://img.shields.io/static/v1.svg?label=Linkedin&message=Rafal%20Kobel&color=blue&logo=linkedin
+   :target: https://www.linkedin.com/in/rafa%C5%82-kobel-03850910a/
+
+.. image:: https://img.shields.io/static/v1.svg?label=Github&message=rafyco&color=blue&logo=github
+   :target: https://github.com/rafyco
+
+.. image:: https://img.shields.io/static/v1.svg?label=Facebook&message=Rafal%20Kobel&color=blue&logo=facebook
+    :target: https://facebook.com/rafyco

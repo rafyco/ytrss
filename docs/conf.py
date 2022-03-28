@@ -37,16 +37,16 @@
 
 # -- Project information -----------------------------------------------------
 
-import ytrss
+import ytrss as current_package
 
-project = 'ytrss'
-copyright = '2019, Rafał Kobel'
+project = current_package.name
+copyright = '2022, Rafał Kobel'
 author = 'Rafał Kobel'
 
 # The short X.Y version
-version = ytrss.get_version()
+version = current_package.version
 # The full version, including alpha/beta/rc tags
-release = ytrss.get_version()
+release = current_package.version
 
 
 # -- General configuration ---------------------------------------------------
@@ -112,7 +112,7 @@ html_theme = 'classic'
 html_static_path = []
 
 # Custom sidebar templates, must be a dictionary that maps document names
-# to templates names.
+# to template names.
 #
 # The default sidebars (for documents that don't match any pattern) are
 # defined by theme itself.  Builtin themes are using these templates by
@@ -125,7 +125,7 @@ html_static_path = []
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ytrssdoc'
+htmlhelp_basename = f"{current_package.name}doc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -152,7 +152,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ytrss.tex', 'ytrss Documentation',
+    (master_doc, '', f"{current_package.name} Documentation",
      'Rafał Kobel', 'manual'),
 ]
 
@@ -162,7 +162,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'ytrss', 'ytrss Documentation',
+    (master_doc, current_package.name, f"{current_package.name} Documentation",
      [author], 1)
 ]
 
@@ -173,8 +173,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'ytrss', 'ytrss Documentation',
-     author, 'ytrss', 'One line description of project.',
+    (master_doc, current_package.name, f"{current_package.name} Documentation",
+     author, current_package.name, 'One line description of project.',
      'Miscellaneous'),
 ]
 
