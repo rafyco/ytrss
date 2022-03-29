@@ -1,0 +1,21 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "ignorePaths": [
+        "**/node_modules/**",
+        "**/vscode-extension/**",
+        "**/.git/**",
+        "**/.idea/**",
+        ".vscode",
+        "package-lock.json",
+        "report"
+    ],
+    "words": [
+        "pypa",
+        "pypi",
+        "sdist",
+        "pytest",
+        "typping",
+        "unittests"
+    ]
+}
