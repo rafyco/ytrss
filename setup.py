@@ -32,13 +32,13 @@ understand the python_requires classifier. Make sure you
 have Python {}.{} or newer, then try again:
 
     $ python3 -m pip install --upgrade pip setuptools
-    $ pip3 install template-python-package 
+    $ pip3 install template-python-package
 
 """.format(*(REQUIRED_PYTHON + CURRENT_PYTHON + REQUIRED_PYTHON)))
     sys.exit(1)
 
-package_name = 'template-python-package'
-version = __import__(package_name).version
+package_name = 'template_python_package'
+version = __import__(package_name).get_version()
 
 data_files = []
 

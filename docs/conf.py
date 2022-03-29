@@ -22,14 +22,14 @@
 # TODO: Change name
 import template_python_package as current_package
 
-project = current_package.name
+project = current_package.get_name()
 copyright = '2022, Rafał Kobel'
 author = 'Rafał Kobel'
 
 # The short X.Y version
-version = current_package.version
+version = current_package.get_version()
 # The full version, including alpha/beta/rc tags
-release = current_package.version
+release = current_package.get_version()
 
 
 # -- General configuration ---------------------------------------------------
@@ -108,7 +108,7 @@ html_static_path = []
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = f"{current_package.name}doc"
+htmlhelp_basename = f"{current_package.get_name()}doc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -135,7 +135,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, '', f"{current_package.name} Documentation",
+    (master_doc, '', f"{current_package.get_name()} Documentation",
      'Rafał Kobel', 'manual'),
 ]
 
@@ -145,7 +145,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, current_package.name, f"{current_package.name} Documentation",
+    (master_doc, current_package.get_name(), f"{current_package.get_name()} Documentation",
      [author], 1)
 ]
 
@@ -156,8 +156,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, current_package.name, f"{current_package.name} Documentation",
-     author, current_package.name, 'One line description of project.',
+    (master_doc, current_package.get_name(), f"{current_package.get_name()} Documentation",
+     author, current_package.get_name(), 'One line description of project.',
      'Miscellaneous'),
 ]
 

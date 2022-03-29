@@ -1,4 +1,4 @@
-ame: Package upgrade
+name: Package upgrade
 
 on:
   push:
