@@ -4,16 +4,14 @@ TODO: Add description to package
 """
 
 
-@property
-def version() -> str:
+def get_version() -> str:
     """ Get version of package. """
     return "0.0.1"
 
 
-@property
-def name() -> str:
+def get_name() -> str:
     """ Get name of module. """
     return 'template_python_package'
 
 
-__version__ = version
+__version__ = get_version()

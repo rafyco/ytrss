@@ -1,8 +1,9 @@
+---
 name: Python package
 
-on: 
+on:
   push:
-    branches-ignore: 
+    branches-ignore:
       - master
 
 jobs:
@@ -50,7 +51,7 @@ jobs:
           pip install tox
       - name: Checks typping
         run: |
-          tox -e typing 
+          tox -e typing
 
   documentation:
     runs-on: ubuntu-latest
@@ -66,6 +67,12 @@ jobs:
       - name: Build documentation
         run: |
           tox -e documentation
+      - name: Archive documentation
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation
+          path: build/sphinx/html/
 
   execute:
     runs-on: ubuntu-latest

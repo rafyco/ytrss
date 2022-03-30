@@ -37,6 +37,7 @@ def read_description(module_name):
 CURRENT_PYTHON = sys.version_info[:2]
 REQUIRED_PYTHON = (3, 6)
 
+# TODO: change package name
 if CURRENT_PYTHON < REQUIRED_PYTHON:
     sys.stderr.write("""
 ==========================
