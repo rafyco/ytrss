@@ -67,3 +67,9 @@ jobs:
       - name: Build documentation
         run: |
           tox -e documentation
+      - name: Archive documentation
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation
+          path: build/sphinx/html/

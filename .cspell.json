@@ -15,6 +15,7 @@
         "pypi",
         "sdist",
         "pytest",
+        "shellcheck",
         "typping",
         "unittests"
     ]
