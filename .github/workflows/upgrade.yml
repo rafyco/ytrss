@@ -4,7 +4,7 @@ name: Package upgrade
 on:
   push:
     branches:
-      - master
+      - develop
       # TODO: change package name
     paths-ignore:
       - 'template-python-package/__init_.py'
@@ -12,7 +12,7 @@ on:
 jobs:
   CI-upgrade:
     # TODO: delete to turn on
-    if: ${{ false }}
+    # if: ${{ false }}
     runs-on: ubuntu-latest
 
     steps:
@@ -53,8 +53,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build distribution
         run: python setup.py sdist
-      - name: Publish package
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          user: __token__
-          password: ${{ secrets.pypi_password }}
+      # - name: Publish package
+      #  uses: pypa/gh-action-pypi-publish@master
+      #  with:
+      #    user: __token__
+      #    password: ${{ secrets.pypi_password }}
