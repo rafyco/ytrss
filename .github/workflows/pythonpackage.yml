@@ -7,7 +7,6 @@ on:
       - master
 
 jobs:
-
   style:
     runs-on: ubuntu-latest
     steps:
@@ -17,8 +16,7 @@ jobs:
         with:
           python-version: 3.6
       - name: Install tox
-        run:
-          pip install tox
+        run: pip install tox
       - name: Check style
         run: |
           tox -e style
@@ -32,8 +30,7 @@ jobs:
         with:
           python-version: 3.6
       - name: Install tox
-        run:
-          pip install tox
+        run: pip install tox
       - name: Test with pytest
         run: |
           tox -e unittests
@@ -47,8 +44,7 @@ jobs:
         with:
           python-version: 3.6
       - name: Install tox
-        run:
-          pip install tox
+        run: pip install tox
       - name: Checks typping
         run: |
           tox -e typing
@@ -62,8 +58,7 @@ jobs:
         with:
           python-version: 3.6
       - name: Install tox
-        run:
-          pip install tox
+        run: pip install tox
       - name: Build documentation
         run: |
           tox -e documentation
@@ -83,8 +78,7 @@ jobs:
         with:
           python-version: 3.6
       - name: Install tox
-        run:
-          pip install tox
+        run: pip install tox
       - name: Run console program
         run: |
           tox -e execute

@@ -1,182 +1,255 @@
-Code documentation
-==================
+####################
+ Code documentation
+####################
 
-module ytrss
-^^^^^^^^^^^^
+**************
+ module ytrss
+**************
+
 .. automodule:: ytrss
-    :members:
+   :members:
 
-module ytrss.configuration
-^^^^^^^^^^^^^^^^^
+****************************
+ module ytrss.configuration
+****************************
+
 .. automodule:: ytrss.configuration
-    :members:
+   :members:
 
-module ytrss.configuration.entity
-^^^^^^^^^^^^^^^^^
+***********************************
+ module ytrss.configuration.entity
+***********************************
+
 .. automodule:: ytrss.configuration.entity
-    :members:
+   :members:
 
-module ytrss.configuration.entity.podcast_info
-^^^^^^^^^^^^^^^^^
+************************************************
+ module ytrss.configuration.entity.podcast_info
+************************************************
+
 .. automodule:: ytrss.configuration.entity.podcast_info
-    :members:
+   :members:
 
-module ytrss.configuration.entity.source
-^^^^^^^^^^^^^^^^^
+******************************************
+ module ytrss.configuration.entity.source
+******************************************
+
 .. automodule:: ytrss.configuration.entity.source
-    :members:
+   :members:
 
-module ytrss.configuration.json
-^^^^^^^^^^^^^^^^^
+*********************************
+ module ytrss.configuration.json
+*********************************
+
 .. automodule:: ytrss.configuration.json
-    :members:
+   :members:
 
-module ytrss.configuration.json.data_configuration
-^^^^^^^^^^^^^^^^^
+****************************************************
+ module ytrss.configuration.json.data_configuration
+****************************************************
+
 .. automodule:: ytrss.configuration.json.data_configuration
-    :members:
+   :members:
 
-module ytrss.configuration.json.json_configuration
-^^^^^^^^^^^^^^^^^
+****************************************************
+ module ytrss.configuration.json.json_configuration
+****************************************************
+
 .. automodule:: ytrss.configuration.json.json_configuration
-    :members:
+   :members:
 
-module ytrss.configuration.algoritms
-^^^^^^^^^^^^^^^^^
+**************************************
+ module ytrss.configuration.algoritms
+**************************************
+
 .. automodule:: ytrss.configuration.algoritms
-    :members:
+   :members:
 
-module ytrss.configuration.configuration
-^^^^^^^^^^^^^^^^^
+******************************************
+ module ytrss.configuration.configuration
+******************************************
+
 .. automodule:: ytrss.configuration.configuration
-    :members:
+   :members:
 
-module ytrss.configuration.consts
-^^^^^^^^^^^^^^^^^
+***********************************
+ module ytrss.configuration.consts
+***********************************
+
 .. automodule:: ytrss.configuration.consts
-    :members:
+   :members:
 
-module ytrss.configuration.factory
-^^^^^^^^^^^^^^^^^
+************************************
+ module ytrss.configuration.factory
+************************************
+
 .. automodule:: ytrss.configuration.factory
-    :members:
+   :members:
 
-module ytrss.controlers
-^^^^^^^^^^^^^^^^^
+*************************
+ module ytrss.controlers
+*************************
+
 .. automodule:: ytrss.controlers
-    :members:
+   :members:
 
-module ytrss.controlers.youtube
-^^^^^^^^^^^^^^^^^
+*********************************
+ module ytrss.controlers.youtube
+*********************************
+
 .. automodule:: ytrss.controlers.youtube
-    :members:
+   :members:
 
-module ytrss.controlers.youtube.downloaded_movie
-^^^^^^^^^^^^^^^^^
+**************************************************
+ module ytrss.controlers.youtube.downloaded_movie
+**************************************************
+
 .. automodule:: ytrss.controlers.youtube.downloaded_movie
-    :members:
+   :members:
 
-module ytrss.controlers.youtube.movie
-^^^^^^^^^^^^^^^^^
+***************************************
+ module ytrss.controlers.youtube.movie
+***************************************
+
 .. automodule:: ytrss.controlers.youtube.movie
-    :members:
+   :members:
 
-module ytrss.controlers.youtube.source_downloader
-^^^^^^^^^^^^^^^^^
+***************************************************
+ module ytrss.controlers.youtube.source_downloader
+***************************************************
+
 .. automodule:: ytrss.controlers.youtube.source_downloader
-    :members:
+   :members:
 
-module ytrss.controlers.youtube.youtube_downloader
-^^^^^^^^^^^^^^^^^
+****************************************************
+ module ytrss.controlers.youtube.youtube_downloader
+****************************************************
+
 .. automodule:: ytrss.controlers.youtube.youtube_downloader
-    :members:
+   :members:
 
-module ytrss.core
-^^^^^^^^^^^^^^^^^
+*******************
+ module ytrss.core
+*******************
+
 .. automodule:: ytrss.core
-    :members:
+   :members:
 
-module ytrss.core.factory
-^^^^^^^^^^^^^^^^^
+***************************
+ module ytrss.core.factory
+***************************
+
 .. automodule:: ytrss.core.factory
-    :members:
+   :members:
 
-module ytrss.core.factory.database_get
-^^^^^^^^^^^^^^^^^
+****************************************
+ module ytrss.core.factory.database_get
+****************************************
+
 .. automodule:: ytrss.core.factory.database_get
-    :members:
+   :members:
 
-module ytrss.core.factory.database_put
-^^^^^^^^^^^^^^^^^
+****************************************
+ module ytrss.core.factory.database_put
+****************************************
+
 .. automodule:: ytrss.core.factory.database_put
-    :members:
+   :members:
 
-module ytrss.core.factory.downloaded_movie
-^^^^^^^^^^^^^^^^^
+********************************************
+ module ytrss.core.factory.downloaded_movie
+********************************************
+
 .. automodule:: ytrss.core.factory.downloaded_movie
-    :members:
+   :members:
 
-module ytrss.core.factory.movie
-^^^^^^^^^^^^^^^^^
+*********************************
+ module ytrss.core.factory.movie
+*********************************
+
 .. automodule:: ytrss.core.factory.movie
-    :members:
+   :members:
 
-module ytrss.core.factory.source_downloader
-^^^^^^^^^^^^^^^^^
+*********************************************
+ module ytrss.core.factory.source_downloader
+*********************************************
+
 .. automodule:: ytrss.core.factory.source_downloader
-    :members:
+   :members:
 
-module ytrss.core.downloaded_movie
-^^^^^^^^^^^^^^^^^
+************************************
+ module ytrss.core.downloaded_movie
+************************************
+
 .. automodule:: ytrss.core.downloaded_movie
-    :members:
+   :members:
 
-module ytrss.core.movie
-^^^^^^^^^^^^^^^^^
+*************************
+ module ytrss.core.movie
+*************************
+
 .. automodule:: ytrss.core.movie
-    :members:
+   :members:
 
-module ytrss.database
-^^^^^^^^^^^^^^^^^
+***********************
+ module ytrss.database
+***********************
+
 .. automodule:: ytrss.database
-    :members:
+   :members:
 
-module ytrss.download
-^^^^^^^^^^^^^^^^^
+***********************
+ module ytrss.download
+***********************
+
 .. automodule:: ytrss.download
-    :members:
+   :members:
 
-module ytrss.download
-^^^^^^^^^^^^^^^^^
+***********************
+ module ytrss.download
+***********************
+
 .. automodule:: ytrss.download
-    :members:
+   :members:
 
-module ytrss.finder
-^^^^^^^^^^^^^^^^^
+*********************
+ module ytrss.finder
+*********************
+
 .. automodule:: ytrss.finder
-    :members:
+   :members:
 
-module ytrss.outdated
-^^^^^^^^^^^^^^^^^
+***********************
+ module ytrss.outdated
+***********************
+
 .. automodule:: ytrss.outdated
-    :members:
+   :members:
 
-module ytrss.podcast
-^^^^^^^^^^^^^^^^^
+**********************
+ module ytrss.podcast
+**********************
+
 .. automodule:: ytrss.podcast
-    :members:
+   :members:
 
-module ytrss.daemon
-^^^^^^^^^^^^^^^^^
+*********************
+ module ytrss.daemon
+*********************
+
 .. automodule:: ytrss.daemon
-    :members:
+   :members:
 
-module ytrss.client
-^^^^^^^^^^^^^^^^^
-.. automodule:: ytrss.client
-    :members:
+*********************
+ module ytrss.client
+*********************
 
-module ytrss.client
-^^^^^^^^^^^^^^^^^
 .. automodule:: ytrss.client
-    :members:
+   :members:
+
+*********************
+ module ytrss.client
+*********************
+
+.. automodule:: ytrss.client
+   :members:

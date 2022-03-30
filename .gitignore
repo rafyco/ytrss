@@ -2,6 +2,7 @@
 *_docs
 build/
 dist/
+report/
 envs/
 .eggs/
 *.egg-info

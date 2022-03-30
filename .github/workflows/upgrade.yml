@@ -4,13 +4,12 @@ name: Package upgrade
 on:
   push:
     branches:
-    - master
+      - master
     paths-ignore:
-    - 'ytrss/__init_.py'
+      - "ytrss/__init_.py"
 
 jobs:
   CI-upgrade:
-
     runs-on: ubuntu-latest
 
     steps:
