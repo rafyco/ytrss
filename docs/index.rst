@@ -1,20 +1,19 @@
 .. include:: ../README.rst
 
-Changelog
----------
+###########
+ Changelog
+###########
 
- .. toctree::
-    :maxdepth: 3
+   .. toctree::
+      :maxdepth: 3
 
-    changelog
+      changelog
 
-More information
-----------------
+##################
+ More information
+##################
 
- .. toctree::
-    :maxdepth: 3
+   .. toctree::
+      :maxdepth: 3
 
-    modules
-    license
-
-
+      modules

@@ -1,8 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017  Rafal Kobel <rafalkobel@rafyco.pl>                 #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -21,10 +20,10 @@
 """
 Tools for downloading mp3 from YouTube subscription and playlists.
 
-Insallation
+Installation
 ===========
 
-There are a two metod of installation C{ytrss} module.
+There are a two method of installation C{ytrss} module.
 
 From PyPI repository::
 
@@ -51,11 +50,15 @@ YTRSS allow you to run a few command-line tool.
 
 """
 
-from __future__ import unicode_literals
 
-
-def get_version():
+def get_version() -> str:
     """ Get version of ytrss package. """
-    return "0.2.6"
+    return "0.2.8"
+
+
+def get_name() -> str:
+    """ Get name of module. """
+    return 'ytrss'
+
 
 __version__ = get_version()

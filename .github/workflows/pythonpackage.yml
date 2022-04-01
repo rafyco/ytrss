@@ -1,0 +1,84 @@
+---
+name: Python package
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run: pip install tox
+      - name: Check style
+        run: |
+          tox -e style
+
+  unittests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run: pip install tox
+      - name: Test with pytest
+        run: |
+          tox -e unittests
+
+  typping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run: pip install tox
+      - name: Checks typping
+        run: |
+          tox -e typing
+
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run: pip install tox
+      - name: Build documentation
+        run: |
+          tox -e documentation
+      - name: Archive documentation
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation
+          path: build/sphinx/html/
+
+  execute:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run: pip install tox
+      - name: Run console program
+        run: |
+          tox -e execute

@@ -1,0 +1,7 @@
+version: "3.3"
+services:
+  ytrss:
+    build: .
+    volumes:
+      - ./docker/ytrss/config:/home/ytrss/.config/ytrss
+      - ./docker/ytrss/output:/home/ytrss/ytrss/output
