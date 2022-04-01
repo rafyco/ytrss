@@ -24,10 +24,10 @@ Module with algorithms that download files
 import logging
 import sys
 from typing import Callable, Optional
+from locks import Mutex
 
 from ytrss.configuration.configuration import Configuration
 from ytrss.core.factory.database_get import create_database_get
-from ytrss.database.file_db.locker import Locker, LockerError
 
 
 # pylint: disable=R0915
@@ -46,7 +46,7 @@ def download_all_movie(
     logging.info("download movie from urls")
     downloaded = 0
     try:
-        with Locker('lock_ytdown'):
+        with Mutex('/tmp/lock_ytdown', timeout=0.5):
             with create_database_get(configuration) as database:
 
                 for movie in database.movies():
@@ -69,7 +69,7 @@ def download_all_movie(
                         print("finish error")
                         database.mark_error(movie)
 
-    except LockerError:
+    except BlockingIOError:
         print("Program is running.")
         sys.exit(1)
     except KeyboardInterrupt:

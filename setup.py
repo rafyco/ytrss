@@ -93,6 +93,7 @@ setup(
         'astroid ~= 2.5',
         'jinja2 ~= 3.0.3',
         'youtube_dl ~= 2021.6.6',
+        'locks ~= 0.1.1',
     ],
     extras_require={
         "unittests": [
