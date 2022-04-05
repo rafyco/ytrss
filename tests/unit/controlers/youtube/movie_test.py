@@ -24,7 +24,10 @@ Testing Element module
 """
 
 from __future__ import unicode_literals
+
+import json
 import unittest
+from io import StringIO
 
 from typing import List, Dict, Any
 
@@ -48,37 +51,21 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
         """
         test_suites: List[Dict[str, Any]] = [{
             "arg": "https://www.youtube.com/watch?v=I-JxpVFlaos",
-            "code": "I-JxpVFlaos",
+            "identity": "ytdl:youtube:I-JxpVFlaos",
             "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
         }, {
             "arg": "http://www.youtube.com/watch?v=I-JxpVFlaos",
-            "code": "I-JxpVFlaos",
-            "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
+            "identity": "ytdl:youtube:I-JxpVFlaos",
+            "url": "http://www.youtube.com/watch?v=I-JxpVFlaos"
         }, {
             "arg": "https://youtu.be/I-JxpVFlaos",
-            "code": "I-JxpVFlaos",
-            "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
-        }, {
-            "arg": "http://youtu.be/I-JxpVFlaos",
-            "code": "I-JxpVFlaos",
-            "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
-        }, {
-            "arg": "I-JxpVFlaos",
-            "code": "I-JxpVFlaos",
-            "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
-        }, {
-            "arg": "{ \"code\": \"I-JxpVFlaos\" }",
-            "code": "I-JxpVFlaos",
-            "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
-        }, {
-            "arg": {"code": "I-JxpVFlaos", "data": "today"},
-            "code": "I-JxpVFlaos",
-            "url": "https://www.youtube.com/watch?v=I-JxpVFlaos"
+            "identity": "ytdl:youtube:I-JxpVFlaos",
+            "url": "https://youtu.be/I-JxpVFlaos"
         }]
 
         for elem in test_suites:
             test_elem = YouTubeMovie(elem['arg'])
-            self.assertEqual(test_elem.code, elem['code'])
+            self.assertEqual(test_elem.identity, elem['identity'])
             self.assertEqual(test_elem.url, elem['url'])
 
     def test_invalid_argument(self) -> None:
@@ -88,15 +75,9 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
         @param self: object handle
         @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
-        test_suites: List[Any] = [
-            "https://www.youtube.com/watch?w=I-JxpVFlaos",
-            "https://www.youtube.com/watch?v=I-JxpVFlaosfs",
+        test_suites: List[str] = [
+            "https://www.youtube.com/watch?v=fakeI-JxpVFlaosfs",
             "https://www.youdupe.com/watch?v=I-JxpVFlaos",
-            "{'miss_code': 'I-JxpVFlaos'}",
-            "{ fdsa: 'fdsa}",
-            {"missing_code": 'I-JxpVFlaos'},
-            234321412,
-            ['this', 'should', 'not', 'work']
         ]
         for elem in test_suites:
             with self.assertRaises(InvalidParameterMovieError):
@@ -137,9 +118,9 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
         @param self: object handle
         @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
-        elem1 = YouTubeMovie("I-JxpVFlaos")
+        elem1 = YouTubeMovie("https://youtube.com/watch?v=I-JxpVFlaos")
         element_string = elem1.to_string()
-        elem2 = YouTubeMovie(element_string)
+        elem2 = YouTubeMovie(json.load(StringIO(element_string))['url'])
         self.assertEqual(elem1, elem2)
-        self.assertEqual(elem1.code, "I-JxpVFlaos")
-        self.assertEqual(elem2.code, "I-JxpVFlaos")
+        self.assertEqual(elem1.identity, "ytdl:youtube:I-JxpVFlaos")
+        self.assertEqual(elem2.identity, "ytdl:youtube:I-JxpVFlaos")

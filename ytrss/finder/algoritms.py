@@ -50,6 +50,6 @@ def prepare_urls(settings: Configuration) -> None:
     queue = create_database_put(settings)
     for movie in finder.movies:
         if queue.queue_mp3(movie):
-            print(f"Nowy element: {movie.title} [{movie.code}]")
+            print(f"Nowy element: {movie.title} [{movie.identity}]")
         else:
             logging.info("Element istnieje: %s", movie.url)

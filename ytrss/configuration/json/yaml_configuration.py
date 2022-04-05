@@ -106,7 +106,7 @@ class YamlConfiguration(DataConfiguration):
         try:
             with open(os.path.expanduser(conf_file)) as data_file:
                 # pylint: disable=E1120
-                data = yaml.load(data_file)
+                data = yaml.safe_load(data_file)
         except FileNotFoundError:
             raise YamlConfigurationFileNotExistsError()
 

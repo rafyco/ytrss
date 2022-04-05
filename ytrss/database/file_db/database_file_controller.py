@@ -17,8 +17,11 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
+import json
 import logging
 import os
+from io import StringIO
+from json import JSONDecodeError
 from typing import List
 
 from ytrss.core.factory import CoreFactoryError
@@ -59,9 +62,9 @@ class DatabaseFileController:
                 self.file_data = file_handle.read()
             for elem in self.file_data.split('\n'):
                 try:
-                    tmp_elem = create_movie(elem)
+                    tmp_elem = create_movie(json.load(StringIO(elem))['url'])
                     self.database.append(tmp_elem)
-                except (InvalidParameterMovieError, CoreFactoryError) as ex:
+                except (InvalidParameterMovieError, CoreFactoryError, JSONDecodeError) as ex:
                     logging.debug("Error: %s", ex)
 
         except IOError as ex:
@@ -147,11 +150,12 @@ class DatabaseFileController:
                 with open(backup_file) as file_handle:
                     file_data = file_handle.read()
                     for elem in file_data.split('\n'):
-                        if elem != "":
-                            try:
-                                self.add_movie(create_movie(elem))
-                            except CoreFactoryError as ex:
-                                logging.error("Exception: %s", ex)
+                        try:
+                            self.add_movie(create_movie(json.load(StringIO(elem))['url']))
+                        except JSONDecodeError:
+                            pass
+                        except CoreFactoryError as ex:
+                            logging.error("Exception: %s", ex)
             except IOError:
                 pass
             os.remove(backup_file)

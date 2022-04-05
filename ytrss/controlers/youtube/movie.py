@@ -22,9 +22,8 @@ Element to download
 """
 import copy
 from json import JSONDecodeError
-from typing import Union, Dict, Any, Optional
+from typing import Dict, Any, Optional
 
-import re
 import sys
 import json
 import time
@@ -34,7 +33,7 @@ from email import utils
 import youtube_dl
 from ytrss.configuration.configuration import Configuration
 from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
-from ytrss.core.entity.movie import Movie, InvalidParameterMovieError, InvalidStringJSONParseError
+from ytrss.core.entity.movie import Movie, InvalidParameterMovieError
 from ytrss.controlers.youtube.youtube_downloader import YouTubeDownloader
 
 
@@ -43,78 +42,49 @@ class YouTubeMovie(Movie):
     Movie's data.
     """
 
-    def __init__(self, arg: Union[str, Dict[str, Any]], destination_dir: str = DEFAULT_PODCAST_DIR) -> None:
+    def __init__(self, url: str, destination_dir: str = DEFAULT_PODCAST_DIR) -> None:
         """
         Element constructor.
 
         @param self: object handler
         @type self: L{Movie}
         """
-        self.__title: Optional[str] = None
-        self.__author: Optional[str] = None
-        self.__desc: Optional[str] = None
-        self.__date: Optional[str] = None
-        self.__img_url: Optional[str] = None
-        self.__json_data: Optional[Dict[str, str]] = None
-        self.__code: Optional[str] = None
-        self.__error: Optional[str] = None
         self.destination_dir = destination_dir
-        if isinstance(arg, dict):
-            try:
-                self.__code = arg['code']
-                self.__date = arg['data']
-            except KeyError:
-                raise InvalidParameterMovieError("Invalid dictionary "
-                                                 "structure")
-        else:
-            try:
-                if bool(re.search("^[A-Za-z0-9_\\-]{11}$", arg)):
-                    self.__code = arg
-                elif bool(re.search("^http(s)?://(www.)?youtube.com/watch\\?v="
-                                    "[A-Za-z0-9_\\-]{11}$", arg)):
-                    m_result = re.match("http(s)?://(www.)?youtube.com/watch\\?"
-                                        "v=(?P<code>[A-Za-z0-9_\\-]{11})"
-                                        "", arg)
-                    self.__code = m_result.group('code') if m_result is not None else None
-                elif bool(re.search("^http(s)?://youtu.be/[A-Za-z0-9_\\-]"
-                                    "{11}$", arg)):
-                    m_result = re.match("http(s)?://youtu.be/(?P<code>"
-                                        "[A-Za-z0-9_\\-]{11})", arg)
-                    self.__code = m_result.group('code') if m_result is not None else None
-                elif bool(re.search("^{", arg)) and bool(re.search("}$",
-                                                                   arg)):
-                    try:
-                        tab = json.load(StringIO(arg))
-                        try:
-                            self.__code = tab['code']
-                        except KeyError:
-                            InvalidParameterMovieError("json has no code parameter")
-                        self.destination_dir = tab.get('destination', "")
+        self._url = url
 
-                    except JSONDecodeError:
-                        raise InvalidParameterMovieError("Problem with"
-                                                         "parsing "
-                                                         "json string")
-                else:
-                    raise InvalidParameterMovieError("Unknown string [{text}]"
-                                                     "".format(text=arg))
-            except TypeError:
-                raise InvalidParameterMovieError("Invalid address type: [{}]"
-                                                 "".format(type(arg)))
-
-    @property
-    def code(self) -> str:
-        """
-        Movie's ID
-        """
-        return self.__code if self.__code is not None else ""
+        old_stdout = sys.stdout
+        old_stderr = sys.stderr
+        sys.stdout = tmp_stdout = StringIO()
+        sys.stderr = tmp_stderr = StringIO()
+        try:
+            youtube_dl.main(['--dump-json', url])
+        except SystemExit:
+            pass
+        sys.stdout = old_stdout
+        sys.stderr = old_stderr
+        json_output = tmp_stdout.getvalue()
+        self._error = tmp_stderr.getvalue()
+        self._json_data = {}
+        try:
+            self._json_data = json.load(StringIO(json_output))
+        except JSONDecodeError:
+            raise InvalidParameterMovieError(f"Invalid address type: [{url}] -> {self._error}")
 
     @property
     def url(self) -> str:
         """
-        URL to movie
+        Movie's url
         """
-        return "https://www.youtube.com/watch?v={}".format(self.__code)
+        return self._url
+
+    @property
+    def identity(self) -> str:
+        """
+        Movie's ID
+        """
+        extractor: str = self.__get_youtube_data("extractor")
+        code: str = self.__get_youtube_data("display_id")
+        return f"ytdl:{extractor}:{code}"
 
     def __get_youtube_data(self, key: str) -> str:
         """
@@ -127,74 +97,46 @@ class YouTubeMovie(Movie):
         @return: Value of searching option
         @rtype: str
         """
-        if self.__json_data is None:
-            old_stdout = sys.stdout
-            old_stderr = sys.stderr
-            sys.stdout = tmp_stdout = StringIO()
-            sys.stderr = tmp_stderr = StringIO()
-            try:
-                youtube_dl.main(['--dump-json', self.url])
-            except SystemExit:
-                pass
-            sys.stdout = old_stdout
-            sys.stderr = old_stderr
-            json_output = tmp_stdout.getvalue()
-            self.__error = tmp_stderr.getvalue()
-            try:
-                self.__json_data = json.load(StringIO(json_output))
-            except JSONDecodeError:
-                return ""
-        return self.__json_data.get(key, "").__str__()
+        return str(self._json_data.get(key, ""))
 
     @property
     def title(self) -> str:
         """
         movie's title
         """
-        if self.__title is None:
-            self.__title = self.__get_youtube_data("title")
-        return self.__title
+        return self.__get_youtube_data("title")
 
     @property
     def author(self) -> str:
         """
         movie's author
         """
-        if self.__author is None:
-            self.__author = self.__get_youtube_data('uploader')
-            return self.__author
-        return self.__author
+        return self.__get_youtube_data('uploader')
 
     @property
     def desc(self) -> str:
         """
         movie's description
         """
-        if self.__desc is None:
-            self.__desc = self.__get_youtube_data("description")
-            return self.__desc
-        return self.__desc
+        return self.__get_youtube_data("description")
 
     @property
     def date(self) -> str:
         """
         movie's create data
         """
-        if self.__date is None:
-            now_day = datetime.datetime.now()
-            nowtuple = now_day.timetuple()
-            nowtimestamp = time.mktime(nowtuple)
-            self.__date = utils.formatdate(nowtimestamp)
-        return self.__date
+        now_day = datetime.datetime.now()
+        nowtuple = now_day.timetuple()
+        nowtimestamp = time.mktime(nowtuple)
+        return utils.formatdate(nowtimestamp)
 
     @property
     def img_url(self) -> Optional[str]:
         """
         image's ULR
         """
-        if self.__img_url is None:
-            self.__img_url = self.__get_youtube_data("thumbnail")
-        return self.__img_url if self.__img_url != "" else None
+        img = self.__get_youtube_data("thumbnail")
+        return img if img != "" else None
 
     @property
     def is_ready(self) -> bool:
@@ -202,16 +144,16 @@ class YouTubeMovie(Movie):
         Is movie is ready to download
         """
         is_live = "false"
-        if self.__error is None:
+        if self._error is None:
             is_live = self.__get_youtube_data("is_live")
 
-        return ("Premieres in" not in self.__error if self.__error is not None else True) and is_live.lower() != "true"
+        return ("Premieres in" not in self._error if self._error is not None else True) and is_live.lower() != "true"
 
     def download(self, settings: Configuration) -> bool:
         """
         Download element
         """
-        return YouTubeDownloader(settings).download(self.code, self.url, self.destination_dir, self.json)
+        return YouTubeDownloader(settings).download(self.identity, self.url, self.destination_dir, self.json)
 
     def to_string(self) -> str:
         """
@@ -223,25 +165,10 @@ class YouTubeMovie(Movie):
         @rtype: str
         """
         tab = dict()
-        tab['code'] = self.__code
+        tab['id'] = self.identity
         tab['destination'] = self.destination_dir
+        tab['url'] = self.url
         return json.dumps(tab)
-
-    @staticmethod
-    def __from_string(text: str) -> Dict[str, Any]:
-        """
-        Set object from JSON string
-
-        @param text: JSON string
-        @type text: str
-        @return: tab from JSON
-        @rtype: str
-        """
-        try:
-            result: Dict[str, Any] = json.load(StringIO(text))
-            return result
-        except ValueError:
-            raise InvalidStringJSONParseError("Cannot prepare string")
 
     def __eq__(self, other: object) -> bool:
         """
@@ -255,7 +182,7 @@ class YouTubeMovie(Movie):
         @rtype: bool
         """
         if isinstance(other, Movie):
-            return self.__code == other.code
+            return self.identity == other.identity
         if other == "":
             return False
         tmp_other = copy.deepcopy(other)
@@ -268,7 +195,7 @@ class YouTubeMovie(Movie):
         """
         return {
             'url': self.url,
-            'code': self.code,
+            'id': self.identity,
             'title': self.title,
             'uploader': self.author,
             'description': self.desc,

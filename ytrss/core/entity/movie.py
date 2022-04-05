@@ -41,7 +41,7 @@ class Movie(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def code(self) -> str:
+    def identity(self) -> str:
         """
         Movie's ID
         """
