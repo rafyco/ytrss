@@ -60,17 +60,17 @@ def configuration_factory(configuration_file: Optional[str] = None, should_creat
         if os.path.isfile(os.path.expanduser("~\\YTRSS\\config.json")):
             return JsonConfiguration("~\\YTRSS\\config.json")
 
-    if os.path.isfile("/etc/ytrss/config.yml"):
-        return YamlConfiguration("/etc/ytrss/config.yml")
-
-    if os.path.isfile("/etc/ytrss/config.json"):
-        return JsonConfiguration("/etc/ytrss/config.json")
-
     if os.path.isfile(os.path.expanduser("~/.config/ytrss/config.yml")):
         return YamlConfiguration("~/.config/ytrss/config.yml")
 
     if os.path.isfile(os.path.expanduser("~/.config/ytrss/config.json")):
         return JsonConfiguration("~/.config/ytrss/config.json")
+
+    if os.path.isfile("/etc/ytrss/config.yml"):
+        return YamlConfiguration("/etc/ytrss/config.yml")
+
+    if os.path.isfile("/etc/ytrss/config.json"):
+        return JsonConfiguration("/etc/ytrss/config.json")
 
     if should_create:
         if sys.platform.lower().startswith('win'):

@@ -46,7 +46,7 @@ def prepare_urls(settings: Configuration) -> None:
     Prepare urls for downloader.
     """
     logging.info("Prepare new urls")
-    finder = URLFinder(settings.sources)
+    finder = URLFinder(settings.conf.sources)
     queue = create_database_put(settings)
     for movie in finder.movies:
         if queue.queue_mp3(movie):

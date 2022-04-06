@@ -57,7 +57,7 @@ def list_elements_in_dir(dirname: str, settings: Configuration) -> Iterator[Down
     @return: list of movie in directory
     @rtype: list
     """
-    for filename in os.listdir(os.path.join(settings.output, dirname)):
+    for filename in os.listdir(os.path.join(settings.conf.output, dirname)):
         if filename.endswith(".json"):
             try:
                 yield create_downloaded_movie(settings, dirname, filename[0:len(filename) - 5])
@@ -72,11 +72,11 @@ def rss_generate(settings: Configuration) -> None:
     @param settings: Settings handle
     @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
     """
-    for dir_name in os.listdir(settings.output):
-        if os.path.isdir(os.path.join(settings.output, dir_name)):
+    for dir_name in os.listdir(settings.conf.output):
+        if os.path.isdir(os.path.join(settings.conf.output, dir_name)):
             print("Generate Podcast: {}".format(dir_name))
             podcast = Podcast(dir_name,
-                              settings.get_podcast_information(dir_name))
+                              settings.conf.get_podcast_information(dir_name))
             for movie in list_elements_in_dir(dir_name, settings):
                 logging.debug("item: %s", movie.filename)
                 try:
@@ -84,7 +84,7 @@ def rss_generate(settings: Configuration) -> None:
                     print("add item: %s" % movie.filename)
                 except ValueError:
                     print("Cannot add item")
-            podcast_file = os.path.join(settings.output, dir_name, "podcast.xml")
+            podcast_file = os.path.join(settings.conf.output, dir_name, "podcast.xml")
             logging.debug("try to save: %s", podcast_file)
             file_handler = io.open(podcast_file, "w", encoding="utf-8")
             file_handler.write(podcast.generate())

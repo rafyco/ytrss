@@ -92,7 +92,7 @@ setup(
         'pyyaml',
         'astroid ~= 2.5',
         'jinja2 ~= 3.0.3',
-        'youtube_dl ~= 2021.6.6',
+        'youtube_dl ~= 2021.12.17',
         'locks ~= 0.1.1',
     ],
     extras_require={
@@ -105,7 +105,8 @@ setup(
             "pycodestyle == 2.8.0"
         ],
         "typing": [
-            "mypy == 0.910"
+            "mypy == 0.910",
+            "types-PyYAML == 6.0"
         ],
         "documentation": [
             "Sphinx == 4.3.1",

@@ -43,11 +43,12 @@ import logging
 import time
 import sys
 
+from ytrss.download.algoritms import download_all_movie
+
 from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError
 from ytrss.configuration.factory import configuration_factory
 from ytrss.podcast.algoritms import rss_generate
 from ytrss.finder.algoritms import prepare_urls
-from ytrss.client import download_all_movie
 
 
 if sys.platform.lower().startswith('win'):

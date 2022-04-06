@@ -69,7 +69,7 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         """
         Return path to json file.
         """
-        return os.path.join(self.__settings.output,
+        return os.path.join(self.__settings.conf.output,
                             self.__dirname,
                             self.__name + ".json")
 
@@ -78,7 +78,7 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         """
         Return path to mp3 file.
         """
-        return os.path.join(self.__settings.output,
+        return os.path.join(self.__settings.conf.output,
                             self.__dirname,
                             self.__name + ".mp3")
 
@@ -98,7 +98,9 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         Element object.
         """
         if self.__movie is None:
-            self.__movie = YouTubeMovie(self.data, self.__dirname)
+            if 'url' not in self.data:
+                raise TypeError()
+            self.__movie = YouTubeMovie(self.data['url'], self.__dirname)
         return self.__movie
 
     @property
@@ -117,15 +119,15 @@ class YouTubeDownloadedMovie(DownloadedMovie):
 
     @property
     def image(self) -> str:
-        return self.data.get("image")
+        return self.data.get("image", "")
 
     @property
     def url(self) -> str:
-        return self.data.get("url")
+        return self.data.get("url", "")
 
     @property
     def author(self) -> str:
-        return self.data.get("uploader")
+        return self.data.get("uploader", "")
 
     @property
     def filename(self) -> str:

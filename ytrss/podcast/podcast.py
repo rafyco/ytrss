@@ -95,7 +95,7 @@ class Podcast:
         @rtype: str
         """
         env = Environment(
-            loader=FileSystemLoader(os.path.join(ytrss.__path__[0], "templates")),
+            loader=FileSystemLoader(os.path.join(ytrss.__path__[0], "templates")),  # type: ignore
         )
         env.filters["format_str"] = format_str
         env.filters["format_desc"] = format_desc

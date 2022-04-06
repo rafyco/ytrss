@@ -52,7 +52,7 @@ class YouTubeDownloader:
         Downloader constructor.
         """
         self.configuration = configuration
-        self.output_path = configuration.output
+        self.output_path = os.path.expanduser(configuration.conf.output)
 
     @classmethod
     def __invoke_ytdl(cls, args: Sequence[str]) -> int:
@@ -79,20 +79,20 @@ class YouTubeDownloader:
         Function download movie, convert to mp3 and move to output file.
         """
         try:
-            os.makedirs(self.configuration.cache_path)
+            os.makedirs(self.configuration.conf.cache_path)
         except OSError:
             pass
         current_path = os.getcwd()
-        os.chdir(self.configuration.cache_path)
+        os.chdir(self.configuration.conf.cache_path)
 
         logging.info("url: %s", url)
-        status = self.__invoke_ytdl(self.configuration.args + ['-o', f"{code}.mp3", url])
+        status = self.__invoke_ytdl(self.configuration.conf.args + ['-o', f"{code}.mp3", url])
 
         finded = False
         full_file_name = f"{code}.mp3"
         metadate_name = f"{code}.json"
         if os.path.isfile(full_file_name):
-            source_path = os.path.join(self.configuration.cache_path, full_file_name)
+            source_path = os.path.join(self.configuration.conf.cache_path, full_file_name)
             destination_path = os.path.join(self.output_path,
                                             destination_dir,
                                             full_file_name)
@@ -115,7 +115,7 @@ class YouTubeDownloader:
                 file_handler.write(json.dumps(json_info))
             finded = True
 
-        for find_file in os.listdir(self.configuration.cache_path):
+        for find_file in os.listdir(self.configuration.conf.cache_path):
             if find_file.endswith(".mp3"):
                 print(f"Unknown file: {find_file}")
 

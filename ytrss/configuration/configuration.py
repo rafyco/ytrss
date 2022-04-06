@@ -72,10 +72,8 @@ code of example file::
 
 """
 import abc
-from typing import Sequence, List
 
-from ytrss.configuration.entity.podcast_info import PodcastInfo
-from ytrss.configuration.entity.source import Source
+from ytrss.configuration.entity.configuration_data import ConfigurationData
 
 
 class ConfigurationError(Exception):
@@ -95,29 +93,8 @@ class Configuration(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def output(self) -> str:
-        """ Path to directory, where podcast files should be saved. """
+    def conf(self) -> ConfigurationData:
+        """ Configuration object. """
 
-    @property
-    @abc.abstractmethod
-    def sources(self) -> Sequence[Source]:
-        """ A list of sources """
-
-    @property
-    @abc.abstractmethod
-    def config_path(self) -> str:
-        """ Path to directory with databases. """
-
-    @property
-    @abc.abstractmethod
-    def cache_path(self) -> str:
-        """ Path to directory where the file can be placed before the download will be finished. """
-
-    @property
-    @abc.abstractmethod
-    def args(self) -> List[str]:
-        """ Arguments for youtube_dl. """
-
-    @abc.abstractmethod
-    def get_podcast_information(self, folder_name: str) -> PodcastInfo:
-        """ Return information about podcast. """
+    def __str__(self) -> str:
+        return self.conf.__str__()

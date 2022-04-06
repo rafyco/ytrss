@@ -72,8 +72,8 @@ class DatabaseGet(ContextManager[DatabaseGetOpen], metaclass=abc.ABCMeta):
     TODO: documentation
     """
 
-    def __init__(self):
-        self.__connection = None
+    def __init__(self) -> None:
+        self.__connection: Optional[DatabaseGetOpen] = None
 
     @abc.abstractmethod
     def open(self) -> DatabaseGetOpen:
@@ -91,4 +91,5 @@ class DatabaseGet(ContextManager[DatabaseGetOpen], metaclass=abc.ABCMeta):
             exc_value: Optional[BaseException],
             exc_trackback: Optional[TracebackType]
     ) -> None:
-        self.__connection.close(exc_value)
+        if self.__connection is not None:
+            self.__connection.close(exc_value)

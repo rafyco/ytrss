@@ -53,7 +53,7 @@ def rss_delete_outdated(configuration: Configuration) -> int:
     result = 0
     nowtimestamp = datetime.now()
 
-    for dirname in os.listdir(configuration.output):
+    for dirname in os.listdir(configuration.conf.output):
         print(f"Checking file to delete: {dirname}")
         list_elements = list_elements_in_dir(dirname, configuration)
 
@@ -65,5 +65,5 @@ def rss_delete_outdated(configuration: Configuration) -> int:
                 else:
                     print(f"item: {movie.date} ({movie.element.title})")
             except ValueError:
-                print(f"error: {movie.mp3}")
+                print(f"error: {movie.element.title}")
     return result

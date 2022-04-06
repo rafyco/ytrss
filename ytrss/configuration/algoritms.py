@@ -34,5 +34,7 @@ def create_configuration(config_file_name: str) -> None:
         pass
 
     data = pkgutil.get_data(__name__, "default_config.yml")
+    if data is None:
+        raise RuntimeError("data object not exists")
     with open(os.path.expanduser(config_file_name), "w+") as config_file:
         config_file.write(data.decode("utf-8"))

@@ -74,8 +74,9 @@ code of example file::
 import os
 import json
 
-from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError
-from ytrss.configuration.json.data_configuration import DataConfiguration
+from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError, \
+    Configuration
+from ytrss.configuration.entity.configuration_data import ConfigurationData
 
 
 class JsonConfigurationParseError(ConfigurationError):
@@ -86,10 +87,14 @@ class JsonConfigurationFileNotExistsError(ConfigurationFileNotExistsError):
     """ Json configuration file not exists. """
 
 
-class JsonConfiguration(DataConfiguration):
+class JsonConfiguration(Configuration):
     """
     Parser configuration for ytrss from json file.
     """
+
+    @property
+    def conf(self) -> ConfigurationData:
+        return self.__configuration
 
     def __init__(self, conf_file: str) -> None:
         """
@@ -112,4 +117,4 @@ class JsonConfiguration(DataConfiguration):
         if data == {}:
             raise JsonConfigurationParseError("Cannot find data from file")
 
-        DataConfiguration.__init__(self, data)
+        self.__configuration = ConfigurationData.from_json(data)
