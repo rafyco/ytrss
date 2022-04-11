@@ -18,12 +18,13 @@
 #                                                                         #
 ###########################################################################
 from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.destination import Destination
 from ytrss.controlers.youtube.downloaded_movie import YouTubeDownloadedMovie
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
 
 
-def create_downloaded_movie(settings: Configuration, dirname: str, name: str) -> DownloadedMovie:
+def create_downloaded_movie(settings: Configuration, destination: Destination, name: str) -> DownloadedMovie:
     """
     Create DownloadedMovie object from args
     """
-    return YouTubeDownloadedMovie(settings, dirname, name)
+    return YouTubeDownloadedMovie(settings, destination, name)

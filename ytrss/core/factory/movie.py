@@ -18,14 +18,13 @@
 #                                                                         #
 ###########################################################################
 
-from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
 from ytrss.controlers.youtube.movie import YouTubeMovie
 from ytrss.core.entity.movie import Movie
+from ytrss.core.typing import Url
 
 
-def create_movie(url: str,
-                 destination_dir: str = DEFAULT_PODCAST_DIR) -> Movie:
+def create_movie(url: Url) -> Movie:
     """
     Create Movie object from args
     """
-    return YouTubeMovie(url, destination_dir)
+    return YouTubeMovie(url)

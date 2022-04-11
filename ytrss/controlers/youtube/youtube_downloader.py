@@ -32,6 +32,8 @@ from typing import Dict, Any, Sequence
 import youtube_dl
 
 from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.destination import Destination
+from ytrss.core.typing import Url
 
 
 class YouTubeDownloader:
@@ -69,8 +71,8 @@ class YouTubeDownloader:
     def download(
             self,
             code: str,
-            url: str,
-            destination_dir: str,
+            url: Url,
+            destination: Destination,
             json_info: Dict[str, Any]
     ) -> bool:
         """
@@ -94,10 +96,10 @@ class YouTubeDownloader:
         if os.path.isfile(full_file_name):
             source_path = os.path.join(self.configuration.conf.cache_path, full_file_name)
             destination_path = os.path.join(self.output_path,
-                                            destination_dir,
+                                            destination.destination_dir,
                                             full_file_name)
             metadate_path = os.path.join(self.output_path,
-                                         destination_dir,
+                                         destination.destination_dir,
                                          metadate_name)
             try:
                 os.mkdir(self.output_path)
@@ -105,7 +107,7 @@ class YouTubeDownloader:
                 pass
             try:
                 os.mkdir(os.path.join(self.output_path,
-                                      destination_dir))
+                                      destination.destination_dir))
             except OSError:
                 pass
             logging.debug("source_path: %s", source_path)

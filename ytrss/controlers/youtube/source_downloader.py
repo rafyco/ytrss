@@ -28,56 +28,44 @@ from xml.dom import minidom
 
 from ytrss.configuration.entity.source import Source
 from ytrss.controlers.youtube.movie import YouTubeMovie
-from ytrss.core.entity.movie import Movie
+from ytrss.core.typing import Url
+from ytrss.database.entity.movie_task import MovieTask
 from ytrss.download.source_downloader import SourceDownloader
 
 
 class YouTubeSourceDownloader(SourceDownloader):
     """
     Class to download list of YouTube movie urls.
-
-    @ivar code: Code for parsing source
-    @type code: str
-    @ivar destination_dir: Name of directory where movie should be save
-    @type destination_dir: str
-    @ivar link_type: type of parsing source.
-    @type link_type: str
     """
 
     def __init__(self, source: Source) -> None:
         """
         YTDown constructor.
-
-        @param self: object handle
-        @type self: L{SourceDownloader}
-        @param source: parameter for youtube movie
-        @type source: dict
-        @raise AttributeError: lint_type is not user or playlist
         """
         self.code = source.code
-        self.destination_dir = source.destination_dir
+        self.destination = source.destination
         self.link_type = source.type
         if self.link_type != "user" and self.link_type != "playlist" and self.link_type != "default":
             raise AttributeError("link_type must be 'user' or 'playlist'")
 
     @property
-    def source_url(self) -> str:
+    def source_url(self) -> Url:
         """
         Build url to rss source from id save in object.
         """
         pattern = "channel_id"
         if self.link_type == 'playlist':
             pattern = "playlist_id"
-        return f"https://www.youtube.com/feeds/videos.xml?{pattern}={self.code}"
+        return Url(f"https://www.youtube.com/feeds/videos.xml?{pattern}={self.code}")
 
     @property
-    def movies(self) -> Iterable[Movie]:
+    def movies(self) -> Iterable[MovieTask]:
         """
         Get movie urls for object.
         """
         logging.debug("URL: %s", self.source_url)
 
-        result: List[Movie] = []
+        result: List[MovieTask] = []
         try:
             xml_str = urlopen(self.source_url).read()
             xmldoc = minidom.parseString(xml_str)
@@ -87,9 +75,9 @@ class YouTubeSourceDownloader(SourceDownloader):
             logging.error("Problem with url: %s", self.source_url)
             return result
         for elem in tags:
-            url: str = elem.getAttribute("href")
-            if "watch?v=" in url:
-                yield YouTubeMovie(url, destination_dir=self.destination_dir)
+            url: Url = Url(elem.getAttribute("href"))
+            if "watch?v=" in url:  # pylint: disable=E1135
+                yield MovieTask.from_objects(YouTubeMovie(url), self.destination)
             else:
                 logging.debug("Not valid url from rss: %s", url)
         return result

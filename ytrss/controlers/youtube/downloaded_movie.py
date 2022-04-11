@@ -28,9 +28,11 @@ from email import utils
 from typing import Any, Dict, Optional
 
 from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.destination import Destination
 from ytrss.controlers.youtube.movie import YouTubeMovie
 from ytrss.core.entity.downloaded_movie import DownloadedMovie, MovieJSONError, MovieMP3Error
 from ytrss.core.entity.movie import Movie
+from ytrss.core.typing import Path, Url
 
 
 class YouTubeDownloadedMovie(DownloadedMovie):
@@ -40,24 +42,15 @@ class YouTubeDownloadedMovie(DownloadedMovie):
     This class working on movie files and manage json's file.
     """
 
-    def __init__(self, settings: Configuration, dirname: str, name: str) -> None:
+    def __init__(self, settings: Configuration, destination: Destination, name: str) -> None:
         """
         Object construction,
-
-        @param self: object handle
-        @type self: L{Movie<ytrss.core.movie.Movie>}
-        @param settings: settings handle
-        @type settings: L{YTSettings<ytrss.core.settings.YTSettings>}
-        @param dirname: Name of directory
-        @type dirname:  str
-        @param name: Name of movie
-        @type name: str
         """
         self.__date: Optional[datetime] = None
         self.__data: Optional[Dict[str, Any]] = None
         self.__movie: Optional[Movie] = None
         self.__settings = settings
-        self.__dirname = dirname
+        self.__destination = destination
         self.__name = name
         if not os.path.isfile(self.__json):
             raise MovieJSONError
@@ -65,22 +58,22 @@ class YouTubeDownloadedMovie(DownloadedMovie):
             raise MovieMP3Error
 
     @property
-    def __json(self) -> str:
+    def __json(self) -> Url:
         """
         Return path to json file.
         """
-        return os.path.join(self.__settings.conf.output,
-                            self.__dirname,
-                            self.__name + ".json")
+        return Url(os.path.join(self.__settings.conf.output,
+                                self.__destination.destination_dir,
+                                self.__name + ".json"))
 
     @property
-    def __mp3(self) -> str:
+    def __mp3(self) -> Url:
         """
         Return path to mp3 file.
         """
-        return os.path.join(self.__settings.conf.output,
-                            self.__dirname,
-                            self.__name + ".mp3")
+        return Url(os.path.join(self.__settings.conf.output,
+                                self.__destination.destination_dir,
+                                self.__name + ".mp3"))
 
     @property
     def data(self) -> Dict[str, Any]:
@@ -93,15 +86,22 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         return self.__data
 
     @property
-    def element(self) -> Movie:
+    def movie(self) -> Movie:
         """
         Element object.
         """
         if self.__movie is None:
             if 'url' not in self.data:
                 raise TypeError()
-            self.__movie = YouTubeMovie(self.data['url'], self.__dirname)
+            self.__movie = YouTubeMovie(self.data['url'])
         return self.__movie
+
+    @property
+    def destination(self) -> Destination:
+        """
+        destination object
+        """
+        return self.__destination
 
     @property
     def date(self) -> datetime:
@@ -109,7 +109,7 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         Date object.
         """
         if self.__date is None:
-            parsed_data = utils.parsedate(self.element.date)
+            parsed_data = utils.parsedate(self.movie.date)
             self.__date = datetime(*(parsed_data[0:6])) if parsed_data is not None else datetime.now()
         return self.__date
 
@@ -118,11 +118,11 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         return self.data.get("title", "<no title>")
 
     @property
-    def image(self) -> str:
+    def image(self) -> Url:
         return self.data.get("image", "")
 
     @property
-    def url(self) -> str:
+    def url(self) -> Url:
         return self.data.get("url", "")
 
     @property
@@ -130,8 +130,8 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         return self.data.get("uploader", "")
 
     @property
-    def filename(self) -> str:
-        return self.__name
+    def filename(self) -> Path:
+        return Path(self.__name)
 
     @property
     def description(self) -> str:
@@ -143,6 +143,6 @@ class YouTubeDownloadedMovie(DownloadedMovie):
         @param self: object handle
         @type self: L{Movie<ytrss.core.movie.Movie>}
         """
-        print("delete: {}[{}]".format(self.element.date, self.element.title))
+        print("delete: {}[{}]".format(self.movie.date, self.movie.title))
         os.remove(self.__mp3)
         os.remove(self.__json)

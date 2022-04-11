@@ -49,25 +49,25 @@ def download_all_movie(
         with Mutex('/tmp/lock_ytdown', timeout=0.5):
             with create_database_get(configuration) as database:
 
-                for movie in database.movies():
-                    if not database.is_new(movie):
-                        print(f"URL {movie} cannot again download")
+                for movie_task in database.movies():
+                    if not database.is_new(movie_task.movie, movie_task.destination):
+                        print(f"URL {movie_task.movie} cannot again download")
                         continue
-                    if not movie.is_ready:
+                    if not movie_task.movie.is_ready:
                         print("movie is not ready to download")
-                        database.down_next_time(movie)
+                        database.down_next_time(movie_task.movie, movie_task.destination)
                         continue
-                    if movie.download(configuration):
+                    if movie_task.movie.download(configuration, movie_task.destination):
                         # finish ok
                         print("finish ok")
-                        database.add_to_history(movie)
+                        database.add_to_history(movie_task.movie, movie_task.destination)
                         if on_success is not None:
                             on_success()
                         downloaded = downloaded + 1
                     else:
                         # finish error
                         print("finish error")
-                        database.mark_error(movie)
+                        database.mark_error(movie_task.movie, movie_task.destination)
 
     except BlockingIOError:
         print("Program is running.")

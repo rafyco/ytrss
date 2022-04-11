@@ -23,7 +23,9 @@ Podcast's movie.
 import abc
 from datetime import datetime
 
+from ytrss.configuration.entity.destination import Destination
 from ytrss.core.entity.movie import Movie
+from ytrss.core.typing import Url, Path
 
 
 class MovieFileError(Exception):
@@ -47,7 +49,7 @@ class DownloadedMovie(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def element(self) -> Movie:
+    def movie(self) -> Movie:
         """
         Element object.
         """
@@ -76,14 +78,14 @@ class DownloadedMovie(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def image(self) -> str:
+    def image(self) -> Url:
         """
         image of movie
         """
 
     @property
     @abc.abstractmethod
-    def url(self) -> str:
+    def url(self) -> Url:
         """
         url of movie
         """
@@ -97,7 +99,7 @@ class DownloadedMovie(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def filename(self) -> str:
+    def filename(self) -> Path:
         """
         filename of movie
         """
@@ -107,4 +109,11 @@ class DownloadedMovie(metaclass=abc.ABCMeta):
     def description(self) -> str:
         """
         description of the movie
+        """
+
+    @property
+    @abc.abstractmethod
+    def destination(self) -> Destination:
+        """
+        Destination of the movie
         """

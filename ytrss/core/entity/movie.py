@@ -24,6 +24,8 @@ import abc
 from typing import Dict, Any, Optional
 
 from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.destination import Destination
+from ytrss.core.typing import Url
 
 
 class InvalidStringJSONParseError(Exception):
@@ -48,7 +50,7 @@ class Movie(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def url(self) -> str:
+    def url(self) -> Url:
         """
         URL to movie
         """
@@ -83,7 +85,7 @@ class Movie(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def img_url(self) -> Optional[str]:
+    def img_url(self) -> Optional[Url]:
         """
         image's ULR
         """
@@ -96,20 +98,9 @@ class Movie(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def download(self, settings: Configuration) -> bool:
+    def download(self, settings: Configuration, destination: Destination) -> bool:
         """
         Download element
-        """
-
-    @abc.abstractmethod
-    def to_string(self) -> str:
-        """
-        Make string representing object
-
-        @param self: object handler
-        @type self: L{Movie}
-        @return: JSON's string
-        @rtype: str
         """
 
     @property

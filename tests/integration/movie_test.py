@@ -18,38 +18,39 @@
 #                                                                         #
 ###########################################################################
 """
-Command line program to checking movie's URL in subscription.
-
-Program checking subscription and playlist from config and save it
-to downloading file. It's recomended to add this file to crontab or call
-it manually.
-
-Example usage
-=============
-
-To invoke program type in your console::
-
-    python -m ytrss.subs
-
-for more option call program with flag C{--help}
+Testing movie module
 """
 
-import logging
+from __future__ import unicode_literals
 
-from ytrss.configuration.configuration import Configuration
-from ytrss.core.factory.database_put import create_database_put
-from ytrss.finder.url_finder import URLFinder
+import json
+import unittest
+from io import StringIO
+
+from ytrss.configuration.entity.destination import Destination
+from ytrss.controlers.youtube.movie import YouTubeMovie
 
 
-def prepare_urls(settings: Configuration) -> None:
+# This is tested class. Can have too many method
+from ytrss.database.entity.movie_task import MovieTask
+
+
+class TestMovie(unittest.TestCase):  # pylint: disable=R0904
     """
-    Prepare urls for downloader.
+    movie integration tests
     """
-    logging.info("Prepare new urls")
-    finder = URLFinder(settings.conf.sources)
-    queue = create_database_put(settings)
-    for movie_task in finder.movies:
-        if queue.queue_mp3(movie_task.movie, movie_task.destination):
-            print(f"Nowy element: {movie_task.movie.title} [{movie_task.movie.identity}]")
-        else:
-            logging.info("Element istnieje: %s", movie_task.movie.url)
+    def test_serialization(self) -> None:
+        """
+        Testing serialization methods.
+
+        @param self: object handle
+        @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
+        """
+        elem1 = YouTubeMovie("https://youtube.com/watch?v=I-JxpVFlaos")
+        dest = Destination.from_json("fake")
+        movie_task = MovieTask.from_objects(elem1, dest)
+        element_string = movie_task.row
+        elem2 = MovieTask.from_json(json.load(StringIO(element_string)))
+        self.assertEqual(elem1, elem2.movie)
+        self.assertEqual(elem1.identity, "ytdl:youtube:I-JxpVFlaos")
+        self.assertEqual(elem2.movie.identity, "ytdl:youtube:I-JxpVFlaos")

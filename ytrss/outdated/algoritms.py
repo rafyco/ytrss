@@ -63,7 +63,7 @@ def rss_delete_outdated(configuration: Configuration) -> int:
                     movie.delete()
                     result = result + 1
                 else:
-                    print(f"item: {movie.date} ({movie.element.title})")
+                    print(f"item: {movie.date} ({movie.movie.title})")
             except ValueError:
-                print(f"error: {movie.element.title}")
+                print(f"error: {movie.movie.title}")
     return result

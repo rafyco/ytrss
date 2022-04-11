@@ -25,9 +25,7 @@ Testing Element module
 
 from __future__ import unicode_literals
 
-import json
 import unittest
-from io import StringIO
 
 from typing import List, Dict, Any
 
@@ -110,17 +108,3 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
                              elem2,
                              "Not equal [{} != {}".format(elem['ob1'],
                                                           elem['ob2']))
-
-    def test_serialization(self) -> None:
-        """
-        Testing serialization methods.
-
-        @param self: object handle
-        @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
-        """
-        elem1 = YouTubeMovie("https://youtube.com/watch?v=I-JxpVFlaos")
-        element_string = elem1.to_string()
-        elem2 = YouTubeMovie(json.load(StringIO(element_string))['url'])
-        self.assertEqual(elem1, elem2)
-        self.assertEqual(elem1.identity, "ytdl:youtube:I-JxpVFlaos")
-        self.assertEqual(elem2.identity, "ytdl:youtube:I-JxpVFlaos")

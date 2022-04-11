@@ -32,9 +32,10 @@ from io import StringIO
 from email import utils
 import youtube_dl
 from ytrss.configuration.configuration import Configuration
-from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
+from ytrss.configuration.entity.destination import Destination
 from ytrss.core.entity.movie import Movie, InvalidParameterMovieError
 from ytrss.controlers.youtube.youtube_downloader import YouTubeDownloader
+from ytrss.core.typing import Url
 
 
 class YouTubeMovie(Movie):
@@ -42,15 +43,14 @@ class YouTubeMovie(Movie):
     Movie's data.
     """
 
-    def __init__(self, url: str, destination_dir: str = DEFAULT_PODCAST_DIR) -> None:
+    def __init__(self, url: Url) -> None:
         """
         Element constructor.
 
         @param self: object handler
         @type self: L{Movie}
         """
-        self.destination_dir = destination_dir
-        self._url = url
+        self._url: Url = url
 
         old_stdout = sys.stdout
         old_stderr = sys.stderr
@@ -71,7 +71,7 @@ class YouTubeMovie(Movie):
             raise InvalidParameterMovieError(f"Invalid address type: [{url}] -> {self._error}")
 
     @property
-    def url(self) -> str:
+    def url(self) -> Url:
         """
         Movie's url
         """
@@ -131,12 +131,12 @@ class YouTubeMovie(Movie):
         return utils.formatdate(nowtimestamp)
 
     @property
-    def img_url(self) -> Optional[str]:
+    def img_url(self) -> Optional[Url]:
         """
         image's ULR
         """
         img = self.__get_youtube_data("thumbnail")
-        return img if img != "" else None
+        return Url(img) if img != "" else None
 
     @property
     def is_ready(self) -> bool:
@@ -149,26 +149,11 @@ class YouTubeMovie(Movie):
 
         return ("Premieres in" not in self._error if self._error is not None else True) and is_live.lower() != "true"
 
-    def download(self, settings: Configuration) -> bool:
+    def download(self, settings: Configuration, destination: Destination) -> bool:
         """
         Download element
         """
-        return YouTubeDownloader(settings).download(self.identity, self.url, self.destination_dir, self.json)
-
-    def to_string(self) -> str:
-        """
-        Make string representing object
-
-        @param self: object handler
-        @type self: L{Movie}
-        @return: JSON's string
-        @rtype: str
-        """
-        tab = dict()
-        tab['id'] = self.identity
-        tab['destination'] = self.destination_dir
-        tab['url'] = self.url
-        return json.dumps(tab)
+        return YouTubeDownloader(settings).download(self.identity, self.url, destination, self.json)
 
     def __eq__(self, other: object) -> bool:
         """

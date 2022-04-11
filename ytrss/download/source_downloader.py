@@ -23,7 +23,8 @@ Module to download list of YouTube movie ulrs from codes.
 import abc
 from typing import Iterable
 
-from ytrss.core.entity.movie import Movie
+from ytrss.core.typing import Url
+from ytrss.database.entity.movie_task import MovieTask
 
 
 class SourceDownloader(metaclass=abc.ABCMeta):
@@ -33,14 +34,14 @@ class SourceDownloader(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def source_url(self) -> str:
+    def source_url(self) -> Url:
         """
         Build url to rss source from id save in object.
         """
 
     @property
     @abc.abstractmethod
-    def movies(self) -> Iterable[Movie]:
+    def movies(self) -> Iterable[MovieTask]:
         """
         Get movie urls for object.
         """

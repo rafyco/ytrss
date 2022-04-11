@@ -25,7 +25,9 @@ import logging
 from typing import Optional
 
 from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.destination import Destination
 from ytrss.core.entity.movie import Movie
+from ytrss.database.entity.movie_task import MovieTask
 from ytrss.database.file_db.database_file_config import DatabaseFileConfig
 from ytrss.database.database_put import DatabasePut
 from ytrss.database.file_db.database_file_controller import DatabaseFileController
@@ -46,15 +48,6 @@ class FileDatabasePut(DatabasePut):
     def __init__(self, configuration: Configuration, base_file: Optional[str] = None):
         """
         DownloadQueue constructor.
-
-        @param self: object handle
-        @type self: L{FileDatabaseGet}
-        @param configuration: settings for DownloadQueue
-        @type configuration: L{YTSettings<ytrss.core.settings.YTSettings>}
-        @param base_file: path to file with remember subscription
-        @type base_file: str
-
-        @note:: if C{base_file} not set, it is get from settings object.
         """
         config_file = DatabaseFileConfig(configuration)
         self.url_rss = config_file.url_rss
@@ -64,22 +57,14 @@ class FileDatabasePut(DatabasePut):
         logging.debug(base_file)
         self.rememberer = DatabaseFileController(base_file)
 
-    def queue_mp3(self, movie: Movie) -> bool:
+    def queue_mp3(self, movie: Movie, destination: Destination) -> bool:
         """
         Add address to download.
-
-        @param self: object handle
-        @type self: L{FileDatabaseGet}
-        @param movie: adress to download
-        @type movie: str
-
-        @return: C{True} if C{address} can be downloaded, C{False} otherwise
-        @rtype: Boolean
         """
         logging.debug("DOWNLOAD: %s", movie.url)
-        if self.rememberer.is_new(movie):
+        if self.rememberer.is_new(MovieTask.from_objects(movie, destination)):
             logging.debug("Download address: %s", movie.url)
-            self.download_yt.add_movie(movie)
-            self.rememberer.add_movie(movie)
+            self.download_yt.add_movie(MovieTask.from_objects(movie, destination))
+            self.rememberer.add_movie(MovieTask.from_objects(movie, destination))
             return True
         return False

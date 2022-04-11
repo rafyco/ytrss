@@ -27,8 +27,8 @@ from typing import Optional, Union, List, Sequence, Iterator
 from ytrss.configuration.entity.source import Source
 from ytrss.core.factory import CoreFactoryError
 from ytrss.core.factory.source_downloader import create_source_downloader
+from ytrss.database.entity.movie_task import MovieTask
 from ytrss.download.source_downloader import SourceDownloader
-from ytrss.core.entity.movie import Movie
 
 
 class URLFinder:
@@ -66,7 +66,7 @@ class URLFinder:
                 self.__add_source(elem)
 
     @property
-    def movies(self) -> Iterator[Movie]:
+    def movies(self) -> Iterator[MovieTask]:
         """
         Get urls to YouTube movies.
 
@@ -77,6 +77,6 @@ class URLFinder:
         """
         for source in self.__sources:
             logging.debug("Container: %s", source)
-            for movie in source.movies:
-                logging.debug("El: %s", movie)
-                yield movie
+            for movie_task in source.movies:
+                logging.debug("El: %s", movie_task.movie)
+                yield movie_task

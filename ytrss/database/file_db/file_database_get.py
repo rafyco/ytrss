@@ -21,8 +21,10 @@ import os
 from typing import Iterable, Optional
 
 from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.destination import Destination
 from ytrss.core.entity.movie import Movie
 from ytrss.database.database_get import DatabaseGet, DatabaseGetOpen
+from ytrss.database.entity.movie_task import MovieTask
 from ytrss.database.file_db.database_file_config import DatabaseFileConfig
 from ytrss.database.file_db.database_file_controller import DatabaseFileController
 
@@ -46,23 +48,23 @@ class FileDatabaseGetOpen(DatabaseGetOpen):
         self.__error_file = DatabaseFileController(self.__file_config.err_file)
         self.__history_file = DatabaseFileController(self.__file_config.history_file)
 
-    def mark_error(self, movie: Movie) -> None:
-        self.__error_file.add_movie(movie)
+    def mark_error(self, movie: Movie, destination: Destination) -> None:
+        self.__error_file.add_movie(MovieTask.from_objects(movie, destination))
 
     def close(self, exc_value: Optional[BaseException]) -> None:
         if exc_value is None:
             os.remove(self.__file_config.url_backup)
 
-    def is_new(self, movie: Movie) -> bool:
-        return self.__history_file.is_new(movie)
+    def is_new(self, movie: Movie, destination: Destination) -> bool:
+        return self.__history_file.is_new(MovieTask.from_objects(movie, destination))
 
-    def down_next_time(self, movie: Movie) -> None:
-        return self.__next_time_file.add_movie(movie)
+    def down_next_time(self, movie: Movie, destination: Destination) -> None:
+        return self.__next_time_file.add_movie(MovieTask.from_objects(movie, destination))
 
-    def add_to_history(self, movie: Movie) -> None:
-        return self.__history_file.add_movie(movie)
+    def add_to_history(self, movie: Movie, destination: Destination) -> None:
+        return self.__history_file.add_movie(MovieTask.from_objects(movie, destination))
 
-    def movies(self) -> Iterable[Movie]:
+    def movies(self) -> Iterable[MovieTask]:
         """
         TODO: documentation
         """

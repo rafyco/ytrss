@@ -25,8 +25,8 @@ from json import JSONDecodeError
 from typing import List
 
 from ytrss.core.factory import CoreFactoryError
-from ytrss.core.factory.movie import create_movie
-from ytrss.core.entity.movie import InvalidParameterMovieError, Movie
+from ytrss.core.entity.movie import InvalidParameterMovieError
+from ytrss.database.entity.movie_task import MovieTask
 
 
 class URLRemembererError(Exception):
@@ -54,7 +54,7 @@ class DatabaseFileController:
         @type file_name: str
         """
         self.file_data = ""
-        self.database: List[Movie] = []
+        self.database: List[MovieTask] = []
         logging.debug("url_remember: %s", file_name)
         self.file_name = file_name
         try:
@@ -62,7 +62,7 @@ class DatabaseFileController:
                 self.file_data = file_handle.read()
             for elem in self.file_data.split('\n'):
                 try:
-                    tmp_elem = create_movie(json.load(StringIO(elem))['url'])
+                    tmp_elem = MovieTask.from_json(json.load(StringIO(elem)))
                     self.database.append(tmp_elem)
                 except (InvalidParameterMovieError, CoreFactoryError, JSONDecodeError) as ex:
                     logging.debug("Error: %s", ex)
@@ -70,24 +70,19 @@ class DatabaseFileController:
         except IOError as ex:
             logging.debug("Unknown error %s", ex)
 
-    def add_movie(self, movie: Movie) -> None:
+    def add_movie(self, movie: MovieTask) -> None:
         """
         Add address to base.
-
-        @param self: object handle
-        @type self: L{DatabaseFileController}
-        @param movie: adding address
-        @type movie: L{Element<ytrss.core.element.Element>}
         """
         self.database.append(movie)
         if self.file_name == "":
             return
         with open(self.file_name, 'a') as file_handle:
-            file_handle.writelines(movie.to_string() + '\n')
-        logging.debug("Add %s to file: %s", movie.to_string(), self.file_name)
-        self.file_data = f"{self.file_data}\n{movie.to_string()}\n"
+            file_handle.writelines(movie.row + '\n')
+        logging.debug("Add %s to file: %s", movie.row, self.file_name)
+        self.file_data = f"{self.file_data}\n{movie.row}\n"
 
-    def is_new(self, movie: Movie) -> bool:
+    def is_new(self, movie: MovieTask) -> bool:
         """
         Check is URL not exist in file.
 
@@ -117,7 +112,7 @@ class DatabaseFileController:
         """
         with open(file_name, 'a') as file_handle:
             for elem in self.database:
-                file_handle.writelines(elem.to_string() + '\n')
+                file_handle.writelines(elem.row + '\n')
 
     def delete_file(self) -> None:
         """
@@ -151,7 +146,7 @@ class DatabaseFileController:
                     file_data = file_handle.read()
                     for elem in file_data.split('\n'):
                         try:
-                            self.add_movie(create_movie(json.load(StringIO(elem))['url']))
+                            self.add_movie(MovieTask.from_json(json.load(StringIO(elem))))
                         except JSONDecodeError:
                             pass
                         except CoreFactoryError as ex:
