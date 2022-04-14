@@ -25,18 +25,19 @@ Download mp3 file from YouTube using I{youtube_dl} library.
 
 import os
 import json
-import shutil
 import logging
-from typing import Dict, Any, Sequence
+from typing import Sequence
 
 import youtube_dl
 
+from ytrss.core.entity.downloader import Downloader, DownloaderError
+from ytrss.core.entity.movie import Movie
+
 from ytrss.configuration.configuration import Configuration
-from ytrss.configuration.entity.destination import Destination
-from ytrss.core.typing import Url
+from ytrss.core.typing import Path
 
 
-class YouTubeDownloader:
+class YouTubeDownloader(Downloader):
     """
     Download mp3 file from YouTube.
 
@@ -44,17 +45,12 @@ class YouTubeDownloader:
     moved to output file. Output and cache folder are describe in
     L{YTSettings<ytrss.core.settings.YTSettings>} object.
 
-    @ivar configuration: Setting object
-    @type configuration: L{YTSettings<ytrss.core.settings.YTSettings>}
-    @ivar output_path: Path to output folder
-    @type output_path: str
     """
     def __init__(self, configuration: Configuration) -> None:
         """
         Downloader constructor.
         """
         self.configuration = configuration
-        self.output_path = os.path.expanduser(configuration.conf.output)
 
     @classmethod
     def __invoke_ytdl(cls, args: Sequence[str]) -> int:
@@ -70,11 +66,8 @@ class YouTubeDownloader:
 
     def download(
             self,
-            code: str,
-            url: Url,
-            destination: Destination,
-            json_info: Dict[str, Any]
-    ) -> bool:
+            movie: Movie
+    ) -> Sequence[Path]:
         """
         Download YouTube movie.
 
@@ -87,39 +80,23 @@ class YouTubeDownloader:
         current_path = os.getcwd()
         os.chdir(self.configuration.conf.cache_path)
 
-        logging.info("url: %s", url)
-        status = self.__invoke_ytdl(self.configuration.conf.args + ['-o', f"{code}.mp3", url])
+        logging.info("url: %s", movie.url)
+        status = self.__invoke_ytdl(self.configuration.conf.args + ['-o', f"{movie.identity}.mp3", movie.url])
 
-        finded = False
-        full_file_name = f"{code}.mp3"
-        metadate_name = f"{code}.json"
-        if os.path.isfile(full_file_name):
-            source_path = os.path.join(self.configuration.conf.cache_path, full_file_name)
-            destination_path = os.path.join(self.output_path,
-                                            destination.destination_dir,
-                                            full_file_name)
-            metadate_path = os.path.join(self.output_path,
-                                         destination.destination_dir,
-                                         metadate_name)
-            try:
-                os.mkdir(self.output_path)
-            except OSError:
-                pass
-            try:
-                os.mkdir(os.path.join(self.output_path,
-                                      destination.destination_dir))
-            except OSError:
-                pass
-            logging.debug("source_path: %s", source_path)
-            logging.debug("destination_path: %s", destination_path)
-            shutil.move(source_path, destination_path)
-            with open(metadate_path, 'w') as file_handler:
-                file_handler.write(json.dumps(json_info))
-            finded = True
+        if status != 0:
+            raise DownloaderError(f"youtube_dl raise with state: {status}")
 
-        for find_file in os.listdir(self.configuration.conf.cache_path):
-            if find_file.endswith(".mp3"):
-                print(f"Unknown file: {find_file}")
+        full_file_name = f"{movie.identity}.mp3"
+        metadata_name = f"{movie.identity}.json"
+        if not os.path.isfile(full_file_name):
+            raise DownloaderError(f"File {full_file_name} not downloaded")
+
+        source_path = Path(os.path.join(self.configuration.conf.cache_path, full_file_name))
+        metadata_path = Path(os.path.join(self.configuration.conf.cache_path, metadata_name))
+
+        with open(metadata_path, 'w') as file_handler:
+            file_handler.write(json.dumps(movie.json))
 
         os.chdir(current_path)
-        return status == 0 and finded
+
+        return [source_path, metadata_path]

@@ -47,7 +47,6 @@ from ytrss.download.algoritms import download_all_movie
 
 from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError
 from ytrss.configuration.factory import configuration_factory
-from ytrss.podcast.algoritms import rss_generate
 from ytrss.finder.algoritms import prepare_urls
 
 
@@ -74,7 +73,7 @@ def daemon_main() -> None:
             except SystemExit:
                 pass
             try:
-                download_all_movie(configuration, lambda: rss_generate(configuration))
+                download_all_movie(configuration)
             except SystemExit:
                 pass
             logging.info("Analysis finnish")

@@ -1,14 +1,15 @@
----
-output: ~/ytrss/output
+
 subscriptions:
   - name: YouTube Creators
     code: UCkRfArvrzheW2E7b6SVT7vQ
-podcasts:
-  url_prefix: http://localhost/ytrss/output
-  outputs:
-    default:
-      title: YouTube Creators - podcast
-      author: youtube
-      link: https://youtube.com
-      desc: Movie from YouTube
-      img: https://www.youtube.com/yts/img/yt_1200-vfl4C3T0K.png
+    destination: default
+destinations:
+  default:
+    type: rss
+    url_prefix: http://localhost/ytrss/output/default
+    path: ~/.config/ytrss/output/default
+    title: YouTube Creators - podcast
+    author: youtube
+    link: https://youtube.com
+    desc: Movie from YouTube
+    img: https://www.youtube.com/yts/img/yt_1200-vfl4C3T0K.png

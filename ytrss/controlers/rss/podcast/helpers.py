@@ -85,6 +85,6 @@ def format_date(date: Optional[datetime]) -> str:
     """
     Format datetime to string
     """
-    print_date = date if date is not None else datetime.now()
+    print_date: datetime = date if date is not None else datetime.now()
     nowtimestamp = time.mktime(print_date.timetuple())
     return utils.formatdate(nowtimestamp)

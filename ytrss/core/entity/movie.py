@@ -23,8 +23,6 @@ Element to download
 import abc
 from typing import Dict, Any, Optional
 
-from ytrss.configuration.configuration import Configuration
-from ytrss.configuration.entity.destination import Destination
 from ytrss.core.typing import Url
 
 
@@ -95,12 +93,6 @@ class Movie(metaclass=abc.ABCMeta):
     def is_ready(self) -> bool:
         """
         Is movie is ready to download
-        """
-
-    @abc.abstractmethod
-    def download(self, settings: Configuration, destination: Destination) -> bool:
-        """
-        Download element
         """
 
     @property

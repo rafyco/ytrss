@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017-2022 Rafal Kobel <rafalkobel@rafyco.pl>             #
+#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -17,14 +17,30 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-from ytrss.configuration.configuration import Configuration
-from ytrss.configuration.entity.destination import Destination
-from ytrss.controlers.youtube.downloaded_movie import YouTubeDownloadedMovie
-from ytrss.core.entity.downloaded_movie import DownloadedMovie
+import abc
+from typing import Sequence
+
+from ytrss.core.entity.movie import Movie
+
+from ytrss.core.typing import Path
 
 
-def create_downloaded_movie(settings: Configuration, destination: Destination, name: str) -> DownloadedMovie:
+class DownloaderError(Exception):
     """
-    Create DownloadedMovie object from args
+    Error in Downloaders.
     """
-    return YouTubeDownloadedMovie(settings, destination, name)
+
+
+class Downloader(metaclass=abc.ABCMeta):
+    """
+    A base class of Downloader objects.
+    """
+
+    @abc.abstractmethod
+    def download(
+            self,
+            movie: Movie
+    ) -> Sequence[Path]:
+        """
+        Download movie
+        """

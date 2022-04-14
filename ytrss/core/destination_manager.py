@@ -17,31 +17,38 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-"""
-Module with destination information
-"""
-from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
-from ytrss.core.typing import Path
+from typing import Dict, Iterator
+
+from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
+from ytrss.core.entity.destination import Destination
+from ytrss.core.factory.destination import create_destination
 
 
-class Destination:
+class DestinationManager:
     """
-    Destination information object
+    Destination manager
+
+    An object that managed all destinations available in application.
     """
 
     def __init__(self) -> None:
-        self.destination_dir: Path = Path(DEFAULT_PODCAST_DIR)
+        self._destinations: Dict[DestinationId, Destination] = {}
 
-    @staticmethod
-    def from_json(json: str) -> 'Destination':
+    def add_from_info(self, info: DestinationInfo) -> None:
         """
-        Create podcast information object from dictionary
+        Add a destination from DestinationInfo object.
         """
-        destination = Destination()
-        destination.destination_dir = Path(json)
-        return destination
+        self._destinations[info.identity] = create_destination(info)
+
+    def __getitem__(self, key: DestinationId) -> Destination:
+        if key in self._destinations:
+            return self._destinations[key]
+        raise KeyError  # TODO: Default destination from code
 
     @property
-    def identity(self) -> str:
-        """ Destination id """
-        return self.destination_dir
+    def destinations(self) -> Iterator[Destination]:
+        """
+        Creator of all destinations available from manager.
+        """
+        for key in self._destinations:
+            yield self._destinations[key]

@@ -22,7 +22,7 @@ Module with source data object
 """
 from typing import Dict, Any
 
-from ytrss.configuration.entity.destination import Destination
+from ytrss.configuration.entity.destination_info import DestinationId
 
 
 class Source:
@@ -35,7 +35,7 @@ class Source:
     def __init__(self) -> None:
         self.code: str = "none"
         self.type: str = "default"
-        self.destination: Destination = Destination()
+        self.destination: DestinationId = DestinationId("")
         self.name: str = "<unknown>"
         self.enable: bool = True
 
@@ -62,8 +62,10 @@ class Source:
             source.code = json['code']
         if 'type' in json and isinstance(json['type'], str):
             source.type = json['type']
-        if 'destination_dir' in json and isinstance(json['destination'], str):
-            source.destination = Destination.from_json(json['destination'])
+        if 'destination' in json and isinstance(json['destination'], str):
+            source.destination = DestinationId(json['destination'])
+        else:
+            raise ValueError
         if 'enable' in json and isinstance(json['enable'], bool):
             source.enable = json['enable']
         return source

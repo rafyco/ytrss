@@ -20,17 +20,22 @@
 """
 Module with podcast information object
 """
-from typing import Optional, Dict, Any
+import os
+from typing import Optional, Dict, Any, NewType
+from ytrss.core.typing import Path
+
+DestinationId = NewType("DestinationId", str)
 
 
-class PodcastInfo:
+class DestinationInfo:
     """
     Podcast information object
 
     The object contains information obout the header of podcast.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, identity: DestinationId) -> None:
+        self.identity = identity
         self.title: str = "unknown title"
         self.author: str = "Nobody"
         self.language: str = "pl-pl"
@@ -38,13 +43,14 @@ class PodcastInfo:
         self.desc: str = "No description"
         self.url_prefix: str = ""
         self.img: Optional[str] = None
+        self.output_path: Optional[Path] = None
 
     @staticmethod
-    def from_json(json: Optional[Dict[str, Any]]) -> 'PodcastInfo':
+    def from_json(json: Optional[Dict[str, Any]], identity: DestinationId) -> 'DestinationInfo':
         """
         Create podcast information object from dictionary
         """
-        podcast = PodcastInfo()
+        podcast = DestinationInfo(identity)
         if json is not None:
             if 'title' in json and isinstance(json['title'], str):
                 podcast.title = json['title']
@@ -60,4 +66,6 @@ class PodcastInfo:
                 podcast.url_prefix = json['url_prefix']
             if 'img' in json and isinstance(json['img'], str):
                 podcast.img = json['img']
+            if 'path' in json and isinstance(json['path'], str):
+                podcast.output_path = Path(os.path.expanduser(json['path']))
         return podcast

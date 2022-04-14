@@ -44,7 +44,6 @@ from ytrss.configuration.algoritms import create_configuration
 from ytrss.configuration.factory import configuration_factory
 from ytrss.download.algoritms import download_all_movie
 from ytrss.finder.algoritms import prepare_urls
-from ytrss.podcast.algoritms import rss_generate
 from ytrss.configuration.configuration import ConfigurationError, Configuration, \
     ConfigurationFileNotExistsError
 
@@ -59,7 +58,7 @@ def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
     """
     parser = ArgumentParser(description="Save one or more urls from "
                                         "Youtube to file.",
-                            prog='ytdown')
+                            prog='ytrss')
     parser.add_argument("-v", "--version", action='version',
                         version='%(prog)s {}'.format(get_version()))
     parser.add_argument("-c", "--conf", dest="config_file",
@@ -82,9 +81,6 @@ def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
     parser.add_argument("-x", "--delete-outdate", action="store_true",
                         dest="outdated", default=False,
                         help="delete old files")
-    parser.add_argument("-g", "--generate-podcast", action="store_true",
-                        dest="generate_podcast", default=False,
-                        help="Generate Podcast files")
     # TODO: Add possibility to download from selected url
     # parser.add_argument("urls", nargs='*', default=[], type=str,
     #                    help="Url to download.")
@@ -100,16 +96,11 @@ def main_work(configuration: Configuration, options: Namespace) -> None:
     @param options: option handle
     @type options: unknown
     """
-    force_rss = False
     if options.download_run:
         try:
-            download_all_movie(configuration, lambda: rss_generate(configuration))
+            download_all_movie(configuration)
         except Exception as ex:  # pylint: disable=W0703
-            force_rss = True
             raise ex
-
-    if force_rss or options.generate_podcast:
-        rss_generate(configuration)
 
 
 def main_deprecated(argv: Optional[Sequence[str]] = None) -> None:
@@ -161,7 +152,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     main_work(configuration, options)
 
     if (not options.download_run
-            and not options.daemon_run and not options.generate_podcast
+            and not options.daemon_run
             and not options.outdated):
         print("Require url to download")
         sys.exit(1)

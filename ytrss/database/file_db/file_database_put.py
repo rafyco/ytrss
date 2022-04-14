@@ -25,7 +25,7 @@ import logging
 from typing import Optional
 
 from ytrss.configuration.configuration import Configuration
-from ytrss.configuration.entity.destination import Destination
+from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.movie import Movie
 from ytrss.database.entity.movie_task import MovieTask
 from ytrss.database.file_db.database_file_config import DatabaseFileConfig
@@ -57,7 +57,7 @@ class FileDatabasePut(DatabasePut):
         logging.debug(base_file)
         self.rememberer = DatabaseFileController(base_file)
 
-    def queue_mp3(self, movie: Movie, destination: Destination) -> bool:
+    def queue_mp3(self, movie: Movie, destination: DestinationId) -> bool:
         """
         Add address to download.
         """

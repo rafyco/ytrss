@@ -27,7 +27,7 @@ from urllib.request import urlopen
 from xml.dom import minidom
 
 from ytrss.configuration.entity.source import Source
-from ytrss.controlers.youtube.movie import YouTubeMovie
+from ytrss.controlers.youtube_dl.movie import YouTubeMovie
 from ytrss.core.typing import Url
 from ytrss.database.entity.movie_task import MovieTask
 from ytrss.download.source_downloader import SourceDownloader

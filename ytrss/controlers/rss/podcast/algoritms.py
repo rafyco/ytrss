@@ -17,53 +17,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-"""
-Command line program to generation Podcast in files.
-
-Program to generate podcast in files. It require mp3 files and json files.
-That can be generate by ytrss program.
-
-Example usage
-=============
-
-To invoke program type in your console::
-
-    python -m ytrss.rssgenerate
-
-for more option call program with flag C{--help}
-"""
-
-import os
-from datetime import datetime
-from datetime import timedelta
-
 from ytrss.configuration.configuration import Configuration
-from ytrss.podcast.algoritms import list_elements_in_dir
 
 
-def rss_delete_outdated(configuration: Configuration) -> int:
+def rss_generate(configuration: Configuration) -> None:
     """
-    delete all outdated files
-
-    @param configuration: Settings handle
-    @type configuration: L{YTSettings<ytrss.core.settings.YTSettings>}
-    @return: count of removed movies
-    @rtype: int
+    Generate podcast file.
     """
-    result = 0
-    nowtimestamp = datetime.now()
-
-    for dirname in os.listdir(configuration.conf.output):
-        print(f"Checking file to delete: {dirname}")
-        list_elements = list_elements_in_dir(dirname, configuration)
-
-        for movie in list_elements:
-            try:
-                if nowtimestamp - movie.date > timedelta(days=15):
-                    movie.delete()
-                    result = result + 1
-                else:
-                    print(f"item: {movie.date} ({movie.movie.title})")
-            except ValueError:
-                print(f"error: {movie.movie.title}")
-    return result
+    for destination in configuration.conf.destination_manager.destinations:
+        print(f"Generate output: {destination.identity}")
+        destination.generate_output()

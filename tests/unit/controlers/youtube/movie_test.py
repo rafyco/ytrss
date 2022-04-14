@@ -29,11 +29,14 @@ import unittest
 
 from typing import List, Dict, Any
 
-from ytrss.controlers.youtube.movie import YouTubeMovie
+from ytrss.controlers.youtube_dl.movie import YouTubeMovie
 from ytrss.core.entity.movie import InvalidParameterMovieError
 
 
 # This is tested class. Can have too many method
+from ytrss.core.typing import Url
+
+
 class TestMovie(unittest.TestCase):  # pylint: disable=R0904
     """
     Movie tests.
@@ -73,9 +76,9 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
         @param self: object handle
         @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
-        test_suites: List[str] = [
-            "https://www.youtube.com/watch?v=fakeI-JxpVFlaosfs",
-            "https://www.youdupe.com/watch?v=I-JxpVFlaos",
+        test_suites: List[Url] = [
+            Url("https://www.youtube.com/watch?v=fakeI-JxpVFlaosfs"),
+            Url("https://www.youdupe.com/watch?v=I-JxpVFlaos"),
         ]
         for elem in test_suites:
             with self.assertRaises(InvalidParameterMovieError):
@@ -102,8 +105,8 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
             "ob2": "http://youtu.be/I-JxpVFlaos",
         }]
         for elem in test_suites:
-            elem1 = YouTubeMovie(elem['ob1'])
-            elem2 = YouTubeMovie(elem['ob2'])
+            elem1 = YouTubeMovie(Url(elem['ob1']))
+            elem2 = YouTubeMovie(Url(elem['ob2']))
             self.assertEqual(elem1,
                              elem2,
                              "Not equal [{} != {}".format(elem['ob1'],

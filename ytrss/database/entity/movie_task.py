@@ -24,9 +24,9 @@ import copy
 import json
 from typing import Optional, Dict, Any
 
+from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.factory.movie import create_movie
 
-from ytrss.configuration.entity.destination import Destination
 from ytrss.core.entity.movie import Movie
 from ytrss.core.typing import Url
 
@@ -39,10 +39,10 @@ class MovieTask:
     def __init__(self) -> None:
         self.identity: Optional[str] = None
         self.url: Optional[Url] = None
-        self.destination_id: Optional[str] = None
+        self.destination_id: Optional[DestinationId] = None
 
         self.__movie: Optional[Movie] = None
-        self.__destination: Optional[Destination] = None
+        self.__destination: Optional[DestinationId] = None
 
     @property
     def json(self) -> Dict[str, Any]:
@@ -64,12 +64,12 @@ class MovieTask:
         if "url" in json_data and isinstance(json_data["url"], str):
             movie_task.url = Url(json_data["url"])
         if "destination" in json_data and isinstance(json_data["destination"], str):
-            movie_task.destination_id = json_data["destination"]
+            movie_task.destination_id = DestinationId(json_data["destination"])
 
         return movie_task
 
     @staticmethod
-    def from_objects(movie: Movie, destination: Destination) -> 'MovieTask':
+    def from_objects(movie: Movie, destination: DestinationId) -> 'MovieTask':
         """ Create object from movie and destination objects. """
         movie_task = MovieTask()
 
@@ -97,21 +97,21 @@ class MovieTask:
         self.identity = value.identity
 
     @property
-    def destination(self) -> Destination:
+    def destination(self) -> DestinationId:
         """ destination object. """
         if self.__destination is None:
             if self.destination_id is None:
                 raise ValueError()
-            self.__destination = Destination.from_json(self.destination_id)
+            self.__destination = DestinationId(self.destination_id)
         if self.__destination is None:
             raise ValueError()
         return self.__destination
 
     @destination.setter
-    def destination(self, value: Destination) -> None:
+    def destination(self, value: DestinationId) -> None:
         """ destination object setter. """
         self.__destination = value
-        self.destination_id = value.identity
+        self.destination_id = value
 
     @property
     def row(self) -> str:

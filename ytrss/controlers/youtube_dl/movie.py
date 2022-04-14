@@ -31,10 +31,8 @@ import datetime
 from io import StringIO
 from email import utils
 import youtube_dl
-from ytrss.configuration.configuration import Configuration
-from ytrss.configuration.entity.destination import Destination
+
 from ytrss.core.entity.movie import Movie, InvalidParameterMovieError
-from ytrss.controlers.youtube.youtube_downloader import YouTubeDownloader
 from ytrss.core.typing import Url
 
 
@@ -148,12 +146,6 @@ class YouTubeMovie(Movie):
             is_live = self.__get_youtube_data("is_live")
 
         return ("Premieres in" not in self._error if self._error is not None else True) and is_live.lower() != "true"
-
-    def download(self, settings: Configuration, destination: Destination) -> bool:
-        """
-        Download element
-        """
-        return YouTubeDownloader(settings).download(self.identity, self.url, destination, self.json)
 
     def __eq__(self, other: object) -> bool:
         """

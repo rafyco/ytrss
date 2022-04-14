@@ -22,7 +22,7 @@ from types import TracebackType
 
 from typing import ContextManager, Optional, Iterable, Type
 
-from ytrss.configuration.entity.destination import Destination
+from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.movie import Movie
 from ytrss.database.entity.movie_task import MovieTask
 
@@ -33,25 +33,25 @@ class DatabaseGetOpen(metaclass=abc.ABCMeta):
     """
 
     @abc.abstractmethod
-    def is_new(self, movie: Movie, destination: Destination) -> bool:
+    def is_new(self, movie: Movie, destination: DestinationId) -> bool:
         """
         TODO: documentation
         """
 
     @abc.abstractmethod
-    def down_next_time(self, movie: Movie, destination: Destination) -> None:
+    def down_next_time(self, movie: Movie, destination: DestinationId) -> None:
         """
         TODO: documentation
         """
 
     @abc.abstractmethod
-    def add_to_history(self, movie: Movie, destination: Destination) -> None:
+    def add_to_history(self, movie: Movie, destination: DestinationId) -> None:
         """
         TODO: documentation
         """
 
     @abc.abstractmethod
-    def mark_error(self, movie: Movie, destination: Destination) -> None:
+    def mark_error(self, movie: Movie, destination: DestinationId) -> None:
         """
         TODO: documentation
         """

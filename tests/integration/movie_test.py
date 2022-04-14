@@ -27,11 +27,12 @@ import json
 import unittest
 from io import StringIO
 
-from ytrss.configuration.entity.destination import Destination
-from ytrss.controlers.youtube.movie import YouTubeMovie
+from ytrss.configuration.entity.destination_info import DestinationId
+from ytrss.controlers.youtube_dl.movie import YouTubeMovie
 
 
 # This is tested class. Can have too many method
+from ytrss.core.typing import Url
 from ytrss.database.entity.movie_task import MovieTask
 
 
@@ -46,8 +47,8 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
         @param self: object handle
         @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
-        elem1 = YouTubeMovie("https://youtube.com/watch?v=I-JxpVFlaos")
-        dest = Destination.from_json("fake")
+        elem1 = YouTubeMovie(Url("https://youtube.com/watch?v=I-JxpVFlaos"))
+        dest = DestinationId("fake")
         movie_task = MovieTask.from_objects(elem1, dest)
         element_string = movie_task.row
         elem2 = MovieTask.from_json(json.load(StringIO(element_string)))

@@ -20,10 +20,14 @@
 """
 Podcast's movie.
 """
-import abc
+import json
+import os
 from datetime import datetime
 
-from ytrss.configuration.entity.destination import Destination
+from email.utils import parsedate_to_datetime
+from typing import Any, Optional, Dict
+
+from ytrss.core.factory.movie import create_movie
 from ytrss.core.entity.movie import Movie
 from ytrss.core.typing import Url, Path
 
@@ -40,80 +44,96 @@ class MovieJSONError(MovieFileError):
     """ JSON file movie exception. """
 
 
-class DownloadedMovie(metaclass=abc.ABCMeta):
+class DownloadedMovie:
     """
     Movie object.
 
     This class working on movie files and manage json's file.
     """
 
-    @property
-    @abc.abstractmethod
-    def movie(self) -> Movie:
+    def __init__(self, destination_dir: Path, name: str) -> None:
         """
-        Element object.
+        Object construction,
         """
+        self.__date: Optional[datetime] = None
+        self.__data: Optional[Dict[str, Any]] = None
+        self.__movie: Optional[Movie] = None
+        self.__destination_dir = destination_dir
+        self.__name = name
+        if not os.path.isfile(self.__json):
+            raise MovieJSONError
+        if not os.path.isfile(self.__mp3):
+            raise MovieMP3Error
 
     @property
-    @abc.abstractmethod
+    def __json(self) -> Url:
+        """
+        Return path to json file.
+        """
+        return Url(os.path.join(self.__destination_dir,
+                                self.__name + ".json"))
+
+    @property
+    def __mp3(self) -> Url:
+        """
+        Return path to mp3 file.
+        """
+        return Url(os.path.join(self.__destination_dir,
+                                self.__name + ".mp3"))
+
+    @property
+    def data(self) -> Dict[str, Any]:
+        """
+        Return data array.
+        """
+        if self.__data is None:
+            with open(self.__json) as data_file:
+                self.__data = json.load(data_file)
+        return self.__data
+
+    @property
     def date(self) -> datetime:
-        """
-        Date object.
-        """
+        """ Movie's date """
+        if self.__date is None:
+            date_str = self.data.get("date", "")
+            self.__date = parsedate_to_datetime(date_str)
+        return self.__date
 
-    @abc.abstractmethod
+    @property
+    def title(self) -> str:
+        """ Movie's title """
+        return self.data.get("title", "<no title>")
+
+    @property
+    def image(self) -> Url:
+        """ Movie's image """
+        return self.data.get("image", "")
+
+    @property
+    def url(self) -> Url:
+        """ Movie's url """
+        return Url(self.data.get("url", ""))
+
+    @property
+    def author(self) -> str:
+        """ Movie's author. """
+        return self.data.get("uploader", "")
+
+    @property
+    def filename(self) -> Path:
+        """ Movie's filename """
+        return Path(self.__name)
+
+    @property
+    def description(self) -> str:
+        """ Movie's description. """
+        return self.data.get("description", "")
+
     def delete(self) -> None:
         """
         Delete movie.
-        @param self: object handle
-        @type self: L{Movie<ytrss.core.movie.Movie>}
         """
-
-    @property
-    @abc.abstractmethod
-    def title(self) -> str:
-        """
-        Title of movie
-        """
-
-    @property
-    @abc.abstractmethod
-    def image(self) -> Url:
-        """
-        image of movie
-        """
-
-    @property
-    @abc.abstractmethod
-    def url(self) -> Url:
-        """
-        url of movie
-        """
-
-    @property
-    @abc.abstractmethod
-    def author(self) -> str:
-        """
-        author of the movie
-        """
-
-    @property
-    @abc.abstractmethod
-    def filename(self) -> Path:
-        """
-        filename of movie
-        """
-
-    @property
-    @abc.abstractmethod
-    def description(self) -> str:
-        """
-        description of the movie
-        """
-
-    @property
-    @abc.abstractmethod
-    def destination(self) -> Destination:
-        """
-        Destination of the movie
-        """
+        movie = create_movie(self.url)
+        print("delete: [{}]".format(movie.title))
+        os.remove(self.__mp3)
+        os.remove(self.__json)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 ###########################################################################
 #                                                                         #
-#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
+#  Copyright (C) 2017-2022 Rafal Kobel <rafalkobel@rafyco.pl>             #
 #                                                                         #
 #  This program is free software: you can redistribute it and/or modify   #
 #  it under the terms of the GNU General Public License as published by   #
@@ -17,40 +17,13 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-"""
-Command line program to checking movie's URL in subscription.
-
-Program checking subscription and playlist from config and save it
-to downloading file. It's recomended to add this file to crontab or call
-it manually.
-
-Example usage
-=============
-
-To invoke program type in your console::
-
-    python -m ytrss.subs
-
-for more option call program with flag C{--help}
-"""
-
-import logging
-
 from ytrss.configuration.configuration import Configuration
-from ytrss.core.factory.database_put import create_database_put
-from ytrss.finder.url_finder import URLFinder
+from ytrss.controlers.youtube_dl.youtube_downloader import YouTubeDownloader
+from ytrss.core.entity.downloader import Downloader
 
 
-def prepare_urls(settings: Configuration) -> None:
+def create_downloader(configuration: Configuration) -> Downloader:
     """
-    Prepare urls for downloader.
+    Factory of downloader object
     """
-    logging.info("Prepare new urls")
-    finder = URLFinder(settings.conf.sources)
-    queue = create_database_put(settings)
-    for movie_task in finder.movies:
-        if queue.queue_mp3(movie_task.movie, movie_task.destination):
-            print(f"Nowy element: {movie_task.movie.title} [{movie_task.movie.identity}]"
-                  "dest=[{movie_task.destination}]")
-        else:
-            logging.info("Element istnieje: %s", movie_task.movie.url)
+    return YouTubeDownloader(configuration)
