@@ -1,26 +1,5 @@
-#!/usr/bin/env python3
-###########################################################################
-#                                                                         #
-#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
-#                                                                         #
-#  This program is free software: you can redistribute it and/or modify   #
-#  it under the terms of the GNU General Public License as published by   #
-#  the Free Software Foundation, either version 3 of the License, or      #
-#  (at your option) any later version.                                    #
-#                                                                         #
-#  This program is distributed in the hope that it will be useful,        #
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of         #
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           #
-#  GNU General Public License for more details.                           #
-#                                                                         #
-#  You should have received a copy of the GNU General Public License      #
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
-#                                                                         #
-###########################################################################
 """
 Testing Podcast module.
-
-@see: L{Podcast<ytrss.core.podcast>}
 """
 
 import unittest
@@ -31,16 +10,11 @@ from ytrss.controlers.rss.podcast.helpers import format_desc
 class TestPodcast(unittest.TestCase):  # pylint: disable=R0904
     """
     Podcast tests.
-
-    Testing for L{ytrss.core.podcast} module
     """
 
     def test_description_file(self) -> None:
         """
         Check podcast description formater
-
-        @param self: object handle
-        @type self: L{TestPodcast<ytrss.tests.podcast_test.TestPodcast>}
         """
         samples = [
             {
