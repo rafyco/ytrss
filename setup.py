@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 from __future__ import unicode_literals
-import sys
 from setuptools import setup
 from setuptools import find_packages
 
 
-def read_description(module_name):
-    module_doc = __import__(module_name).__doc__.splitlines()
+def read_description(local_current_package):
+    module_doc = local_current_package.__doc__.splitlines()
     result = ""
     for line in module_doc:
         if line:
@@ -15,43 +14,20 @@ def read_description(module_name):
     return result
 
 
-CURRENT_PYTHON = sys.version_info[:2]
-REQUIRED_PYTHON = (3, 6)
-
-# TODO: change package name
-if CURRENT_PYTHON < REQUIRED_PYTHON:
-    sys.stderr.write("""
-==========================
-Unsupported Python version
-==========================
-
-This version of template-python-package requires Python {}.{}, but you're trying to
-install it on Python {}.{}.
-This may be because you are using a version of pip that doesn't
-understand the python_requires classifier. Make sure you
-have Python {}.{} or newer, then try again:
-
-    $ python3 -m pip install --upgrade pip setuptools
-    $ pip3 install template-python-package
-
-""".format(*(REQUIRED_PYTHON + CURRENT_PYTHON + REQUIRED_PYTHON)))
-    sys.exit(1)
-
-package_name = 'template_python_package'
-version = __import__(package_name).get_version()
+current_package = __import__('template_python_package')
 
 data_files = []
 
 setup(
-    name=package_name,
-    version=version,
-    license='GNU',
-    author="Rafal Kobel",
-    author_email="rafalkobel@rafyco.pl",
-    description=read_description(package_name),
-    python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
+    name=current_package.__title__,
+    version=current_package.__version__,
+    license=current_package.__license__,
+    author=current_package.__author__,
+    author_email=current_package.__author_email__,
+    description=read_description(current_package),
+    python_requires='>={}.{}'.format(*current_package.__required_python__),
     long_description=open("README.rst").read(),
-    url="https://github.com/rafyco/template-python-package",
+    url=current_package.__url__,
     project_urls={
         "Source": "https://github.com/rafyco/template-python-package",
         "Tracker": "https://github.com/rafyco/template-python-package/issues",
@@ -86,9 +62,9 @@ setup(
     },
     command_options={
         'build_spninx': {
-            'project': ('setup.py', package_name),
-            'version': ('setup.py', version),
-            'release': ('setup.py', version),
+            'project': ('setup.py', current_package.__title__),
+            'version': ('setup.py', current_package.__version__),
+            'release': ('setup.py', current_package.__version__),
             'source_dir': ('setup.py', 'docs')
         }
     },
