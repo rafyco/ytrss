@@ -16,9 +16,9 @@ import logging
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Sequence
 
-from youtube_dl import version
+from youtube_dl.version import __version__ as youtube_dl_version
 
-from ytrss import get_version
+from ytrss import __version__ as ytrss_version
 from ytrss.configuration.algoritms import create_configuration
 from ytrss.configuration.factory import configuration_factory
 from ytrss.download.algoritms import download_all_movie
@@ -39,7 +39,7 @@ def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
                                         "Youtube to file.",
                             prog='ytrss')
     parser.add_argument("-v", "--version", action='version',
-                        version=f"%(prog)s {get_version()}\nyoutube_dl {version.__version__}")
+                        version=f"%(prog)s {ytrss_version}\nyoutube_dl {youtube_dl_version}")
     parser.add_argument("-c", "--conf", dest="config_file",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("--create-configuration", dest="create_config",

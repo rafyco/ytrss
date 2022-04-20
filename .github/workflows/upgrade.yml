@@ -34,7 +34,7 @@ jobs:
           PATCH="$(echo "${VERSION}" | sed 's/[0-9]*\.[0-9]*\.\([0-9]*\)/\1/')"
           GIT_TAG="$MAJOR.$MINOR."$(( PATCH + 1 ))
           # spellcheck disable=SC2001
-          sed -i "s/return \"[0-9\.]*\"/return \"${GIT_TAG}\"/" ytrss/__init__.py
+          sed -i "s/__version__ = \"[0-9\.]*\"/__version__ = \"${GIT_TAG}\"/" ytrss/__init__.py
           echo ::set-output name="git_tag::${GIT_TAG}"
       - name: Commit massage
         run: |
