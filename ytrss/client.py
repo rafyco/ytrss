@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# PYTHON_ARGCOMPLETE_OK
 ###########################################################################
 #                                                                         #
 #  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
@@ -39,6 +40,8 @@ import logging
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Sequence
 
+from youtube_dl import version
+
 from ytrss import get_version
 from ytrss.configuration.algoritms import create_configuration
 from ytrss.configuration.factory import configuration_factory
@@ -60,7 +63,7 @@ def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
                                         "Youtube to file.",
                             prog='ytrss')
     parser.add_argument("-v", "--version", action='version',
-                        version='%(prog)s {}'.format(get_version()))
+                        version=f"%(prog)s {get_version()}\nyoutube_dl {version.__version__}")
     parser.add_argument("-c", "--conf", dest="config_file",
                         help="configuration file", default="", metavar="FILE")
     parser.add_argument("--create-configuration", dest="create_config",
@@ -84,6 +87,13 @@ def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
     # TODO: Add possibility to download from selected url
     # parser.add_argument("urls", nargs='*', default=[], type=str,
     #                    help="Url to download.")
+    try:
+        # pylint: disable=C0415
+        import argcomplete
+        argcomplete.autocomplete(parser)
+    except ImportError:
+        pass
+
     return parser.parse_args(argv)
 
 

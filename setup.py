@@ -96,6 +96,9 @@ setup(
         'locks ~= 0.1.1',
     ],
     extras_require={
+        "optional": [
+            "argcomplete"
+        ],
         "unittests": [
             "pytest"
         ],

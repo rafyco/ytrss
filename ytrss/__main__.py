@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# PYTHON_ARGCOMPLETE_OK
 ###########################################################################
 #                                                                         #
 #  Copyright (C) 2017-2022 Rafal Kobel <rafalkobel@rafyco.pl>             #
@@ -17,11 +18,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-from typing import Optional, Sequence
 
+from ytrss.client import main
 
-def main(args: Optional[Sequence[str]]) -> None: ...
-
-
-class version:
-    __version__: str
+if __name__ == "__main__":
+    main()

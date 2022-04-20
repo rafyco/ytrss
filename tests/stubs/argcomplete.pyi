@@ -17,11 +17,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
 #                                                                         #
 ###########################################################################
-from typing import Optional, Sequence
+from argparse import ArgumentParser
 
 
-def main(args: Optional[Sequence[str]]) -> None: ...
-
-
-class version:
-    __version__: str
+def autocomplete(parser: ArgumentParser) -> None: ...
