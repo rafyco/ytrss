@@ -1,7 +1,7 @@
 """
 Module with algorithms that download files
 """
-
+import asyncio
 import logging
 import os
 import sys
@@ -17,7 +17,7 @@ from ytrss.database.database import Database, DatabaseStatus
 from ytrss.database.entity.movie_task import MovieTask
 
 
-def download_movie(configuration: Configuration, movie: Movie, destination: Destination) -> None:
+async def download_movie(configuration: Configuration, movie: Movie, destination: Destination) -> None:
     """
     Download one movie and save it to destination.
     """
@@ -28,7 +28,7 @@ def download_movie(configuration: Configuration, movie: Movie, destination: Dest
         destination.save(files)
 
 
-def download_task(
+async def download_task(
         configuration: Configuration,
         movie_task: MovieTask,
         database: Database
@@ -49,7 +49,7 @@ def download_task(
             destination = configuration.conf.destination_manager[movie_task.destination]
             try:
                 database.change_type(movie_task.movie, DatabaseStatus.PROGRESS)
-                download_movie(configuration, movie_task.movie, destination)
+                await download_movie(configuration, movie_task.movie, destination)
                 print(f"[{movie_task.movie.url}] finish ok")
                 database.change_type(movie_task.movie, DatabaseStatus.DONE)
                 return True
@@ -70,8 +70,11 @@ def download_all_movie(configuration: Configuration) -> int:
     downloaded = 0
     try:
         database = create_database(configuration)
-        for movie_task in database.movies():
-            download_task(configuration, movie_task, database)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(asyncio.gather(
+            *[download_task(configuration, movie_task, database) for movie_task in database.movies()]
+        ))
+        loop.close()
 
     except KeyboardInterrupt:
         print("Keyboard Interrupt by user.")
