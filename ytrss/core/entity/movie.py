@@ -2,6 +2,7 @@
 Element to download
 """
 import abc
+from datetime import datetime
 from typing import Dict, Any, Optional
 
 from ytrss.core.typing import Url
@@ -57,7 +58,7 @@ class Movie(metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def date(self) -> str:
+    def date(self) -> datetime:
         """
         movie's create data
         """

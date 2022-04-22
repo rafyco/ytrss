@@ -2,15 +2,15 @@
 Element to download
 """
 import copy
+from email import utils
 from json import JSONDecodeError
 from typing import Dict, Any, Optional
 
 import sys
 import json
 import time
-import datetime
+from datetime import datetime
 from io import StringIO
-from email import utils
 import youtube_dl
 
 from ytrss.core.entity.movie import Movie, InvalidParameterMovieError
@@ -30,6 +30,7 @@ class YouTubeMovie(Movie):
         @type self: L{Movie}
         """
         self._url: Url = url
+        self._date: Optional[datetime] = None
 
         old_stdout = sys.stdout
         old_stderr = sys.stderr
@@ -100,14 +101,14 @@ class YouTubeMovie(Movie):
         return self.__get_youtube_data("description")
 
     @property
-    def date(self) -> str:
+    def date(self) -> datetime:
         """
         movie's create data
         """
-        now_day = datetime.datetime.now()
-        nowtuple = now_day.timetuple()
-        nowtimestamp = time.mktime(nowtuple)
-        return utils.formatdate(nowtimestamp)
+        try:
+            return datetime.strptime(self.__get_youtube_data("upload_date"), "%Y%m%d")
+        except ValueError:
+            return datetime.now()
 
     @property
     def img_url(self) -> Optional[Url]:
@@ -158,7 +159,7 @@ class YouTubeMovie(Movie):
             'uploader': self.author,
             'description': self.desc,
             'image': self.img_url,
-            'date': self.date
+            'date': utils.formatdate(time.mktime(self.date.timetuple()))
         }
 
     def __str__(self) -> str:

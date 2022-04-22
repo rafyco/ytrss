@@ -56,7 +56,7 @@ class RssDestination(Destination):
             for movie in self.saved_movies:
                 logging.debug("item: %s", movie.filename)
                 try:
-                    print("add item: %s" % movie.filename)
+                    logging.debug("add item: %s" % movie.filename)
                     podcast.add_item(movie=movie)
                 except ValueError:
                     print("Cannot add item")
