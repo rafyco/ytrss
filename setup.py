@@ -75,7 +75,6 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'ytdown = ytrss.client:main_deprecated',
             'ytrss = ytrss.client:main',
         ]
     },

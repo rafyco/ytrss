@@ -61,9 +61,9 @@ async def download_task(
     return False
 
 
-def download_all_movie(configuration: Configuration) -> int:
+def download_all_movies(configuration: Configuration) -> int:
     """
-    Download all movie saved it to destination.
+    Download all movies saved it to destination.
     """
 
     logging.info("download movie from urls")

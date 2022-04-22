@@ -21,10 +21,17 @@ class DestinationManager:
         """
         self._destinations[info.identity] = create_destination(info)
 
+    def __contains__(self, item: DestinationId) -> bool:
+        return item in self._destinations
+
     def __getitem__(self, key: DestinationId) -> Destination:
         if key in self._destinations:
             return self._destinations[key]
         raise KeyError  # TODO: Default destination from code
+
+    def __iter__(self) -> Iterator[Destination]:
+        for key in self._destinations:
+            yield self._destinations[key]
 
     @property
     def destinations(self) -> Iterator[Destination]:

@@ -51,12 +51,11 @@ class RssDestination(Destination):
         if self.info.output_path is None:
             raise KeyError
         if os.path.isdir(self.info.output_path):
-            print(f"Generate RSS: {self.identity}")
+            print(f"Generate RSS: {self.info.title}")
             podcast = Podcast(self.info)
             for movie in self.saved_movies:
-                logging.debug("item: %s", movie.filename)
+                logging.debug("item: %s", movie.title)
                 try:
-                    logging.debug("add item: %s" % movie.filename)
                     podcast.add_item(movie=movie)
                 except ValueError:
                     print("Cannot add item")

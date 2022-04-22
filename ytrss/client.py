@@ -1,122 +1,62 @@
 #!/usr/bin/env python3
 # PYTHON_ARGCOMPLETE_OK
-"""
-Add one or more URL addresses to download file.
-
-Example usage
-=============
-
-To invoke program type in your console::
-
-    ytrss --help
-"""
-
-import sys
 import logging
-from argparse import ArgumentParser, Namespace
-from typing import Optional, Sequence
+import sys
+from argparse import ArgumentParser
+from typing import Optional, Sequence, List
 
-from youtube_dl.version import __version__ as youtube_dl_version
-
-from ytrss import __version__ as ytrss_version
-from ytrss.configuration.algoritms import create_configuration
+from ytrss.commands import BaseCommand
+from ytrss.commands.configuration import ConfigurationCommand
+from ytrss.commands.generate import GenerateCommand
+from ytrss.commands.run import RunCommand
+from ytrss.commands.url import UrlCommand
+from ytrss.commands.version import VersionCommand
+from ytrss.configuration.configuration import ConfigurationFileNotExistsError, ConfigurationError
 from ytrss.configuration.factory import configuration_factory
-from ytrss.download.algoritms import download_all_movie
-from ytrss.finder.algoritms import prepare_urls
-from ytrss.configuration.configuration import ConfigurationError, Configuration, \
-    ConfigurationFileNotExistsError
+from ytrss.core.string_utils import first_line
+
+__subcommands__: List[BaseCommand] = [
+    RunCommand(),
+    GenerateCommand(),
+    ConfigurationCommand(),
+    GenerateCommand(),
+    UrlCommand(),
+    VersionCommand()
+]
 
 
-def __option_args(argv: Optional[Sequence[str]] = None) -> Namespace:
+def __option_args() -> ArgumentParser:
     """
     Parsing argument for command line program.
-
-    @param argv: Option parameters
-    @type argv: list
-    @return: parsed arguments
     """
-    parser = ArgumentParser(description="Save one or more urls from "
-                                        "Youtube to file.",
+    parser = ArgumentParser(description="command line tool to manage ytrss package",
                             prog='ytrss')
-    parser.add_argument("-v", "--version", action='version',
-                        version=f"%(prog)s {ytrss_version}\nyoutube_dl {youtube_dl_version}")
     parser.add_argument("-c", "--conf", dest="config_file",
                         help="configuration file", default="", metavar="FILE")
-    parser.add_argument("--create-configuration", dest="create_config",
-                        help="create default configuration", default="", metavar="FILE")
     parser.add_argument("-l", "--log", dest="logLevel",
                         choices=['DEBUG', 'INFO', 'WARNING',
                                  'ERROR', 'CRITICAL'],
                         help="Set the logging level")
-    parser.add_argument("-s", "--show", action="store_true",
-                        dest="show_config", default=False,
-                        help="Write configuration")
-    parser.add_argument("-r", "--read", action="store_true",
-                        dest="daemon_run", default=False,
-                        help="Read urls to download from rss")
-    parser.add_argument("-d", "--download", action="store_true",
-                        dest="download_run", default=False,
-                        help="Download all movies to output path")
-    parser.add_argument("-x", "--delete-outdate", action="store_true",
-                        dest="outdated", default=False,
-                        help="delete old files")
-    # TODO: Add possibility to download from selected url
-    # parser.add_argument("urls", nargs='*', default=[], type=str,
-    #                    help="Url to download.")
-    try:
-        # pylint: disable=C0415
-        import argcomplete
-        argcomplete.autocomplete(parser)
-    except ImportError:
-        pass
 
-    return parser.parse_args(argv)
-
-
-def main_work(configuration: Configuration, options: Namespace) -> None:
-    """
-    Make all jobs for ytdown program.
-
-    @param configuration: Settings handle
-    @type configuration: L{YTSettings<ytrss.core.settings.YTSettings>}
-    @param options: option handle
-    @type options: unknown
-    """
-    if options.download_run:
-        try:
-            download_all_movie(configuration)
-        except Exception as ex:  # pylint: disable=W0703
-            raise ex
-
-
-def main_deprecated(argv: Optional[Sequence[str]] = None) -> None:
-    """
-    Main function marked as deprecated
-    """
-    logging.warning("This command is deprecated. use 'ytrss' instead with the same parameter")
-    main(argv)
-    logging.warning("This command is deprecated. use 'ytrss' instead with the same parameter")
+    return parser
 
 
 def main(argv: Optional[Sequence[str]] = None) -> None:
     """
     Main function for command line program.
-
-    @param argv: Option parameters
-    @type argv: list
     """
-    options = __option_args(argv)
+    parser = __option_args()
+
+    subparsers = parser.add_subparsers(title="commands", description="Use once of this commands", dest="command")
+    for command in __subcommands__:
+        subparser = subparsers.add_parser(command.name, help=first_line(command.__doc__))
+        command.arg_parser(subparser)
+
+    options = parser.parse_args(argv)
+
     logging.basicConfig(format='%(asctime)s - %(name)s - '
                                '%(levelname)s - %(message)s',
                         level=options.logLevel)
-    if options.create_config is not None and options.create_config != "":
-        try:
-            create_configuration(options.create_config)
-        # pylint: disable=W0703
-        except Exception as ex:
-            print(f"Cannot create configuration file: {ex}")
-            sys.exit(1)
-        sys.exit(0)
 
     try:
         configuration = configuration_factory(options.config_file)
@@ -125,23 +65,24 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         sys.exit(1)
     except ConfigurationError as ex:
         logging.debug("%s: %s", type(ex), ex)
-        print("Configuration file not exist.")
         sys.exit(2)
 
-    if options.show_config:
-        print(configuration)
-        sys.exit()
+    try:
+        # pylint: disable=C0415
+        import argcomplete
+        argcomplete.autocomplete(parser)
+    except ImportError:
+        pass
 
-    if options.daemon_run or options.download_run:
-        prepare_urls(configuration)
+    if options.command is None:
+        parser.print_help()
+        sys.exit(0)
 
-    main_work(configuration, options)
+    for command in __subcommands__:
+        if command.name == options.command:
+            sys.exit(command(configuration, options))
 
-    if (not options.download_run
-            and not options.daemon_run
-            and not options.outdated):
-        print("Require url to download")
-        sys.exit(1)
+    logging.error("command: %s", options.command)
 
 
 if __name__ == "__main__":
