@@ -2,13 +2,13 @@
 Module to download list of YouTube movie ulrs from codes.
 """
 
-import logging
 from typing import List, Iterable
 from urllib.request import urlopen
 from xml.dom import minidom
 
 from ytrss.configuration.entity.source import Source
 from ytrss.controlers.youtube_dl.movie import YouTubeMovie
+from ytrss.core.logging import logger
 from ytrss.core.typing import Url
 from ytrss.database.entity.movie_task import MovieTask
 from ytrss.download.source_downloader import SourceDownloader
@@ -44,7 +44,7 @@ class YouTubeSourceDownloader(SourceDownloader):
         """
         Get movie urls for object.
         """
-        logging.debug("URL: %s", self.source_url)
+        logger.debug("URL: %s", self.source_url)
 
         result: List[MovieTask] = []
         try:
@@ -53,12 +53,12 @@ class YouTubeSourceDownloader(SourceDownloader):
             tags = xmldoc.getElementsByTagName('link')
         # We want catch every exception in ulr like invalid channel or web
         except Exception:  # pylint: disable=W0703
-            logging.error("Problem with url: %s", self.source_url)
+            logger.error("Problem with url: %s", self.source_url)
             return result
         for elem in tags:
             url: Url = Url(elem.getAttribute("href"))
             if "watch?v=" in url:  # pylint: disable=E1135
                 yield MovieTask.from_objects(YouTubeMovie(url), self.destination)
             else:
-                logging.debug("Not valid url from rss: %s", url)
+                logger.debug("Not valid url from rss: %s", url)
         return result

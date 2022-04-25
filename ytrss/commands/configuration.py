@@ -2,6 +2,7 @@ from argparse import Namespace
 
 from ytrss.commands import BaseCommand
 from ytrss.configuration.configuration import Configuration
+from ytrss.core.logging import logger
 
 
 class ConfigurationCommand(BaseCommand):
@@ -13,5 +14,5 @@ class ConfigurationCommand(BaseCommand):
         BaseCommand.__init__(self, "configuration")
 
     def run(self, configuration: Configuration, options: Namespace) -> int:
-        print(configuration)
+        logger.info(configuration)
         return 0

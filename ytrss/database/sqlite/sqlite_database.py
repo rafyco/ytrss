@@ -53,7 +53,7 @@ class SqliteDatabase(Database):
             cursor = conn.execute(f'''
                 SELECT identity
                 FROM movies_tasks
-                WHERE identity = "{movie.identity}" and (state = "wait" or state = "error" or state = "progress")
+                WHERE identity = "{movie.identity}" and state IN ("wait", "error", "progress")
             ''')
             rows = cursor.fetchall()
         return len(rows) > 0
@@ -63,7 +63,7 @@ class SqliteDatabase(Database):
             cursor = conn.execute('''
                 SELECT identity, url, destination
                 FROM movies_tasks
-                WHERE state = "wait" or state = "error"
+                WHERE state IN ("wait", "error", "progress")
             ''')
             rows = cursor.fetchall()
 

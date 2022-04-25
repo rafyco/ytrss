@@ -4,6 +4,7 @@ from youtube_dl.version import __version__ as youtube_dl_version
 import ytrss
 from ytrss.commands import BaseCommand
 from ytrss.configuration.configuration import Configuration
+from ytrss.core.logging import logger
 
 
 class VersionCommand(BaseCommand):
@@ -15,6 +16,6 @@ class VersionCommand(BaseCommand):
         BaseCommand.__init__(self, "version")
 
     def run(self, configuration: Configuration, options: Namespace) -> int:
-        print(f"{ytrss.__name__}: {ytrss.__version__}")
-        print(f"youtube_dl: {youtube_dl_version}")
+        logger.info("%s: %s", ytrss.__name__, ytrss.__version__)
+        logger.info("youtube_dl: %s", youtube_dl_version)
         return 0

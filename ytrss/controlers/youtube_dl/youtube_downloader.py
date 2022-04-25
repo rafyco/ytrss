@@ -6,7 +6,6 @@ Download mp3 file from YouTube using I{youtube_dl} library.
 
 import os
 import json
-import logging
 from typing import Sequence
 
 import youtube_dl
@@ -15,6 +14,7 @@ from ytrss.core.entity.downloader import Downloader, DownloaderError
 from ytrss.core.entity.movie import Movie
 
 from ytrss.configuration.configuration import Configuration
+from ytrss.core.logging import logger
 from ytrss.core.typing import Path
 
 
@@ -61,7 +61,7 @@ class YouTubeDownloader(Downloader):
         current_path = os.getcwd()
         os.chdir(self.configuration.conf.cache_path)
 
-        logging.info("url: %s", movie.url)
+        logger.info("Downloading movie: [%s] %s", movie.url, movie.title)
         status = self.__invoke_ytdl(self.configuration.conf.args + ['-o', f"{movie.identity}.mp3", movie.url])
 
         if status != 0:

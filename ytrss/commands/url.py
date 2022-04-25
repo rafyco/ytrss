@@ -6,6 +6,7 @@ from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.movie import InvalidParameterMovieError
 from ytrss.core.factory.database import create_database
 from ytrss.core.factory.movie import create_movie
+from ytrss.core.logging import logger
 from ytrss.core.typing import Url
 
 
@@ -26,17 +27,17 @@ class UrlCommand(BaseCommand):
         try:
             movie = create_movie(Url(options.url))
         except InvalidParameterMovieError:
-            print(f"This is not valid url: {options.url}")
+            logger.info("This is not valid url: %s", options.url)
             return 1
 
         destination = DestinationId(options.destination)
         if destination not in configuration.conf.destination_manager:
-            print(f"Destination [{destination}] is not defined in configuration")
+            logger.info("Destination [%s] is not defined in configuration", destination)
             return 1
 
         if create_database(configuration).queue_mp3(movie, destination):
-            print(f"Movie [{options.url}] added to queue")
+            logger.info("Movie [%s] added to queue", options.url)
         else:
-            print(f"Cannot add this url: {options.url} to queue. It is probably downloaded")
+            logger.info("Cannot add this url: %s to queue. It is probably downloaded", options.url)
             return 2
         return 0

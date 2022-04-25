@@ -5,6 +5,7 @@ from locks import Mutex
 
 from ytrss.commands import BaseCommand
 from ytrss.configuration.configuration import Configuration
+from ytrss.core.logging import logger
 from ytrss.download.algoritms import download_all_movies
 from ytrss.finder.algoritms import prepare_urls
 
@@ -23,6 +24,6 @@ class RunCommand(BaseCommand):
                 prepare_urls(configuration)
                 download_all_movies(configuration)
         except BlockingIOError:
-            print("Program is already started")
+            logger.info("Program is already started")
             return 1
         return 0

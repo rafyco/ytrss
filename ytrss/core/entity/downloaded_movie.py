@@ -10,6 +10,7 @@ from typing import Any, Optional, Dict
 
 from ytrss.core.factory.movie import create_movie
 from ytrss.core.entity.movie import Movie
+from ytrss.core.logging import logger
 from ytrss.core.typing import Url, Path
 
 
@@ -115,6 +116,6 @@ class DownloadedMovie:
         Delete movie.
         """
         movie = create_movie(self.url)
-        print("delete: [{}]".format(movie.title))
+        logger.info("delete: [%s]", movie.title)
         os.remove(self.__mp3)
         os.remove(self.__json)

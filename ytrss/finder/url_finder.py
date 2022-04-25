@@ -2,7 +2,6 @@
 Finding YouTube movie urls.
 """
 
-import logging
 from typing import Optional, Union, List, Sequence, Iterator
 
 from ytrss.configuration.entity.source import Source
@@ -37,7 +36,6 @@ class URLFinder:
         @type source: str
         """
         if isinstance(source, Source):
-            logging.debug("add user source: %s, [type: %s]", source.name, source.type)
             try:
                 self.__sources.append(create_source_downloader(source))
             except CoreFactoryError:
@@ -57,7 +55,5 @@ class URLFinder:
         @rtype: L{Element<ytrss.core.element.Element>}
         """
         for source in self.__sources:
-            logging.debug("Container: %s", source)
             for movie_task in source.movies:
-                logging.debug("El: %s", movie_task.movie)
                 yield movie_task

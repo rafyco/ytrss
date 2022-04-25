@@ -1,5 +1,4 @@
 import io
-import logging
 import os
 import shutil
 from typing import Iterator, Sequence
@@ -11,6 +10,7 @@ from ytrss.controlers.rss.podcast.podcast import Podcast
 from ytrss.core.entity.downloaded_movie import DownloadedMovie, MovieFileError
 
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
+from ytrss.core.logging import logger
 from ytrss.core.typing import Path
 
 
@@ -38,29 +38,29 @@ class RssDestination(Destination):
     @property
     def saved_movies(self) -> Iterator[DownloadedMovie]:
         if self.info.output_path is None:
-            logging.error("output_path is None")
+            logger.error("output_path is None")
             return
         for filename in os.listdir(self.info.output_path):
             if filename.endswith(".json"):
                 try:
                     yield DownloadedMovie(self.info.output_path, filename[0:len(filename) - 5])
                 except (MovieFileError, CoreFactoryError) as ex:
-                    print(ex)
+                    logger.info(ex)
 
     def generate_output(self) -> None:
         if self.info.output_path is None:
             raise KeyError
         if os.path.isdir(self.info.output_path):
-            print(f"Generate RSS: {self.info.title}")
+            logger.info("Generate RSS: %s", self.info.title)
             podcast = Podcast(self.info)
             for movie in self.saved_movies:
-                logging.debug("item: %s", movie.title)
+                logger.debug(" > %s", movie.title)
                 try:
                     podcast.add_item(movie=movie)
                 except ValueError:
-                    print("Cannot add item")
+                    logger.info("Cannot add item to rss [%s] %s", movie.filename, movie.title)
             podcast_file = os.path.join(self.info.output_path, "podcast.xml")
-            logging.debug("try to save: %s", podcast_file)
+            logger.debug("Create rss file: \"%s\"", podcast_file)
             file_handler = io.open(podcast_file, "w", encoding="utf-8")
             file_handler.write(podcast.generate())
             file_handler.close()
@@ -73,5 +73,5 @@ class RssDestination(Destination):
             try:
                 shutil.move(file, self.info.output_path)
             except shutil.Error as ex:
-                logging.error(ex)
+                logger.error(ex)
         self.generate_output()
