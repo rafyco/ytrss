@@ -1,10 +1,20 @@
 from ytrss.configuration.entity.source import Source
 from ytrss.controlers.youtube.source_downloader import YouTubeSourceDownloader
+from ytrss.core.factory import BaseFactory
 from ytrss.download.source_downloader import SourceDownloader
 
 
-def create_source_downloader(source: Source) -> SourceDownloader:
+class SourceDownloaderFactory(BaseFactory[Source, SourceDownloader]):
     """
-    Create source downloader object from args
+    Factory for SourceDownloader.
     """
-    return YouTubeSourceDownloader(source)
+
+    @classmethod
+    def build(cls, param: Source) -> SourceDownloader:
+        """
+        Build defined object from parameter
+        """
+        return YouTubeSourceDownloader(param)
+
+
+create_source_downloader = SourceDownloaderFactory()

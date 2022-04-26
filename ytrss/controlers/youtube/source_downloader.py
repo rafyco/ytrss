@@ -59,6 +59,4 @@ class YouTubeSourceDownloader(SourceDownloader):
             url: Url = Url(elem.getAttribute("href"))
             if "watch?v=" in url:  # pylint: disable=E1135
                 yield MovieTask.from_objects(YouTubeMovie(url), self.destination)
-            else:
-                logger.debug("Not valid url from rss: %s", url)
         return result

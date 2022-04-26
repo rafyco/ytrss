@@ -92,6 +92,8 @@ def download_all_movies(configuration: Configuration) -> int:
         raise ex
     if queue_len == 0:
         logger.warning("Cannot find url to download")
-    if queue_len >= 0 and downloaded < queue_len:
-        logger.warning("Cannot download all movies")
+    elif queue_len >= 0 and downloaded < queue_len:
+        logger.warning("Cannot download all movies %s/%s", downloaded, queue_len)
+    else:
+        logger.info("Download all %s movie", downloaded)
     return downloaded

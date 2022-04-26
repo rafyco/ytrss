@@ -1,10 +1,26 @@
+from typing import Optional
+
 from ytrss.configuration.configuration import Configuration
+from ytrss.core.factory import BaseFactory
 from ytrss.database.database import Database
 from ytrss.database.sqlite.sqlite_database import SqliteDatabase
 
 
-def create_database(configuration: Configuration) -> Database:
+class DatabaseFactory(BaseFactory[Configuration, Database]):
     """
-    Create Database object from settings
+    Factory for Database
     """
-    return SqliteDatabase(configuration)
+
+    def __init__(self) -> None:
+        self._database: Optional[Database] = None
+
+    def build(self, param: Configuration) -> Database:
+        """
+        Build defined object from parameter
+        """
+        if self._database is None:
+            self._database = SqliteDatabase(param)
+        return self._database
+
+
+create_database = DatabaseFactory()
