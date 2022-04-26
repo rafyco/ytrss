@@ -9,7 +9,7 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
 
     def test_user_find(self) -> None:
         """ Test user finder. """
-        source = YouTubeSourceDownloader(Source.from_json(dict(code="UCViVL2aOkLWKcFVi0_p6u6g",
+        source = YouTubeSourceDownloader(Source.from_json(dict(url="UCViVL2aOkLWKcFVi0_p6u6g",
                                                                destination="default")))
         movies = list(source.movies)
         self.assertGreater(len(movies), 0)
@@ -22,7 +22,7 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
     def test_playlist_find(self) -> None:
         """ Test playlist finder. """
         source = YouTubeSourceDownloader(Source.from_json(dict(
-            code="PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6",
+            url="PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6",
             destination="default",
             type="playlist"
         )))

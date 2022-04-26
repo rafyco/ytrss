@@ -1,6 +1,3 @@
-"""
-Movie task module
-"""
 import copy
 import json
 from typing import Optional, Dict, Any

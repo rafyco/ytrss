@@ -5,15 +5,9 @@ from ytrss.download.source_downloader import SourceDownloader
 
 
 class SourceDownloaderFactory(BaseFactory[Source, SourceDownloader]):
-    """
-    Factory for SourceDownloader.
-    """
 
     @classmethod
     def build(cls, param: Source) -> SourceDownloader:
-        """
-        Build defined object from parameter
-        """
         return YouTubeSourceDownloader(param)
 
 

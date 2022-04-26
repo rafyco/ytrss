@@ -22,7 +22,6 @@ jobs:
         id: vars
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # TODO: change package name
         run: |
           echo "${GITHUB_TOKEN}"
           VERSION="$(python ./setup.py --version)"

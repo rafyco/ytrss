@@ -47,7 +47,7 @@ class RssDestination(Destination):
                 except (MovieFileError, CoreFactoryError) as ex:
                     logger.info(ex)
 
-    def generate_output(self) -> None:
+    def on_finish(self) -> None:
         if self.info.output_path is None:
             raise KeyError
         if os.path.isdir(self.info.output_path):
@@ -58,7 +58,7 @@ class RssDestination(Destination):
                 try:
                     podcast.add_item(movie=movie)
                 except ValueError:
-                    logger.info("Cannot add item to rss [%s] %s", movie.filename, movie.title)
+                    logger.info("Cannot add item to rss [%s] %s", movie.identity, movie.title)
             podcast_file = os.path.join(self.info.output_path, "podcast.xml")
             logger.debug("Create rss file: \"%s\"", podcast_file)
             file_handler = io.open(podcast_file, "w", encoding="utf-8")
@@ -74,4 +74,4 @@ class RssDestination(Destination):
                 shutil.move(file, self.info.output_path)
             except shutil.Error as ex:
                 logger.error(ex)
-        self.generate_output()
+        self.on_finish()

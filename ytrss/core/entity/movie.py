@@ -1,6 +1,3 @@
-"""
-Element to download
-"""
 import abc
 from datetime import datetime
 from typing import Dict, Any, Optional
@@ -9,77 +6,56 @@ from ytrss.core.typing import Url
 
 
 class InvalidStringJSONParseError(Exception):
-    """ Element Parse Exception """
+    pass
 
 
 class InvalidParameterMovieError(Exception):
-    """ Element Exception - Invalid Parameter """
+    pass
 
 
 class Movie(metaclass=abc.ABCMeta):
-    """
-    Movie's data.
-    """
 
     @property
     @abc.abstractmethod
     def identity(self) -> str:
-        """
-        Movie's ID
-        """
+        pass
 
     @property
     @abc.abstractmethod
     def url(self) -> Url:
-        """
-        URL to movie
-        """
+        pass
 
     @property
     @abc.abstractmethod
     def title(self) -> str:
-        """
-        movie's title
-        """
+        pass
 
     @property
     @abc.abstractmethod
     def author(self) -> str:
-        """
-        movie's author
-        """
+        pass
 
     @property
     @abc.abstractmethod
-    def desc(self) -> str:
-        """
-        movie's description
-        """
+    def description(self) -> str:
+        pass
 
     @property
     @abc.abstractmethod
     def date(self) -> datetime:
-        """
-        movie's create data
-        """
+        pass
 
     @property
     @abc.abstractmethod
     def img_url(self) -> Optional[Url]:
-        """
-        image's ULR
-        """
+        pass
 
     @property
     @abc.abstractmethod
     def is_ready(self) -> bool:
-        """
-        Is movie is ready to download
-        """
+        return True
 
     @property
     @abc.abstractmethod
     def json(self) -> Dict[str, Any]:
-        """
-        Return movie's description in JSON format
-        """
+        pass

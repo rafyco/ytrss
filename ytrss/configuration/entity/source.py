@@ -14,7 +14,7 @@ class Source:
     """
 
     def __init__(self) -> None:
-        self.code: str = "none"
+        self.url: str = "none"
         self.type: str = "default"
         self.destination: DestinationId = DestinationId("")
         self.name: str = "<unknown>"
@@ -27,7 +27,7 @@ class Source:
         """
         return {
             "name": self.name,
-            "code": self.code,
+            "url": self.url,
             "type": self.type,
             "destination": self.destination,
             "enable": self.enable
@@ -39,8 +39,8 @@ class Source:
         source = Source()
         if 'name' in json and isinstance(json['name'], str):
             source.name = json['name']
-        if 'code' in json and isinstance(json['code'], str):
-            source.code = json['code']
+        if 'url' in json and isinstance(json['url'], str):
+            source.url = json['url']
         if 'type' in json and isinstance(json['type'], str):
             source.type = json['type']
         if 'destination' in json and isinstance(json['destination'], str):

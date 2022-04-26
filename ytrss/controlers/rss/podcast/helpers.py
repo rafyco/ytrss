@@ -1,6 +1,3 @@
-"""
-Podcast creator helpers
-"""
 import re
 import time
 from datetime import datetime
@@ -15,11 +12,6 @@ def format_desc(text: Optional[str]) -> str:
 
     This function replace ulr and newline chars by following html code.
     It is using in rss file to format description in rss reader.
-
-    @param text: Non-formated description
-    @type text: str
-    @return: HTML formated string
-    @rtype: str
     """
     if text is None:
         return ""
@@ -50,22 +42,14 @@ def format_str(text: Optional[str]) -> str:
     Format some strings.
 
     This function replacing invalid chars in xml file.
-    ex. RSS doesn't accept C{&} char so it should be replaced to C{&amp;}
-
-    @param text: Text to formatting
-    @type text: str
-    @return: formatted text
-    @rtype: str
+    ex. RSS doesn't accept C{&} char, so it should be replaced to C{&amp;}
     """
-    if text is None:
-        return ""
-    return text.replace("&", "&amp;")
+    return text.replace("&", "&amp;") if text is not None else ""
 
 
 def format_date(date: Optional[datetime]) -> str:
     """
-    Format datetime to string
+    Convert datetime to string
     """
     print_date: datetime = date if date is not None else datetime.now()
-    nowtimestamp = time.mktime(print_date.timetuple())
-    return utils.formatdate(nowtimestamp)
+    return utils.formatdate(time.mktime(print_date.timetuple()))

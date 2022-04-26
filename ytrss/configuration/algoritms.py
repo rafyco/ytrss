@@ -3,9 +3,6 @@ import pkgutil
 
 
 def create_configuration(config_file_name: str) -> None:
-    """
-    Create configuration file in selected path
-    """
     if os.path.isfile(os.path.expanduser(config_file_name)):
         raise FileExistsError(f"file {config_file_name} exists")
 

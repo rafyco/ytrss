@@ -14,19 +14,12 @@ from ytrss.core.entity.downloader import Downloader, DownloaderError
 from ytrss.core.entity.movie import Movie
 
 from ytrss.configuration.configuration import Configuration
+from ytrss.core.files import cwd
 from ytrss.core.logging import logger
 from ytrss.core.typing import Path
 
 
 class YouTubeDownloader(Downloader):
-    """
-    Download mp3 file from YouTube.
-
-    Class download file to cache folder. In case of success files are
-    moved to output file. Output and cache folder are describe in
-    L{YTSettings<ytrss.core.settings.YTSettings>} object.
-
-    """
     def __init__(self, configuration: Configuration) -> None:
         """
         Downloader constructor.
@@ -49,35 +42,28 @@ class YouTubeDownloader(Downloader):
             self,
             movie: Movie
     ) -> Sequence[Path]:
-        """
-        Download YouTube movie.
-
-        Function download movie, convert to mp3 and move to output file.
-        """
         try:
             os.makedirs(self.configuration.conf.cache_path)
         except OSError:
             pass
-        current_path = os.getcwd()
-        os.chdir(self.configuration.conf.cache_path)
 
-        logger.info("Downloading movie: [%s] %s", movie.url, movie.title)
-        status = self.__invoke_ytdl(self.configuration.conf.args + ['-o', f"{movie.identity}.mp3", movie.url])
+        with cwd(self.configuration.conf.cache_path):
 
-        if status != 0:
-            raise DownloaderError(f"youtube_dl raise with state: {status}")
+            logger.info("Downloading movie: [%s] %s", movie.url, movie.title)
+            status = self.__invoke_ytdl(self.configuration.conf.args + ['-o', f"{movie.identity}.mp3", movie.url])
 
-        full_file_name = f"{movie.identity}.mp3"
-        metadata_name = f"{movie.identity}.json"
-        if not os.path.isfile(full_file_name):
-            raise DownloaderError(f"File {full_file_name} not downloaded")
+            if status != 0:
+                raise DownloaderError(f"youtube_dl raise with state: {status}")
 
-        source_path = Path(os.path.join(self.configuration.conf.cache_path, full_file_name))
-        metadata_path = Path(os.path.join(self.configuration.conf.cache_path, metadata_name))
+            full_file_name = f"{movie.identity}.mp3"
+            metadata_name = f"{movie.identity}.json"
+            if not os.path.isfile(full_file_name):
+                raise DownloaderError(f"File {full_file_name} not downloaded")
 
-        with open(metadata_path, 'w') as file_handler:
-            file_handler.write(json.dumps(movie.json, indent=4, sort_keys=True))
+            source_path = Path(os.path.join(self.configuration.conf.cache_path, full_file_name))
+            metadata_path = Path(os.path.join(self.configuration.conf.cache_path, metadata_name))
 
-        os.chdir(current_path)
+            with open(metadata_path, 'w') as file_handler:
+                file_handler.write(json.dumps(movie.json, indent=4, sort_keys=True))
 
         return [source_path, metadata_path]

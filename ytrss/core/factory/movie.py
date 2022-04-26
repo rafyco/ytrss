@@ -5,15 +5,9 @@ from ytrss.core.typing import Url
 
 
 class MovieFactory(BaseFactory[Url, Movie]):
-    """
-    Factory for Movies
-    """
 
     @classmethod
     def build(cls, param: Url) -> Movie:
-        """
-        Build defined object from parameter
-        """
         return YouTubeMovie(param)
 
 

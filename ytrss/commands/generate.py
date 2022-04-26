@@ -16,6 +16,6 @@ class GenerateCommand(BaseCommand):
         destination_manager: DestinationManager = configuration.conf.destination_manager
 
         for destination in destination_manager.destinations:
-            destination.generate_output()
+            destination.on_finish()
 
         return 0

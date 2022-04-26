@@ -3,9 +3,7 @@ from typing import TypeVar, Generic
 
 
 class CoreFactoryError(Exception):
-    """
-    Core Factory Error
-    """
+    pass
 
 
 RESULT = TypeVar("RESULT")
@@ -13,15 +11,10 @@ PARAMS = TypeVar("PARAMS")
 
 
 class BaseFactory(Generic[PARAMS, RESULT], metaclass=abc.ABCMeta):
-    """
-    Base factory class
-    """
 
     @abc.abstractmethod
     def build(self, param: PARAMS) -> RESULT:
-        """
-        Build defined object from parameter
-        """
+        pass
 
     def __call__(self, param: PARAMS) -> RESULT:
         return self.build(param)

@@ -1,8 +1,8 @@
 #########################################
- YTRSS - Youtube subscription downloader
+ YTRSS - subscription downloader
 #########################################
 
-Program to automatic download YouTube files by ``youtube_dl`` scripts.
+Program to automatic download any types of files from Internet.
 
 .. image:: https://img.shields.io/badge/author-Rafa%C5%82%20Kobel-blue.svg
    :target: https://rafyco.pl
@@ -29,6 +29,9 @@ Program to automatic download YouTube files by ``youtube_dl`` scripts.
  Description
 *************
 
+.. todo::
+    Make a description. tell about youtube, planning plugins, build podcasts
+
 YTRSS is a simple script to automate your YouTube podcast adventure. It
 is allow you to download your favorite movies, convert it to mp3 and
 arrange them to podcast files.
@@ -36,6 +39,9 @@ arrange them to podcast files.
 **************
  How to start
 **************
+
+.. todo ::
+    How to start, add to crontab, set a server
 
 First of all you need to prepare config file, which helps you describe
 all the channels or playlists that you want to subscribe. After that you
@@ -69,19 +75,20 @@ make that download code and invoke command:
 To checking the installation you can use to call ``ytrss``. Unittest can
 be also helpful with verification.
 
+.. todo ::
+    install bash completions
+
 ***********
- Unit test
+ Testing and code checks
 ***********
+
+.. todo ::
+    link to document with tox information
 
 ``ytrss`` have a few unittest that you can use to checking code
 correctness. You can call it from ``setup.py`` file or using
 ``ytrss.tests`` module after installation. Check one of below command
 and try it yourself.
-
-.. code::
-
-   python setup.py test
-   python -m ytrss.tests
 
 ********
  Author

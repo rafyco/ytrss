@@ -1,7 +1,3 @@
-"""
-Algorithms to prepare urls to download from sources.
-"""
-
 from ytrss.configuration.configuration import Configuration
 from ytrss.core.factory.database import create_database
 from ytrss.core.logging import logger
@@ -9,9 +5,6 @@ from ytrss.finder.url_finder import URLFinder
 
 
 def prepare_urls(settings: Configuration) -> None:
-    """
-    Prepare urls for downloader.
-    """
     logger.info("Search for new movies:")
     finder = URLFinder(settings.conf.sources)
     queue = create_database(settings)

@@ -13,15 +13,10 @@ class DownloaderError(Exception):
 
 
 class Downloader(metaclass=abc.ABCMeta):
-    """
-    A base class of Downloader objects.
-    """
 
     @abc.abstractmethod
     def download(
             self,
             movie: Movie
     ) -> Sequence[Path]:
-        """
-        Download movie
-        """
+        pass

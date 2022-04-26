@@ -1,6 +1,3 @@
-"""
-Module with algorithms that download files
-"""
 import asyncio
 import os
 import sys
@@ -18,9 +15,6 @@ from ytrss.database.entity.movie_task import MovieTask
 
 
 async def download_movie(configuration: Configuration, movie: Movie, destination: Destination) -> None:
-    """
-    Download one movie and save it to destination.
-    """
     downloader = create_downloader(configuration)
     files = downloader.download(movie)
     os.makedirs('/tmp/ytrss', exist_ok=True)
@@ -33,9 +27,6 @@ async def download_task(
         movie_task: MovieTask,
         database: Database
 ) -> bool:
-    """
-    Download movie from task with check if is it safe.
-    """
     os.makedirs('/tmp/ytrss', exist_ok=True)
     try:
         with Mutex(f'/tmp/ytrss/movie-{movie_task.movie.identity}.lock'):
@@ -69,9 +60,6 @@ async def download_task(
 
 
 def download_all_movies(configuration: Configuration) -> int:
-    """
-    Download all movies saved it to destination.
-    """
 
     logger.info("Starting download movies:")
     try:

@@ -27,17 +27,17 @@ class UrlCommand(BaseCommand):
         try:
             movie = create_movie(Url(options.url))
         except InvalidParameterMovieError:
-            logger.info("This is not valid url: %s", options.url)
+            logger.error("This is not valid url: %s", options.url)
             return 1
 
         destination = DestinationId(options.destination)
         if destination not in configuration.conf.destination_manager:
-            logger.info("Destination [%s] is not defined in configuration", destination)
+            logger.error("Destination [%s] is not defined in configuration", destination)
             return 1
 
         if create_database(configuration).queue_mp3(movie, destination):
             logger.info("Movie [%s] added to queue", options.url)
         else:
-            logger.info("Cannot add this url: %s to queue. It is probably downloaded", options.url)
+            logger.error("Cannot add this url: %s to queue. It is probably downloaded", options.url)
             return 2
         return 0

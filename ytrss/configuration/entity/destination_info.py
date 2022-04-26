@@ -1,6 +1,3 @@
-"""
-Module with podcast information object
-"""
 import os
 from typing import Optional, Dict, Any, NewType
 from ytrss.core.typing import Path
@@ -9,11 +6,6 @@ DestinationId = NewType("DestinationId", str)
 
 
 class DestinationInfo:
-    """
-    Podcast information object
-
-    The object contains information obout the header of podcast.
-    """
 
     def __init__(self, identity: DestinationId) -> None:
         self.identity = identity
@@ -28,9 +20,6 @@ class DestinationInfo:
 
     @staticmethod
     def from_json(json: Optional[Dict[str, Any]], identity: DestinationId) -> 'DestinationInfo':
-        """
-        Create podcast information object from dictionary
-        """
         podcast = DestinationInfo(identity)
         if json is not None:
             if 'title' in json and isinstance(json['title'], str):

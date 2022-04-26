@@ -8,46 +8,26 @@ from ytrss.core.typing import Path
 
 
 class Destination(metaclass=abc.ABCMeta):
-    """
-    A base class of destination object.
-    """
 
     @property
     @abc.abstractmethod
     def identity(self) -> DestinationId:
-        """
-        Identity of Destination
-        """
+        pass
 
     @property
     @abc.abstractmethod
     def info(self) -> DestinationInfo:
-        """
-        Data object of destination.
-        """
-
-    @property
-    @abc.abstractmethod
-    def dir_path(self) -> Path:
-        """
-        Path of destination.
-        """
+        pass
 
     @property
     @abc.abstractmethod
     def saved_movies(self) -> Iterator[DownloadedMovie]:
-        """
-        List of saved movies from in destination
-        """
+        pass
 
     @abc.abstractmethod
-    def generate_output(self) -> None:
-        """
-        A method invoked after saved movie.
-        """
+    def on_finish(self) -> None:
+        pass
 
     @abc.abstractmethod
     def save(self, files: Sequence[Path]) -> None:
-        """
-        Save a files to destination file.
-        """
+        pass

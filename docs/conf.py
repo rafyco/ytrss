@@ -42,6 +42,7 @@ release = current_package.__version__
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.githubpages',
+    'sphinx.ext.todo',
     'sphinx_epytext',
 ]
 
@@ -178,3 +179,7 @@ epub_title = project
 epub_exclude_files = ['search.html']
 
 # -- Extension configuration -------------------------------------------------
+
+# todos extension
+todo_include_todos = True
+todo_emit_warnings = True
