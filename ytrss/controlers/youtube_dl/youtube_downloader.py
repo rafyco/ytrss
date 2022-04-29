@@ -76,7 +76,7 @@ class YouTubeDownloader(Downloader):
         metadata_path = Path(os.path.join(self.configuration.conf.cache_path, metadata_name))
 
         with open(metadata_path, 'w') as file_handler:
-            file_handler.write(json.dumps(movie.json))
+            file_handler.write(json.dumps(movie.json, indent=4, sort_keys=True))
 
         os.chdir(current_path)
 
