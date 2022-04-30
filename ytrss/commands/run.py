@@ -5,9 +5,9 @@ from locks import Mutex
 
 from ytrss.commands import BaseCommand
 from ytrss.configuration.configuration import Configuration
-from ytrss.core.logging import logger
-from ytrss.download.algoritms import download_all_movies
-from ytrss.finder.algoritms import prepare_urls
+from ytrss.core.algoritms.download import download_all_movies
+from ytrss.core.algoritms.finder import prepare_urls
+from ytrss.core.helpers.logging import logger
 
 
 class RunCommand(BaseCommand):

@@ -3,11 +3,11 @@ from argparse import ArgumentParser, Namespace
 from ytrss.commands import BaseCommand
 from ytrss.configuration.configuration import Configuration
 from ytrss.configuration.entity.destination_info import DestinationId
-from ytrss.core.entity.movie import InvalidParameterMovieError
+from ytrss.core.entity.movie import MovieError
 from ytrss.core.factory.database import create_database
 from ytrss.core.factory.movie import create_movie
-from ytrss.core.logging import logger
-from ytrss.core.typing import Url
+from ytrss.core.helpers.logging import logger
+from ytrss.core.helpers.typing import Url
 
 
 class UrlCommand(BaseCommand):
@@ -26,7 +26,7 @@ class UrlCommand(BaseCommand):
     def run(self, configuration: Configuration, options: Namespace) -> int:
         try:
             movie = create_movie(Url(options.url))
-        except InvalidParameterMovieError:
+        except MovieError:
             logger.error("This is not valid url: %s", options.url)
             return 1
 

@@ -2,14 +2,10 @@ import abc
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-from ytrss.core.typing import Url
+from ytrss.core.helpers.typing import Url
 
 
-class InvalidStringJSONParseError(Exception):
-    pass
-
-
-class InvalidParameterMovieError(Exception):
+class MovieError(Exception):
     pass
 
 

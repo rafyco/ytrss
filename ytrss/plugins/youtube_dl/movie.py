@@ -1,6 +1,3 @@
-"""
-Element to download
-"""
 import copy
 from email import utils
 from json import JSONDecodeError
@@ -13,8 +10,16 @@ from datetime import datetime
 from io import StringIO
 import youtube_dl
 
-from ytrss.core.entity.movie import Movie, InvalidParameterMovieError
-from ytrss.core.typing import Url
+from ytrss.core.entity.movie import Movie, MovieError
+from ytrss.core.helpers.typing import Url
+
+
+class InvalidStringJSONParseError(MovieError):
+    pass
+
+
+class InvalidParameterMovieError(MovieError):
+    pass
 
 
 class YouTubeMovie(Movie):

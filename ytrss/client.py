@@ -14,8 +14,8 @@ from ytrss.commands.url import UrlCommand
 from ytrss.commands.version import VersionCommand
 from ytrss.configuration.configuration import ConfigurationFileNotExistsError, ConfigurationError
 from ytrss.configuration.factory import configuration_factory
-from ytrss.core.logging import DebugFormatter, ClientFormatter, logger
-from ytrss.core.string_utils import first_line
+from ytrss.core.helpers.logging import DebugFormatter, ClientFormatter, logger
+from ytrss.core.helpers.string_utils import first_line
 
 __subcommands__: List[BaseCommand] = [
     VersionCommand(),

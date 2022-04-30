@@ -4,9 +4,11 @@ import sys
 
 from typing import Any, List, Optional, Dict, Sequence
 
+
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
 from ytrss.configuration.entity.source import Source
-from ytrss.core.destination_manager import DestinationManager
+from ytrss.core.managers.destination_manager import DestinationManager
+from ytrss.core.managers.sources_manager import SourcesManager
 
 
 class ConfigurationData(metaclass=abc.ABCMeta):
@@ -24,6 +26,7 @@ class ConfigurationData(metaclass=abc.ABCMeta):
         self.args: List[str] = []
 
         self._destination_manager: Optional[DestinationManager] = None
+        self._sources_manager: Optional[SourcesManager] = None
 
     @staticmethod
     def from_json(json: Dict[str, Any]) -> 'ConfigurationData':
@@ -79,16 +82,23 @@ class ConfigurationData(metaclass=abc.ABCMeta):
         """
         result = "Youtube configuration:\n\n"
         for elem in self.sources:
-            result += f"  {elem.type}: {elem.type} [{elem.name}]\n"
+            result += f"  {elem.name}: [{elem.url}]\n"
         return result
 
     @property
+    def sources_manager(self) -> SourcesManager:
+        """ Sources manager """
+        if self._sources_manager is None:
+            self._sources_manager = SourcesManager()
+            for sources in self.sources:
+                self._sources_manager.add_from_info(sources)
+        return self._sources_manager
+
+    @property
     def destination_manager(self) -> DestinationManager:
-        """
-        Destination manager
-        """
+        """ Destination manager """
         if self._destination_manager is None:
             self._destination_manager = DestinationManager()
-            for info_key in self.destinations:
-                self._destination_manager.add_from_info(self.destinations[info_key])
+            for _, info_value in self.destinations.items():
+                self._destination_manager.add_from_info(info_value)
         return self._destination_manager

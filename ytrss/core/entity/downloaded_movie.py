@@ -6,7 +6,7 @@ from email.utils import parsedate_to_datetime
 from typing import Any, Optional, Dict, Sequence
 
 from ytrss.core.entity.movie import Movie
-from ytrss.core.typing import Url, Path
+from ytrss.core.helpers.typing import Url, Path
 
 
 class MovieFileError(Exception):

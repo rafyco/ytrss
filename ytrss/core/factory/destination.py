@@ -1,5 +1,5 @@
 from ytrss.configuration.entity.destination_info import DestinationInfo
-from ytrss.controlers.rss.destination import RssDestination
+from ytrss.plugins.rss.destination import RssDestination
 from ytrss.core.entity.destination import Destination
 from ytrss.core.factory import BaseFactory
 

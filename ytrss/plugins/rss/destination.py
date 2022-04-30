@@ -6,12 +6,12 @@ from typing import Iterator, Sequence
 from ytrss.core.entity.destination import Destination
 from ytrss.core.factory import CoreFactoryError
 
-from ytrss.controlers.rss.podcast.podcast import Podcast
+from ytrss.plugins.rss.podcast.podcast import Podcast
 from ytrss.core.entity.downloaded_movie import DownloadedMovie, MovieFileError
 
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
-from ytrss.core.logging import logger
-from ytrss.core.typing import Path
+from ytrss.core.helpers.logging import logger
+from ytrss.core.helpers.typing import Path
 
 
 class RssDestination(Destination):

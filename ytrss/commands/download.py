@@ -2,15 +2,15 @@ import os
 import shutil
 from argparse import Namespace, ArgumentParser
 
+from ytrss.core.entity.movie import MovieError
 from ytrss.core.factory.downloader import create_downloader
 
-from ytrss.core.entity.movie import InvalidParameterMovieError
 from ytrss.core.factory.movie import create_movie
 
 from ytrss.commands import BaseCommand
 from ytrss.configuration.configuration import Configuration
-from ytrss.core.logging import logger
-from ytrss.core.typing import Url
+from ytrss.core.helpers.logging import logger
+from ytrss.core.helpers.typing import Url
 
 
 class DownloadCommand(BaseCommand):
@@ -28,7 +28,7 @@ class DownloadCommand(BaseCommand):
     def run(self, configuration: Configuration, options: Namespace) -> int:
         try:
             movie = create_movie(Url(options.url))
-        except InvalidParameterMovieError:
+        except MovieError:
             logger.error("This is not valid url: %s", options.url)
             return 1
 
@@ -38,6 +38,7 @@ class DownloadCommand(BaseCommand):
 
         if len(list(files)) <= 1:
             logger.error("There are no downloaded files for movie from: %s", movie.url)
+            return 1
 
         destination_path = os.path.join(os.getcwd(), movie.identity)
         os.makedirs(destination_path, exist_ok=True)
@@ -46,3 +47,4 @@ class DownloadCommand(BaseCommand):
                 shutil.move(file, destination_path)
             except shutil.Error as ex:
                 logger.error(ex)
+        return 0

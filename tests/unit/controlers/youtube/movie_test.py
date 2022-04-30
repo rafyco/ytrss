@@ -10,12 +10,11 @@ import unittest
 
 from typing import List, Dict, Any
 
-from ytrss.controlers.youtube_dl.movie import YouTubeMovie
-from ytrss.core.entity.movie import InvalidParameterMovieError
 
+from ytrss.plugins.youtube_dl.movie import YouTubeMovie, InvalidParameterMovieError
 
 # This is tested class. Can have too many method
-from ytrss.core.typing import Url
+from ytrss.core.helpers.typing import Url
 
 
 class TestMovie(unittest.TestCase):  # pylint: disable=R0904

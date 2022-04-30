@@ -2,11 +2,10 @@ import abc
 
 from enum import Enum
 
-from typing import Iterable
+from typing import Iterable, Tuple
 
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.movie import Movie
-from ytrss.database.entity.movie_task import MovieTask
 
 
 class DatabaseStatus(Enum):
@@ -33,7 +32,7 @@ class Database(metaclass=abc.ABCMeta):
         """ Change type of movie task. """
 
     @abc.abstractmethod
-    def movies(self) -> Iterable[MovieTask]:
+    def movies(self) -> Iterable[Tuple[Movie, DestinationId]]:
         """ Get list of movies to download. """
 
     @abc.abstractmethod

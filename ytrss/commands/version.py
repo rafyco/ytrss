@@ -4,7 +4,7 @@ from youtube_dl.version import __version__ as youtube_dl_version
 import ytrss
 from ytrss.commands import BaseCommand
 from ytrss.configuration.configuration import Configuration
-from ytrss.core.logging import logger
+from ytrss.core.helpers.logging import logger
 
 
 class VersionCommand(BaseCommand):

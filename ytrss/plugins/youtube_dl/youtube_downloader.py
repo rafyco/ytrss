@@ -14,9 +14,9 @@ from ytrss.core.entity.downloader import Downloader, DownloaderError
 from ytrss.core.entity.movie import Movie
 
 from ytrss.configuration.configuration import Configuration
-from ytrss.core.files import cwd
-from ytrss.core.logging import logger
-from ytrss.core.typing import Path
+from ytrss.core.helpers.files import cwd
+from ytrss.core.helpers.logging import logger
+from ytrss.core.helpers.typing import Path
 
 
 class YouTubeDownloader(Downloader):

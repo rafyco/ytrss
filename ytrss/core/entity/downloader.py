@@ -3,7 +3,7 @@ from typing import Sequence
 
 from ytrss.core.entity.movie import Movie
 
-from ytrss.core.typing import Path
+from ytrss.core.helpers.typing import Path
 
 
 class DownloaderError(Exception):

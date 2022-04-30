@@ -4,7 +4,7 @@ from typing import Iterator, Sequence
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
 
-from ytrss.core.typing import Path
+from ytrss.core.helpers.typing import Path
 
 
 class Destination(metaclass=abc.ABCMeta):

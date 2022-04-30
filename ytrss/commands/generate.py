@@ -2,7 +2,7 @@ from argparse import Namespace
 
 from ytrss.commands import BaseCommand
 from ytrss.configuration.configuration import Configuration
-from ytrss.core.destination_manager import DestinationManager
+from ytrss.core.managers.destination_manager import DestinationManager
 
 
 class GenerateCommand(BaseCommand):

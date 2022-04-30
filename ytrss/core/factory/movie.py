@@ -1,7 +1,7 @@
-from ytrss.controlers.youtube_dl.movie import YouTubeMovie
+from ytrss.plugins.youtube_dl.movie import YouTubeMovie
 from ytrss.core.entity.movie import Movie
 from ytrss.core.factory import BaseFactory
-from ytrss.core.typing import Url
+from ytrss.core.helpers.typing import Url
 
 
 class MovieFactory(BaseFactory[Url, Movie]):

@@ -1,6 +1,6 @@
 import os
 from typing import Optional, Dict, Any, NewType
-from ytrss.core.typing import Path
+from ytrss.core.helpers.typing import Path
 
 DestinationId = NewType("DestinationId", str)
 

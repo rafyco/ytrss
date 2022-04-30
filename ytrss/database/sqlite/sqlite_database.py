@@ -2,14 +2,15 @@ import os
 import sqlite3
 from contextlib import contextmanager
 from sqlite3 import Connection
-from typing import Iterable, Iterator
+from typing import Iterable, Iterator, Tuple
+
+from ytrss.core.factory.movie import create_movie
 
 from ytrss.configuration.configuration import Configuration
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.movie import Movie
 
 from ytrss.database.database import Database, DatabaseStatus
-from ytrss.database.entity.movie_task import MovieTask
 
 
 class SqliteDatabase(Database):
@@ -58,7 +59,7 @@ class SqliteDatabase(Database):
             rows = cursor.fetchall()
         return len(rows) > 0
 
-    def movies(self) -> Iterable[MovieTask]:
+    def movies(self) -> Iterable[Tuple[Movie, DestinationId]]:
         with self._database_handler() as conn:
             cursor = conn.execute('''
                 SELECT identity, url, destination
@@ -68,13 +69,10 @@ class SqliteDatabase(Database):
             rows = cursor.fetchall()
 
         for row in rows:
-            movie_task = MovieTask.from_json({
-                "id": row[0],
-                "url": row[1],
-                "destination": row[2]
-            })
-            if self.is_new(movie_task.movie, movie_task.destination):
-                yield movie_task
+            movie = create_movie(row[1])
+            destination = DestinationId(row[2])
+            if self.is_new(movie, destination):
+                yield movie, destination
 
     def queue_mp3(self, movie: Movie, destination: DestinationId) -> bool:
         """

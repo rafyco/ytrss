@@ -1,5 +1,5 @@
 from ytrss.configuration.configuration import Configuration
-from ytrss.core.logging import logger
+from ytrss.core.helpers.logging import logger
 
 
 def rss_generate(configuration: Configuration) -> None:
