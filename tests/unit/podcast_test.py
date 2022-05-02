@@ -14,7 +14,7 @@ class TestPodcast(unittest.TestCase):  # pylint: disable=R0904
 
     def test_description_file(self) -> None:
         """
-        Check podcast description formater
+        Check podcast description formatter
         """
         samples = [
             {

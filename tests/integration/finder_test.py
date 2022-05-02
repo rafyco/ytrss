@@ -35,7 +35,7 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
             print(f"url: {movie}")
             self.assertTrue(movie.url is not None
                             and movie.url.startswith("https://www.youtube.com/watch?v="))
-            
+
     def test_playlist_find(self) -> None:
         """ Test playlist finder. """
         source = YouTubePlaylistSourceDownloader(Source.from_json(dict(

@@ -9,10 +9,10 @@ from ytrss.plugins.youtube.base_youtube_source_downloader import BaseYouTubeSour
 class YouTubePlaylistSourceDownloader(BaseYouTubeSourceDownloader):
 
     def __init__(self, source: Source) -> None:
-        m = re.match(r"https?:\/\/(www\.)?youtube\.com\/playlist\?.*list=(?P<code>[\dA-Za-z_\-]+)", source.url)
-        if m is None:
+        match = re.match(r"https?:\/\/(www\.)?youtube\.com\/playlist\?.*list=(?P<code>[\dA-Za-z_\-]+)", source.url)
+        if match is None:
             raise SourceDownloaderError()
-        self._code = m.group('code')
+        self._code = match.group('code')
         BaseYouTubeSourceDownloader.__init__(self, source)
 
     @property

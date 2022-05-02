@@ -76,15 +76,6 @@ class ConfigurationData(metaclass=abc.ABCMeta):
         """ Return information about podcast. """
         return self.destinations[key] if key in self.destinations else None
 
-    def __str__(self) -> str:
-        """
-        Display settings information.
-        """
-        result = "Youtube configuration:\n\n"
-        for elem in self.sources:
-            result += f"  {elem.name}: [{elem.url}]\n"
-        return result
-
     @property
     def sources_manager(self) -> SourcesManager:
         """ Sources manager """

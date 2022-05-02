@@ -5,6 +5,7 @@ from urllib.request import urlopen
 from xml.dom import minidom
 
 from ytrss.configuration.entity.destination_info import DestinationId
+from ytrss.configuration.entity.source import Source
 from ytrss.core.entity.movie import Movie
 from ytrss.core.entity.source_downloader import SourceDownloader
 from ytrss.core.helpers.logging import logger
@@ -14,10 +15,11 @@ from ytrss.plugins.youtube_dl.movie import YouTubeMovie
 
 class BaseYouTubeSourceDownloader(SourceDownloader):
 
-    def __init__(self, source):
+    def __init__(self, source: Source) -> None:
         self.url = source.url
         self.destination = source.destination
 
+    @property
     @abstractmethod
     def source_url(self) -> Url:
         pass

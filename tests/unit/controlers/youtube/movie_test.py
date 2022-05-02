@@ -1,9 +1,3 @@
-"""
-Testing Element module
-
-@see: L{Locker<ytrss.core.element>}
-"""
-
 from __future__ import unicode_literals
 
 import unittest
@@ -20,15 +14,10 @@ from ytrss.core.helpers.typing import Url
 class TestMovie(unittest.TestCase):  # pylint: disable=R0904
     """
     Movie tests.
-
-    Testing for L{ytrss.core.element} module
     """
     def test_input_argument_parse(self) -> None:
         """
         Testing usage of module.
-
-        @param self: object handle
-        @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
         test_suites: List[Dict[str, Any]] = [{
             "arg": "https://www.youtube.com/watch?v=I-JxpVFlaos",
@@ -52,9 +41,6 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
     def test_invalid_argument(self) -> None:
         """
         Testing invalid argument element.
-
-        @param self: object handle
-        @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
         test_suites: List[Url] = [
             Url("https://www.youtube.com/watch?v=fakeI-JxpVFlaosfs"),
@@ -67,9 +53,6 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
     def test_comparation(self) -> None:
         """
         Testing comparation elements.
-
-        @param self: object handle
-        @type self: L{TestElement<ytrss.tests.element_test.TestElement>}
         """
         test_suites = [{
             "ob1": "https://www.youtube.com/watch?v=I-JxpVFlaos",

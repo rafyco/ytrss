@@ -14,5 +14,15 @@ class ConfigurationCommand(BaseCommand):
         BaseCommand.__init__(self, "configuration")
 
     def run(self, configuration: Configuration, options: Namespace) -> int:
-        logger.info(configuration)
+        logger.info("subscriptions:")
+        for source in configuration.conf.sources:
+            logger.info("\t%s [%s]%s (%s)",
+                        source.name,
+                        source.url,
+                        " [disabled]" if not source.enable else "",
+                        source.destination)
+
+        logger.info("\ndestinations:")
+        for destination in configuration.conf.destination_manager.destinations:
+            logger.info("[%s] => %s", destination.identity, destination.info.title)
         return 0

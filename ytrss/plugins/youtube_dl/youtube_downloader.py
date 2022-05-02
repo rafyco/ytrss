@@ -1,9 +1,3 @@
-"""
-Download mp3 file from YouTube using I{youtube_dl} library.
-
-@see: U{https://rg3.github.io/youtube-dl/}
-"""
-
 import os
 import json
 from typing import Sequence
@@ -20,10 +14,14 @@ from ytrss.core.helpers.typing import Path
 
 
 class YouTubeDownloader(Downloader):
+    """
+    YouTube downloader
+
+    Downloader that use `youtube_dl <https://rg3.github.io/youtube-dl/>`_ implementation. It downloads
+    a movie file from any url that can be use by `youtube_dl` service.
+    """
+
     def __init__(self, configuration: Configuration) -> None:
-        """
-        Downloader constructor.
-        """
         self.configuration = configuration
 
     @classmethod

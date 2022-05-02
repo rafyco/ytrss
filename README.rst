@@ -29,31 +29,16 @@ Program to automatic download any types of files from Internet.
  Description
 *************
 
-.. todo::
-    Make a description. tell about youtube, planning plugins, build podcasts
+YTRSS is a program that checks defined sources and downloads a movie or sound files
+from them and arrange them to podcast files. It can be highly configured with many plugins
+that add any other destinations.
 
-YTRSS is a simple script to automate your YouTube podcast adventure. It
-is allow you to download your favorite movies, convert it to mp3 and
-arrange them to podcast files.
+The program in basic version use `youtube_dl` script to download files, so it cooperates
+with all services implements by this library. However user can extends this capabilities by
+his own custom plugins with external Downloaders.
 
-**************
- How to start
-**************
-
-.. todo ::
-    How to start, add to crontab, set a server
-
-First of all you need to prepare config file, which helps you describe
-all the channels or playlists that you want to subscribe. After that you
-need to share generated podcast on your private http server.
-
-Remember that this library have no secure podcast file from other
-viewers. You public it on your own responsibility. Please make sure that
-author of your favorite movies allows you to make podcast from his
-files.
-
-Installation
-============
+Fast start
+==========
 
 The installation can be carried out in two ways. You can download
 packages from PyPi repository or install it from sources.
@@ -72,23 +57,13 @@ make that download code and invoke command:
 
    python setup.py install
 
-To checking the installation you can use to call ``ytrss``. Unittest can
-be also helpful with verification.
+To checking the installation you can use to call ``ytrss``.
 
-.. todo ::
-    install bash completions
+.. code::
 
-***********
- Testing and code checks
-***********
+    $ ytrss --help
 
-.. todo ::
-    link to document with tox information
-
-``ytrss`` have a few unittest that you can use to checking code
-correctness. You can call it from ``setup.py`` file or using
-``ytrss.tests`` module after installation. Check one of below command
-and try it yourself.
+For more information about installation, configuration and bash completion read the documentation.
 
 ********
  Author

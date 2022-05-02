@@ -41,9 +41,11 @@ release = current_package.__version__
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosectionlabel',
     'sphinx.ext.githubpages',
     'sphinx.ext.todo',
-    'sphinx_epytext',
+    'sphinx_autorun',
+    'sphinx_epytext'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -63,7 +65,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -80,7 +82,7 @@ pygments_style = None
 # a list of builtin themes.
 #
 # html_theme = 'alabaster'
-html_theme = 'classic'
+html_theme = 'bizstyle'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -91,7 +93,8 @@ html_theme = 'classic'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = []
+html_static_path = ["_static/icon.png"]
+html_favicon = "_static/icon.png"
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

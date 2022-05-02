@@ -9,10 +9,10 @@ from ytrss.plugins.youtube.base_youtube_source_downloader import BaseYouTubeSour
 class YouTubeNamedChannelSourceDownloader(BaseYouTubeSourceDownloader):
 
     def __init__(self, source: Source) -> None:
-        m = re.match(r"https?:\/\/(www\.)?youtube\.com\/c\/(?P<user>[\dA-Za-z_\-]+)", source.url)
-        if m is None:
+        match = re.match(r"https?:\/\/(www\.)?youtube\.com\/c\/(?P<user>[\dA-Za-z_\-]+)", source.url)
+        if match is None:
             raise SourceDownloaderError()
-        self._name = m.group('user')
+        self._name = match.group('user')
         BaseYouTubeSourceDownloader.__init__(self, source)
 
     @property

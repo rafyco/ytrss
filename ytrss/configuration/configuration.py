@@ -17,6 +17,3 @@ class Configuration(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def conf(self) -> ConfigurationData:
         pass
-
-    def __str__(self) -> str:
-        return self.conf.__str__()

@@ -10,18 +10,29 @@ from ytrss.core.helpers.typing import Url, Path
 
 
 class MovieFileError(Exception):
-    pass
+    """ Error in Downloaded movie object """
 
 
 class MovieResourceFileError(MovieFileError):
-    pass
+    """ Movie resource file error
+
+    Error throws when the resource file not exists
+    """
 
 
 class MovieJSONError(MovieFileError):
-    pass
+    """ Movie Json Error
+
+    Error throws when the json description file is invalid
+    """
 
 
 class DownloadedMovie:
+    """ Downloaded movie
+
+    The object that represents downloaded movie in destination. It has a field with description
+    of movie and list of additional files.
+    """
 
     def __init__(self, destination_dir: Path, identity: str) -> None:
         self.__date: Optional[datetime] = None
@@ -44,6 +55,7 @@ class DownloadedMovie:
 
     @property
     def resource_files(self) -> Sequence[Url]:
+        """ List of files according movie """
         return [
             Url(os.path.join(self.__destination_dir,
                              f"{self.__identity}.mp3"))
@@ -51,6 +63,7 @@ class DownloadedMovie:
 
     @property
     def date(self) -> datetime:
+        """ create date """
         if self.__date is None:
             date_str = self._data.get("date", "")
             self.__date = parsedate_to_datetime(date_str)
@@ -58,24 +71,31 @@ class DownloadedMovie:
 
     @property
     def title(self) -> str:
+        """ movie's title"""
         return self._data.get("title", "<no title>")
 
     @property
-    def image(self) -> Url:
-        return Url(self._data.get("image", ""))
+    def image(self) -> Optional[Url]:
+        """ files image """
+        image = self._data.get("image", "")
+        return Url(image) if image != "" else None
 
     @property
     def url(self) -> Url:
+        """ movie's url """
         return Url(self._data.get("url", ""))
 
     @property
     def author(self) -> str:
+        """ author of downloaded movie """
         return self._data.get("uploader", "")
 
     @property
     def identity(self) -> str:
+        """ movie's identity """
         return self.__identity
 
     @property
     def description(self) -> str:
+        """ movie's description """
         return self._data.get("description", "")

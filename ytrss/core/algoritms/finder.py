@@ -3,7 +3,11 @@ from ytrss.core.factory.database import create_database
 from ytrss.core.helpers.logging import logger
 
 
-def prepare_urls(configuration: Configuration) -> None:
+async def prepare_urls(configuration: Configuration) -> bool:
+    """ Find urls and save to database
+
+    The algorithm search for movies in source and save to database when some new movies are searched.
+    """
     logger.info("Search for new movies:")
     queue = create_database(configuration)
     for movie, destination in configuration.conf.sources_manager.movies:
@@ -15,3 +19,4 @@ def prepare_urls(configuration: Configuration) -> None:
                         destination)
         else:
             logger.debug("Element exists: %s", movie.url)
+    return True

@@ -70,7 +70,8 @@ setup(
         ],
         "documentation": [
             "Sphinx == 4.3.1",
-            "sphinx-epytext == 0.0.4"
+            "sphinx-epytext == 0.0.4",
+            "sphinx-autorun == 1.1.1"
         ]
     },
     entry_points={
