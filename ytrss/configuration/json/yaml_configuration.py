@@ -15,7 +15,6 @@ class YamlConfigurationFileNotExistsError(ConfigurationFileNotExistsError):
 
 
 class YamlConfiguration(Configuration):
-    pass
 
     @property
     def conf(self) -> ConfigurationData:

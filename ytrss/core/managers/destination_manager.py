@@ -2,7 +2,9 @@ from typing import Dict, Iterator
 
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
 from ytrss.core.entity.destination import Destination
+from ytrss.core.factory import FactoryError
 from ytrss.core.factory.destination import create_destination
+from ytrss.core.helpers.logging import logger
 
 
 class DestinationManager:
@@ -19,7 +21,10 @@ class DestinationManager:
         """
         Add a destination from DestinationInfo object.
         """
-        self._destinations[info.identity] = create_destination(info)
+        try:
+            self._destinations[info.identity] = create_destination(info)
+        except FactoryError:
+            logger.error("Cannot create destination from info: %s (type=%s)", info, info.type)
 
     def __contains__(self, item: DestinationId) -> bool:
         return item in self._destinations

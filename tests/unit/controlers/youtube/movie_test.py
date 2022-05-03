@@ -5,7 +5,7 @@ import unittest
 from typing import List, Dict, Any
 
 
-from ytrss.plugins.youtube_dl.movie import YouTubeMovie, InvalidParameterMovieError
+from ytrss.plugins.youtube_dl.movie import YouTubeMovie, InvalidDataMovieError
 
 # This is tested class. Can have too many method
 from ytrss.core.helpers.typing import Url
@@ -47,7 +47,7 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
             Url("https://www.youdupe.com/watch?v=I-JxpVFlaos"),
         ]
         for elem in test_suites:
-            with self.assertRaises(InvalidParameterMovieError):
+            with self.assertRaises(InvalidDataMovieError):
                 YouTubeMovie(elem)
 
     def test_comparation(self) -> None:

@@ -9,6 +9,7 @@ class DestinationInfo:
 
     def __init__(self, identity: DestinationId) -> None:
         self.identity = identity
+        self.type: str = ""
         self.title: str = "unknown title"
         self.author: str = "Nobody"
         self.language: str = "pl-pl"
@@ -24,6 +25,8 @@ class DestinationInfo:
         if json is not None:
             if 'title' in json and isinstance(json['title'], str):
                 podcast.title = json['title']
+            if 'type' in json and isinstance(json['type'], str):
+                podcast.type = json['type']
             if 'author' in json and isinstance(json['author'], str):
                 podcast.author = json['author']
             if 'language' in json and isinstance(json['language'], str):

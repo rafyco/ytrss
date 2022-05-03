@@ -7,6 +7,10 @@ from ytrss.plugins.youtube.base_youtube_source_downloader import BaseYouTubeSour
 
 
 class YouTubePlaylistSourceDownloader(BaseYouTubeSourceDownloader):
+    """ YouTube playlist source Downloader
+
+    Implementation of source downloader for playlist on YouTube
+    """
 
     def __init__(self, source: Source) -> None:
         match = re.match(r"https?:\/\/(www\.)?youtube\.com\/playlist\?.*list=(?P<code>[\dA-Za-z_\-]+)", source.url)

@@ -24,5 +24,5 @@ class ConfigurationCommand(BaseCommand):
 
         logger.info("\ndestinations:")
         for destination in configuration.conf.destination_manager.destinations:
-            logger.info("[%s] => %s", destination.identity, destination.info.title)
+            logger.info("\t[%s] => %s", destination.identity, destination.info.title)
         return 0

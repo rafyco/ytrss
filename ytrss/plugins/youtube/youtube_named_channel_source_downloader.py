@@ -7,6 +7,10 @@ from ytrss.plugins.youtube.base_youtube_source_downloader import BaseYouTubeSour
 
 
 class YouTubeNamedChannelSourceDownloader(BaseYouTubeSourceDownloader):
+    """ YouTube named channel source Downloader
+
+    Implementation of source downloader for channel on YouTube, where the name is defined in url.
+    """
 
     def __init__(self, source: Source) -> None:
         match = re.match(r"https?:\/\/(www\.)?youtube\.com\/c\/(?P<user>[\dA-Za-z_\-]+)", source.url)

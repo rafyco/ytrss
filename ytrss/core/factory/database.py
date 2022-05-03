@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence, Callable
 
 from ytrss.configuration.configuration import Configuration
 from ytrss.core.factory import BaseFactory
@@ -13,6 +13,10 @@ class DatabaseFactory(BaseFactory[Configuration, Database]):
 
     def __init__(self) -> None:
         self._database: Optional[Database] = None
+
+    @property
+    def plugins(self) -> Sequence[Callable[[Configuration], Optional[Database]]]:
+        return []
 
     def build(self, param: Configuration) -> Database:
         """

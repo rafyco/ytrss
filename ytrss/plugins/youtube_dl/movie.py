@@ -14,15 +14,15 @@ from ytrss.core.entity.movie import Movie, MovieError
 from ytrss.core.helpers.typing import Url
 
 
-class InvalidStringJSONParseError(MovieError):
-    pass
+class InvalidDataMovieError(MovieError):
+    """ Invalid parameter movie error
 
-
-class InvalidParameterMovieError(MovieError):
-    pass
+    This exception is invoked when the movie data is invalid
+    """
 
 
 class YouTubeMovie(Movie):
+    """ A YouTube implementation of movie """
 
     def __init__(self, url: Url) -> None:
         self._url: Url = url
@@ -44,7 +44,7 @@ class YouTubeMovie(Movie):
         try:
             self._json_data = json.load(StringIO(json_output))
         except JSONDecodeError:
-            raise InvalidParameterMovieError(f"Invalid address type: [{url}] -> {self._error}")
+            raise InvalidDataMovieError(f"Invalid address type: [{url}] -> {self._error}")
 
     @property
     def url(self) -> Url:

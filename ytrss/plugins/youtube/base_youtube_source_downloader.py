@@ -14,6 +14,10 @@ from ytrss.plugins.youtube_dl.movie import YouTubeMovie
 
 
 class BaseYouTubeSourceDownloader(SourceDownloader):
+    """ Base YouTube source downloader
+
+    Object that implements source downloader that look for movie from YouTube.
+    """
 
     def __init__(self, source: Source) -> None:
         self.url = source.url
@@ -22,11 +26,11 @@ class BaseYouTubeSourceDownloader(SourceDownloader):
     @property
     @abstractmethod
     def source_url(self) -> Url:
-        pass
+        """ Rss url with movies on YouTube """
 
     @property
     def movies(self) -> Iterable[Tuple[Movie, DestinationId]]:
-        logger.debug("URL: %s", self.url)
+        logger.debug("Source url: %s", self.url)
 
         result: List[Tuple[Movie, DestinationId]] = []
         try:
