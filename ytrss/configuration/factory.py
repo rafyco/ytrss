@@ -10,6 +10,11 @@ from ytrss.configuration.json.yaml_configuration import YamlConfiguration
 
 # pylint: disable=R0911
 def configuration_factory(configuration_file: Optional[str] = None, should_create: bool = False) -> Configuration:
+    """ Create Configuration
+
+    This method returns a configuration object.
+    TODO: Write about localization of configuration files.
+    """
     if configuration_file is not None and os.path.isfile(configuration_file):
         if configuration_file.endswith(".json"):
             return JsonConfiguration(configuration_file)

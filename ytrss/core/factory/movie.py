@@ -7,9 +7,13 @@ from ytrss.core.helpers.typing import Url
 
 
 class MovieFactory(BaseFactory[Url, Movie]):
+    """
+    Factory for Movie object
+    """
 
     @property
     def plugins(self) -> Sequence[Callable[[Url], Optional[Movie]]]:
+        """ A list of functions that try to produce an object """
         return [
             YouTubeMovie
         ]

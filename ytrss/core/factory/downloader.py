@@ -7,9 +7,13 @@ from ytrss.core.factory import BaseFactory
 
 
 class DownloadFactory(BaseFactory[Configuration, Downloader]):
+    """
+    Factory for Download object
+    """
 
     @property
     def plugins(self) -> Sequence[Callable[[Configuration], Optional[Downloader]]]:
+        """ A list of functions that try to produce an object """
         return [
             YouTubeDownloader
         ]

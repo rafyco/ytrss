@@ -16,6 +16,7 @@ class DatabaseFactory(BaseFactory[Configuration, Database]):
 
     @property
     def plugins(self) -> Sequence[Callable[[Configuration], Optional[Database]]]:
+        """ A list of functions that try to produce an object """
         return []
 
     def build(self, param: Configuration) -> Database:

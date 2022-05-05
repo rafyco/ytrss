@@ -10,9 +10,13 @@ from ytrss.plugins.youtube.youtube_playlist_source_downloader import YouTubePlay
 
 
 class SourceDownloaderFactory(BaseFactory[Source, SourceDownloader]):
+    """
+    Factory for SourceDownloader object
+    """
 
     @property
     def plugins(self) -> Sequence[Callable[[Source], Optional[SourceDownloader]]]:
+        """ A list of functions that try to produce an object """
         return [
             YouTubeChannelSourceDownloader,
             YouTubeNamedChannelSourceDownloader,

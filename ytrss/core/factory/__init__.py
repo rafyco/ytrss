@@ -19,9 +19,15 @@ class BaseFactory(Generic[PARAMS, RESULT], metaclass=abc.ABCMeta):
     @property
     @abc.abstractmethod
     def plugins(self) -> Sequence[Callable[[PARAMS], Optional[RESULT]]]:
-        """ A list of function that try to produce a file """
+        """ A list of functions that try to produce an object """
 
     def build(self, param: PARAMS) -> RESULT:
+        """
+        Build an object
+
+        Look for all plugins and try to build a new one object. It there are a problem with object
+        the FactoryError will be returned.
+        """
         for plugin in self.plugins:
             try:
                 result = plugin(param)
@@ -29,11 +35,7 @@ class BaseFactory(Generic[PARAMS, RESULT], metaclass=abc.ABCMeta):
                     return result
             except Exception:  # pylint: disable=W0703
                 pass
-        raise FactoryError(
-            "Cannot create object by (%s) from %s",
-            type(self),
-            param
-        )
+        raise FactoryError(f"Cannot create object by ({type(self)}) from {param}")
 
     def __call__(self, param: PARAMS) -> RESULT:
         return self.build(param)

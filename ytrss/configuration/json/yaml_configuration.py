@@ -7,14 +7,15 @@ from ytrss.configuration.entity.configuration_data import ConfigurationData
 
 
 class YamlConfigurationParseError(ConfigurationError):
-    pass
+    """ Yaml configuration error """
 
 
 class YamlConfigurationFileNotExistsError(ConfigurationFileNotExistsError):
-    pass
+    """ Yaml configuration file not exists error. """
 
 
 class YamlConfiguration(Configuration):
+    """ Configuration yaml object """
 
     @property
     def conf(self) -> ConfigurationData:

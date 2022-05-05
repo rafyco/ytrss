@@ -1,57 +1,82 @@
 import abc
+import time
 from datetime import datetime
+from email import utils
 from typing import Dict, Any, Optional
 
 from ytrss.core.helpers.typing import Url
 
 
 class MovieError(Exception):
-    pass
+    """ Movie error
+
+    An error raised when the movie cannot be created or there are some issue with creation.
+    """
 
 
 class Movie(metaclass=abc.ABCMeta):
+    """ A movie abstract class
+
+    This class represents a movie data. It should have an information about it, and be serialized to
+    and from url.
+    """
 
     @property
     @abc.abstractmethod
     def identity(self) -> str:
-        pass
+        """ A unique identity of the movie
+
+        This identity is used to check if the two movies are the same.
+        """
 
     @property
     @abc.abstractmethod
     def url(self) -> Url:
-        pass
+        """ Movie's url """
 
     @property
     @abc.abstractmethod
     def title(self) -> str:
-        pass
+        """ Movie's title """
 
     @property
     @abc.abstractmethod
     def author(self) -> str:
-        pass
+        """ Movie's author """
 
     @property
     @abc.abstractmethod
     def description(self) -> str:
-        pass
+        """ Movie's description """
 
     @property
     @abc.abstractmethod
     def date(self) -> datetime:
-        pass
+        """ Create data """
 
     @property
     @abc.abstractmethod
     def img_url(self) -> Optional[Url]:
-        pass
+        """ An Url to movie's image """
 
     @property
     @abc.abstractmethod
     def is_ready(self) -> bool:
+        """ Tell if movie is ready to download """
         return True
 
     @property
-    @abc.abstractmethod
     def json(self) -> Dict[str, Any]:
-        pass
+        """ A dictionary represents movie's data.
+
+        This dictionary is used to create DownloadingMovie object.
+        """
+        return {
+            'url': self.url,
+            'id': self.identity,
+            'title': self.title,
+            'uploader': self.author,
+            'description': self.description,
+            'image': self.img_url,
+            'date': utils.formatdate(time.mktime(self.date.timetuple()))
+        }

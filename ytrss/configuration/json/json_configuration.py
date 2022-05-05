@@ -7,14 +7,15 @@ from ytrss.configuration.entity.configuration_data import ConfigurationData
 
 
 class JsonConfigurationParseError(ConfigurationError):
-    pass
+    """ Json configuration error. """
 
 
 class JsonConfigurationFileNotExistsError(ConfigurationFileNotExistsError):
-    pass
+    """ Json configuration file not exists """
 
 
 class JsonConfiguration(Configuration):
+    """ Configuration json object """
 
     @property
     def conf(self) -> ConfigurationData:

@@ -1,11 +1,9 @@
 import copy
-from email import utils
 from json import JSONDecodeError
-from typing import Dict, Any, Optional
+from typing import Optional
 
 import sys
 import json
-import time
 from datetime import datetime
 from io import StringIO
 import youtube_dl
@@ -98,18 +96,6 @@ class YouTubeMovie(Movie):
             return False
         tmp_other = copy.deepcopy(other)
         return tmp_other == self
-
-    @property
-    def json(self) -> Dict[str, Any]:
-        return {
-            'url': self.url,
-            'id': self.identity,
-            'title': self.title,
-            'uploader': self.author,
-            'description': self.description,
-            'image': self.img_url,
-            'date': utils.formatdate(time.mktime(self.date.timetuple()))
-        }
 
     def __str__(self) -> str:
         return self.url

@@ -6,6 +6,10 @@ DestinationId = NewType("DestinationId", str)
 
 
 class DestinationInfo:
+    """ Destination info
+
+    An object with destination information from json object.
+    """
 
     def __init__(self, identity: DestinationId) -> None:
         self.identity = identity
@@ -21,6 +25,7 @@ class DestinationInfo:
 
     @staticmethod
     def from_json(json: Optional[Dict[str, Any]], identity: DestinationId) -> 'DestinationInfo':
+        """ Create object from json dictionary. """
         podcast = DestinationInfo(identity)
         if json is not None:
             if 'title' in json and isinstance(json['title'], str):
