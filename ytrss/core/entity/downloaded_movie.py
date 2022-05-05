@@ -55,10 +55,17 @@ class DownloadedMovie:
 
     @property
     def resource_files(self) -> Sequence[Url]:
-        """ List of files according movie """
+        """ List of full paths of files according movie """
         return [
             Url(os.path.join(self.__destination_dir,
-                             f"{self.__identity}.mp3"))
+                             file_path)) for file_path in self.files_paths
+        ]
+
+    @property
+    def files_paths(self) -> Sequence[Url]:
+        """ List of files according movie """
+        return [
+            Url(f"{self.__identity}.mp3")
         ]
 
     @property
