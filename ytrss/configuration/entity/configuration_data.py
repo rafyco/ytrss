@@ -7,6 +7,7 @@ from typing import Any, List, Optional, Dict, Sequence
 
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
 from ytrss.configuration.entity.source import Source
+from ytrss.core.helpers.typing import Path
 from ytrss.core.managers.destination_manager import DestinationManager
 from ytrss.core.managers.sources_manager import SourcesManager
 
@@ -22,7 +23,7 @@ class ConfigurationData(metaclass=abc.ABCMeta):
         self.destinations: Dict[str, DestinationInfo] = {}
         self.sources: Sequence[Source] = []
         self.config_path: str = ""
-        self.cache_path: str = ""
+        self.cache_path: Path = Path("")
         self.args: List[str] = []
 
         self._destination_manager: Optional[DestinationManager] = None
@@ -50,7 +51,7 @@ class ConfigurationData(metaclass=abc.ABCMeta):
         except OSError:
             pass
 
-        config_data.cache_path = os.path.join(config_data.config_path, "cache")
+        config_data.cache_path = Path(os.path.join(config_data.config_path, "cache"))
 
         if 'arguments' in json:
             if isinstance(json['arguments'], list):

@@ -1,9 +1,9 @@
 import os
-import json
 from typing import Sequence
 
 import youtube_dl
 
+from ytrss.core.entity.downloaded_movie import DownloadedMovie
 from ytrss.core.entity.downloader import Downloader, DownloaderError
 from ytrss.core.entity.movie import Movie
 
@@ -39,7 +39,7 @@ class YouTubeDownloader(Downloader):
     def download(
             self,
             movie: Movie
-    ) -> Sequence[Path]:
+    ) -> DownloadedMovie:
         try:
             os.makedirs(self.configuration.conf.cache_path)
         except OSError:
@@ -53,15 +53,8 @@ class YouTubeDownloader(Downloader):
             if status != 0:
                 raise DownloaderError(f"youtube_dl raise with state: {status}")
 
-            full_file_name = f"{movie.identity}.mp3"
-            metadata_name = f"{movie.identity}.json"
+            full_file_name = Path(f"{movie.identity}.mp3")
             if not os.path.isfile(full_file_name):
                 raise DownloaderError(f"File {full_file_name} not downloaded")
 
-            source_path = Path(os.path.join(self.configuration.conf.cache_path, full_file_name))
-            metadata_path = Path(os.path.join(self.configuration.conf.cache_path, metadata_name))
-
-            with open(metadata_path, 'w') as file_handler:
-                file_handler.write(json.dumps(movie.json, indent=4, sort_keys=True))
-
-        return [source_path, metadata_path]
+        return DownloadedMovie.create_movie_desc(self.configuration.conf.cache_path, movie, [full_file_name])

@@ -1,6 +1,8 @@
 import json
 import os
+import time
 from datetime import datetime
+from email import utils
 
 from email.utils import parsedate_to_datetime
 from typing import Any, Optional, Dict, Sequence
@@ -34,39 +36,32 @@ class DownloadedMovie:
     of movie and list of additional files.
     """
 
-    def __init__(self, destination_dir: Path, identity: str) -> None:
+    def __init__(self, destination_dir: Path, data: Dict[Any, str]) -> None:
         self.__date: Optional[datetime] = None
-        self.__data_cache: Optional[Dict[str, Any]] = None
-        self.__movie: Optional[Movie] = None
         self.__destination_dir = destination_dir
-        self.__identity = identity
-        if not os.path.isfile(self.__json):
-            raise MovieJSONError
-        with open(self.__json) as data_file:
-            self._data: Dict[str, Any] = json.load(data_file)
-        for resource_file in self.resource_files:
+        self._data = data
+
+        for resource_file in self.data_paths:
             if not os.path.isfile(resource_file):
                 raise MovieResourceFileError
 
     @property
-    def __json(self) -> Url:
-        return Url(os.path.join(self.__destination_dir,
-                                f"{self.__identity}.json"))
-
-    @property
-    def resource_files(self) -> Sequence[Url]:
+    def data_paths(self) -> Sequence[Path]:
         """ List of full paths of files according movie """
-        return [
-            Url(os.path.join(self.__destination_dir,
-                             file_path)) for file_path in self.files_paths
+        result = [
+            Path(os.path.join(self.__destination_dir,
+                              file_path)) for file_path in self.resources_files
         ]
+        result.append(Path(os.path.join(self.__destination_dir, f"{self.identity}.json")))
+        return result
 
     @property
-    def files_paths(self) -> Sequence[Url]:
+    def resources_files(self) -> Sequence[Path]:
         """ List of files according movie """
-        return [
-            Url(f"{self.__identity}.mp3")
-        ]
+        if "resources" in self._data:
+            return [Path(x) for x in self._data.get("resources", [])]
+        # for backward compatibility, where the resources are not present
+        return [Path(f"{self.identity}.mp3")]
 
     @property
     def date(self) -> datetime:
@@ -100,9 +95,39 @@ class DownloadedMovie:
     @property
     def identity(self) -> str:
         """ movie's identity """
-        return self.__identity
+        return self._data.get("id", "")
 
     @property
     def description(self) -> str:
         """ movie's description """
         return self._data.get("description", "")
+
+    @staticmethod
+    def create_movie_desc(destination_path: Path, movie: Movie,
+                          resource_list: Sequence[Path]) -> 'DownloadedMovie':
+        """ Create DownloadedMovie from movie object and files. """
+        metadata_path = os.path.join(destination_path, f"{movie.identity}.json")
+        with open(metadata_path, 'w') as file_handler:
+            movie_data: Dict[str, Any] = {
+                "id": movie.identity,
+                "url": movie.url,
+                "title": movie.title,
+                "uploader": movie.author,
+                "description": movie.description,
+                "date": utils.formatdate(time.mktime(movie.date.timetuple()))
+            }
+            if movie.img_url is not None:
+                movie_data["image"] = movie.img_url
+            movie_data["resources"] = resource_list
+            file_handler.write(json.dumps(movie_data, indent=4, sort_keys=True))
+        return DownloadedMovie(destination_path, movie_data)
+
+    @staticmethod
+    def from_file(destination_dir: Path, filename_path: str) -> 'DownloadedMovie':
+        """ Create DownloadedMovie from existed movie """
+        json_file = os.path.join(destination_dir, filename_path)
+        if not os.path.isfile(json_file):
+            raise MovieJSONError
+        with open(json_file) as data_file:
+            result = DownloadedMovie(destination_dir, json.load(data_file))
+        return result

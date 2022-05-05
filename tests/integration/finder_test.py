@@ -39,7 +39,7 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
     def test_playlist_find(self) -> None:
         """ Test playlist finder. """
         source = YouTubePlaylistSourceDownloader(Source.from_json(dict(
-            url="https://www.youtube.com/playlist?list=PLgVGo5sYBI-QeaAlxmJvw0Spw63nohIq6",
+            url="https://www.youtube.com/playlist?list=PL6ZLc-zZUnxlkB9t8CcpFZeV6V5I_cVgu",
             destination="default",
         )))
         movies = list(source.movies)

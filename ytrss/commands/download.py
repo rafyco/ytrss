@@ -2,6 +2,7 @@ import os
 import shutil
 from argparse import Namespace, ArgumentParser
 
+from ytrss.core.entity.downloader import DownloaderError
 from ytrss.core.entity.movie import MovieError
 from ytrss.core.factory.downloader import create_downloader
 
@@ -34,15 +35,15 @@ class DownloadCommand(BaseCommand):
 
         downloader = create_downloader(configuration)
 
-        files = downloader.download(movie)
-
-        if len(list(files)) <= 1:
+        try:
+            downloaded_movie = downloader.download(movie)
+        except DownloaderError:
             logger.error("There are no downloaded files for movie from: %s", movie.url)
             return 1
 
         destination_path = os.path.join(os.getcwd(), movie.identity)
         os.makedirs(destination_path, exist_ok=True)
-        for file in files:
+        for file in downloaded_movie.data_paths:
             try:
                 shutil.move(file, destination_path)
             except shutil.Error as ex:

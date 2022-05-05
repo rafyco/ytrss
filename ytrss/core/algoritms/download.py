@@ -20,10 +20,10 @@ async def download_movie(configuration: Configuration, movie: Movie, destination
     This function download movie and save in destination, but it not check any conditions.
     """
     downloader = create_downloader(configuration)
-    files = downloader.download(movie)
+    downloaded_movie = downloader.download(movie)
     os.makedirs('/tmp/ytrss', exist_ok=True)
     with Mutex(f'/tmp/ytrss/destination.{destination.identity}.lock', timeout=5.0):
-        destination.save(files)
+        destination.save(downloaded_movie.data_paths)
 
 
 async def download_task(

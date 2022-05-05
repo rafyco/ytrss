@@ -1,9 +1,7 @@
 import abc
-from typing import Sequence
 
+from ytrss.core.entity.downloaded_movie import DownloadedMovie
 from ytrss.core.entity.movie import Movie
-
-from ytrss.core.helpers.typing import Path
 
 
 class DownloaderError(Exception):
@@ -23,9 +21,9 @@ class Downloader(metaclass=abc.ABCMeta):
     def download(
             self,
             movie: Movie
-    ) -> Sequence[Path]:
+    ) -> DownloadedMovie:
         """
         Download movie
 
-        The method which should download movie and return a path sequence to the movie files.
+        The method which should download movie and return a DownloadedMovie object.
         """

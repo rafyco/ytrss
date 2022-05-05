@@ -38,7 +38,7 @@ class DefaultDestination(Destination):
         for filename in os.listdir(self.info.output_path):
             if filename.endswith(".json"):
                 try:
-                    yield DownloadedMovie(self.info.output_path, filename[0:len(filename) - 5])
+                    yield DownloadedMovie.from_file(self.info.output_path, filename)
                 except MovieFileError as ex:
                     logger.info(ex)
 
