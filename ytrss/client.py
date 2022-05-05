@@ -68,10 +68,11 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     try:
         configuration = configuration_factory(options.config_file)
     except ConfigurationFileNotExistsError:
-        logger.warning("File not exists")
+        logger.warning("Configuration file not exists")
         sys.exit(1)
     except ConfigurationError as ex:
         logger.debug("%s: %s", type(ex), ex)
+        logger.error("There are no configuration file")
         sys.exit(2)
 
     try:

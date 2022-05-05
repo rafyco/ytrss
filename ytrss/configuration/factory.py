@@ -3,19 +3,23 @@ import sys
 from typing import Optional
 
 from ytrss.configuration.algoritms import create_configuration
-from ytrss.configuration.configuration import Configuration, ConfigurationError
+from ytrss.configuration.configuration import Configuration, ConfigurationError, \
+    ConfigurationFileNotExistsError
+from ytrss.configuration.json.default_configuration import DefaultConfiguration
 from ytrss.configuration.json.json_configuration import JsonConfiguration
 from ytrss.configuration.json.yaml_configuration import YamlConfiguration
 
 
-# pylint: disable=R0911
+# pylint: disable=R0911, R0912
 def configuration_factory(configuration_file: Optional[str] = None, should_create: bool = False) -> Configuration:
     """ Create Configuration
 
     This method returns a configuration object.
     TODO: Write about localization of configuration files.
     """
-    if configuration_file is not None and os.path.isfile(configuration_file):
+    if configuration_file is not None and configuration_file != "":
+        if not os.path.isfile(configuration_file):
+            raise ConfigurationFileNotExistsError(configuration_file)
         if configuration_file.endswith(".json"):
             return JsonConfiguration(configuration_file)
         if configuration_file.endswith(".yml"):
@@ -46,5 +50,4 @@ def configuration_factory(configuration_file: Optional[str] = None, should_creat
             return JsonConfiguration("~\\YTRSS\\config.yml")
         create_configuration("~/.config/ytrss/config.yml")
         return YamlConfiguration("~/.config/ytrss/config.yml")
-
-    raise ConfigurationError("Cannot find configuration file")
+    return DefaultConfiguration()
