@@ -2,6 +2,7 @@ import os
 import shutil
 from argparse import Namespace, ArgumentParser
 
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.entity.downloader import DownloaderError
 from ytrss.core.entity.movie import MovieError
 from ytrss.core.factory.downloader import create_downloader
@@ -9,7 +10,6 @@ from ytrss.core.factory.downloader import create_downloader
 from ytrss.core.factory.movie import create_movie
 
 from ytrss.commands import BaseCommand
-from ytrss.configuration.configuration import Configuration
 from ytrss.core.helpers.logging import logger
 from ytrss.core.helpers.typing import Url
 
@@ -26,7 +26,7 @@ class DownloadCommand(BaseCommand):
         parser.add_argument("url",
                             help="Url that should be downloaded")
 
-    def run(self, configuration: Configuration, options: Namespace) -> int:
+    def run(self, configuration: YtrssConfiguration, options: Namespace) -> int:
         try:
             movie = create_movie(Url(options.url))
         except MovieError:

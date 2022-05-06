@@ -1,7 +1,7 @@
 import abc
 from argparse import ArgumentParser, Namespace
 
-from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 
 
 class BaseCommand(metaclass=abc.ABCMeta):
@@ -11,7 +11,7 @@ class BaseCommand(metaclass=abc.ABCMeta):
         self.name = name
 
     @abc.abstractmethod
-    def run(self, configuration: Configuration, options: Namespace) -> int:
+    def run(self, configuration: YtrssConfiguration, options: Namespace) -> int:
         """ A main work that be done in subcommand from terminal client """
 
     def arg_parser(self, parser: ArgumentParser) -> None:
@@ -20,5 +20,5 @@ class BaseCommand(metaclass=abc.ABCMeta):
         In this method terminal arguments from subcommand should be registered in main subparser.
         """
 
-    def __call__(self, configuration: Configuration, options: Namespace) -> int:
+    def __call__(self, configuration: YtrssConfiguration, options: Namespace) -> int:
         return self.run(configuration, options)

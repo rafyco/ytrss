@@ -3,7 +3,7 @@ import os
 import sys
 from locks import Mutex
 
-from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.destination import Destination
 from ytrss.core.entity.downloader import DownloaderError
@@ -14,7 +14,11 @@ from ytrss.core.helpers.logging import logger
 from ytrss.database.database import Database, DatabaseStatus
 
 
-async def download_movie(configuration: Configuration, movie: Movie, destination: Destination) -> None:
+async def download_movie(
+        configuration: YtrssConfiguration,
+        movie: Movie,
+        destination: Destination
+) -> None:
     """ Download movie
 
     This function download movie and save in destination, but it not check any conditions.
@@ -27,7 +31,7 @@ async def download_movie(configuration: Configuration, movie: Movie, destination
 
 
 async def download_task(
-        configuration: Configuration,
+        configuration: YtrssConfiguration,
         movie: Movie,
         destination_id: DestinationId,
         database: Database
@@ -48,7 +52,7 @@ async def download_task(
                                movie.title)
                 database.change_type(movie, DatabaseStatus.WAIT)
                 return False
-            destination = configuration.conf.destination_manager[destination_id]
+            destination = configuration.destination_manager[destination_id]
             try:
                 database.change_type(movie, DatabaseStatus.PROGRESS)
                 await download_movie(configuration, movie, destination)
@@ -69,7 +73,7 @@ async def download_task(
     return False
 
 
-def download_all_movies(configuration: Configuration) -> int:
+def download_all_movies(configuration: YtrssConfiguration) -> int:
     """ Download all movies.
 
     This function download all files from database and send it to destination place. All the

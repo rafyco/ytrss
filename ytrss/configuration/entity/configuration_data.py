@@ -1,10 +1,9 @@
-import abc
 import os
 import sys
 
-from typing import Any, List, Optional, Dict, Sequence
+from typing import Optional, Dict, Sequence, Iterable
 
-
+from ytrss.configuration.configuration import Configuration
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
 from ytrss.configuration.entity.source import Source
 from ytrss.core.helpers.typing import Path
@@ -12,70 +11,62 @@ from ytrss.core.managers.destination_manager import DestinationManager
 from ytrss.core.managers.sources_manager import SourcesManager
 
 
-class ConfigurationData(metaclass=abc.ABCMeta):
+class YtrssConfiguration:
     """ Configuration data. """
 
     # pylint: disable=R0912,R0915
-    def __init__(self) -> None:
+    def __init__(self, configuration: Configuration) -> None:
         """
         Configuration data constructor.
         """
-        self.destinations: Dict[str, DestinationInfo] = {}
-        self.sources: Sequence[Source] = []
-        self.config_path: str = ""
-        self.cache_path: Path = Path("")
-        self.args: List[str] = []
-
+        self._configuration_data = configuration.conf
         self._destination_manager: Optional[DestinationManager] = None
         self._sources_manager: Optional[SourcesManager] = None
 
-    @staticmethod
-    def from_json(json: Dict[str, Any]) -> 'ConfigurationData':
-        """
-        Create configuration data object from dictionary
-        """
+    @property
+    def destinations(self) -> Dict[str, DestinationInfo]:
+        """ Destinations of destinations """
+        result: Dict[str, DestinationInfo] = {}
+        if 'destinations' in self._configuration_data and isinstance(self._configuration_data['destinations'], dict):
+            for key, value in self._configuration_data['destinations'].items():
+                result[key] = DestinationInfo.from_json(value, DestinationId(key))
+        return result
 
-        config_data = ConfigurationData()
-
-        if 'config_dir' in json:
-            config_data.config_path = os.path.expanduser(json['config_dir'])
-        else:
-            if sys.platform.lower().startswith('win'):
-                conf_path = os.path.join("~\\YTRSS")
-            else:
-                conf_path = os.path.join("~/.config/ytrss")
-            config_data.config_path = os.path.expanduser(conf_path)
-
-        try:
-            os.makedirs(config_data.config_path)
-        except OSError:
-            pass
-
-        config_data.cache_path = Path(os.path.join(config_data.config_path, "cache"))
-
-        if 'arguments' in json:
-            if isinstance(json['arguments'], list):
-                config_data.args = json['arguments']
-            else:
-                config_data.args = [json['arguments']]
-
-        config_data.sources = []
-        if 'subscriptions' in json and isinstance(json['subscriptions'], list):
-            for subscription in json['subscriptions']:
+    @property
+    def sources(self) -> Iterable[Source]:
+        """ List of sources """
+        if 'subscriptions' in self._configuration_data and isinstance(self._configuration_data['subscriptions'], list):
+            for subscription in self._configuration_data['subscriptions']:
                 source = Source.from_json(subscription)
                 if source.enable:
-                    config_data.sources.append(source)
+                    yield source
 
-        if 'destinations' in json and isinstance(json['destinations'], dict):
-            config_data.destinations = {}
-            for key in json['destinations']:
-                config_data.destinations[key] = DestinationInfo.from_json(json['destinations'][key], DestinationId(key))
+    @property
+    def config_path(self) -> Path:
+        """ Configuration path """
+        if 'config_dir' in self._configuration_data:
+            return Path(os.path.expanduser(self._configuration_data['config_dir']))
+        if sys.platform.lower().startswith('win'):
+            return Path(os.path.expanduser(os.path.join("~\\YTRSS")))
+        return Path(os.path.expanduser(os.path.join("~/.config/ytrss")))
 
-        return config_data
+    @property
+    def cache_path(self) -> Path:
+        """ Path to cache directory """
+        try:
+            os.makedirs(self.config_path)
+        except OSError:
+            pass
+        return Path(os.path.join(self.config_path, "cache"))
 
-    def get_podcast_information(self, key: DestinationId) -> Optional[DestinationInfo]:
-        """ Return information about podcast. """
-        return self.destinations[key] if key in self.destinations else None
+    @property
+    def args(self) -> Sequence[str]:
+        """ youtube_dl argument """
+        if 'arguments' in self._configuration_data:
+            if isinstance(self._configuration_data['arguments'], list):
+                return self._configuration_data['arguments']
+            return [self._configuration_data['arguments']]
+        return []
 
     @property
     def sources_manager(self) -> SourcesManager:

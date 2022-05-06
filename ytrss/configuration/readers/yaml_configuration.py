@@ -1,9 +1,8 @@
 import os
+from typing import Any
 import yaml
-
-from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError, \
-    Configuration
-from ytrss.configuration.entity.configuration_data import ConfigurationData
+from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError
+from ytrss.configuration.readers.base import ConfigurationReader
 
 
 class YamlConfigurationParseError(ConfigurationError):
@@ -14,11 +13,11 @@ class YamlConfigurationFileNotExistsError(ConfigurationFileNotExistsError):
     """ Yaml configuration file not exists error. """
 
 
-class YamlConfiguration(Configuration):
+class YamlConfiguration(ConfigurationReader):
     """ Configuration yaml object """
 
     @property
-    def conf(self) -> ConfigurationData:
+    def read_config(self) -> Any:
         return self.__configuration
 
     def __init__(self, conf_file: str) -> None:
@@ -34,4 +33,4 @@ class YamlConfiguration(Configuration):
         if data == {}:
             raise YamlConfigurationParseError("Cannot find data from file")
 
-        self.__configuration = ConfigurationData.from_json(data)
+        self.__configuration = data

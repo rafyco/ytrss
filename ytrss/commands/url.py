@@ -1,7 +1,7 @@
 from argparse import ArgumentParser, Namespace
 
 from ytrss.commands import BaseCommand
-from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.movie import MovieError
 from ytrss.core.factory.database import create_database
@@ -23,7 +23,7 @@ class UrlCommand(BaseCommand):
         parser.add_argument("-d", "--destination", dest="destination",
                             help="destination [default: default]", default="default", metavar="DEST")
 
-    def run(self, configuration: Configuration, options: Namespace) -> int:
+    def run(self, configuration: YtrssConfiguration, options: Namespace) -> int:
         try:
             movie = create_movie(Url(options.url))
         except MovieError:
@@ -31,7 +31,7 @@ class UrlCommand(BaseCommand):
             return 1
 
         destination = DestinationId(options.destination)
-        if destination not in configuration.conf.destination_manager:
+        if destination not in configuration.destination_manager:
             logger.error("Destination [%s] is not defined in configuration", destination)
             return 1
 

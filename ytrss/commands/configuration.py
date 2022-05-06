@@ -1,7 +1,7 @@
 from argparse import Namespace
 
 from ytrss.commands import BaseCommand
-from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.helpers.logging import logger
 
 
@@ -13,9 +13,9 @@ class ConfigurationCommand(BaseCommand):
     def __init__(self) -> None:
         BaseCommand.__init__(self, "configuration")
 
-    def run(self, configuration: Configuration, options: Namespace) -> int:
+    def run(self, configuration: YtrssConfiguration, options: Namespace) -> int:
         logger.info("subscriptions:")
-        for source in configuration.conf.sources:
+        for source in configuration.sources:
             logger.info("\t%s [%s]%s (%s)",
                         source.name,
                         source.url,
@@ -23,6 +23,6 @@ class ConfigurationCommand(BaseCommand):
                         source.destination)
 
         logger.info("\ndestinations:")
-        for destination in configuration.conf.destination_manager.destinations:
+        for destination in configuration.destination_manager.destinations:
             logger.info("\t[%s] => %s", destination.identity, destination.info.title)
         return 0

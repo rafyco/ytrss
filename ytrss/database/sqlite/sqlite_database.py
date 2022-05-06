@@ -4,9 +4,9 @@ from contextlib import contextmanager
 from sqlite3 import Connection
 from typing import Iterable, Iterator, Tuple
 
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.factory.movie import create_movie
 
-from ytrss.configuration.configuration import Configuration
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.movie import Movie
 
@@ -24,9 +24,9 @@ class SqliteDatabase(Database):
         yield conn
         conn.close()
 
-    def __init__(self, configuration: Configuration):
+    def __init__(self, configuration: YtrssConfiguration):
         self.__configuration = configuration
-        self._db_file = os.path.join(configuration.conf.config_path, "ytrss.db")
+        self._db_file = os.path.join(configuration.config_path, "ytrss.db")
         with self._database_handler() as conn:
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS movies_tasks (

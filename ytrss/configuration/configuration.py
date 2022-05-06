@@ -1,6 +1,6 @@
-import abc
+from typing import Any
 
-from ytrss.configuration.entity.configuration_data import ConfigurationData
+from ytrss.configuration.readers.base import ConfigurationReader
 
 
 class ConfigurationError(Exception):
@@ -14,10 +14,13 @@ class ConfigurationFileNotExistsError(ConfigurationError):
     """
 
 
-class Configuration(metaclass=abc.ABCMeta):
+class Configuration:
     """ Configuration object """
 
+    def __init__(self, reader: ConfigurationReader) -> None:
+        self._reader = reader
+
     @property
-    @abc.abstractmethod
-    def conf(self) -> ConfigurationData:
+    def conf(self) -> Any:
         """ Returns object with configuration data. """
+        return self._reader.read_config

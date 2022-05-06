@@ -1,8 +1,6 @@
 import abc
-import time
 from datetime import datetime
-from email import utils
-from typing import Dict, Any, Optional
+from typing import Optional
 
 from ytrss.core.helpers.typing import Url
 
@@ -64,19 +62,3 @@ class Movie(metaclass=abc.ABCMeta):
     def is_ready(self) -> bool:
         """ Tell if movie is ready to download """
         return True
-
-    @property
-    def json(self) -> Dict[str, Any]:
-        """ A dictionary represents movie's data.
-
-        This dictionary is used to create DownloadingMovie object.
-        """
-        return {
-            'url': self.url,
-            'id': self.identity,
-            'title': self.title,
-            'uploader': self.author,
-            'description': self.description,
-            'image': self.img_url,
-            'date': utils.formatdate(time.mktime(self.date.timetuple()))
-        }
