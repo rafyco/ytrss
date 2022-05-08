@@ -5,10 +5,12 @@ from sqlite3 import Connection
 from typing import Iterable, Iterator, Tuple
 
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
+from ytrss.core.factory import FactoryError
 from ytrss.core.factory.movie import create_movie
 
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.movie import Movie
+from ytrss.core.helpers.logging import logger
 
 from ytrss.database.database import Database, DatabaseStatus
 
@@ -69,7 +71,11 @@ class SqliteDatabase(Database):
             rows = cursor.fetchall()
 
         for row in rows:
-            movie = create_movie(row[1])
+            try:
+                movie = create_movie(row[1])
+            except FactoryError:
+                logger.error("Not valid url or movie not exists: %s", row[1])
+                continue
             destination = DestinationId(row[2])
             if self.is_new(movie, destination):
                 yield movie, destination

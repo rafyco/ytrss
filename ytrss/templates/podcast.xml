@@ -18,6 +18,7 @@
         {% for movie in movies %}
         <item>
             <title>{{ movie.title | format_str }}</title>
+            <guid>{{ movie.identity }}</guid>
             <image>
                 <title>cover</title>
                 <url>{{ movie.image | format_str}}</url>
