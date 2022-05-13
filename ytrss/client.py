@@ -17,6 +17,7 @@ from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.factory import create_configuration
 from ytrss.core.helpers.logging import DebugFormatter, ClientFormatter, logger
 from ytrss.core.helpers.string_utils import first_line
+from ytrss.core.managers.manager_service import default_manager_service
 
 __subcommands__: List[BaseCommand] = [
     VersionCommand(),
@@ -67,7 +68,8 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     _configure_logging(options.log_debug)
 
     try:
-        configuration = YtrssConfiguration(create_configuration("ytrss", options.config_file))
+        manager_service = default_manager_service()
+        manager_service.configuration = YtrssConfiguration(create_configuration("ytrss", options.config_file))
     except ConfigurationFileNotExistsError:
         logger.warning("Configuration file not exists")
         sys.exit(1)
@@ -89,7 +91,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
 
     for command in __subcommands__:
         if command.name == options.command:
-            sys.exit(command(configuration, options))
+            sys.exit(command(options))
 
     logger.error("command: %s", options.command)
 

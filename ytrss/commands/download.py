@@ -2,7 +2,6 @@ import os
 import shutil
 from argparse import Namespace, ArgumentParser
 
-from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.entity.downloader import DownloaderError
 from ytrss.core.factory import FactoryError
 from ytrss.core.factory.downloader import create_downloader
@@ -26,7 +25,7 @@ class DownloadCommand(BaseCommand):
         parser.add_argument("url",
                             help="Url that should be downloaded")
 
-    def run(self, configuration: YtrssConfiguration, options: Namespace) -> int:
+    def run(self, options: Namespace) -> int:
         try:
             movie = create_movie(Url(options.url))
 
@@ -35,7 +34,7 @@ class DownloadCommand(BaseCommand):
             return 1
 
         try:
-            downloader = create_downloader(configuration)
+            downloader = create_downloader(self.manager_service.configuration)
             downloaded_movie = downloader.download(movie)
         except FactoryError:
             logger.error("Downloader create problem")

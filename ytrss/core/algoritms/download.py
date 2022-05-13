@@ -3,27 +3,26 @@ import os
 import sys
 from locks import Mutex
 
-from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.destination import Destination
 from ytrss.core.entity.downloader import DownloaderError
 from ytrss.core.entity.movie import Movie
-from ytrss.core.factory.database import create_database
 from ytrss.core.factory.downloader import create_downloader
 from ytrss.core.helpers.logging import logger
-from ytrss.database.database import Database, DatabaseStatus
+from ytrss.core.managers.manager_service import ManagerService, default_manager_service
+from ytrss.database.database import DatabaseStatus
 
 
 async def download_movie(
-        configuration: YtrssConfiguration,
         movie: Movie,
-        destination: Destination
+        destination: Destination,
+        manager_service: ManagerService = default_manager_service()
 ) -> None:
     """ Download movie
 
     This function download movie and save in destination, but it not check any conditions.
     """
-    downloader = create_downloader(configuration)
+    downloader = create_downloader(manager_service.configuration)
     downloaded_movie = downloader.download(movie)
     os.makedirs('/tmp/ytrss', exist_ok=True)
     with Mutex(f'/tmp/ytrss/destination.{destination.identity}.lock', timeout=5.0):
@@ -31,10 +30,9 @@ async def download_movie(
 
 
 async def download_task(
-        configuration: YtrssConfiguration,
         movie: Movie,
         destination_id: DestinationId,
-        database: Database
+        manager_service: ManagerService = default_manager_service()
 ) -> bool:
     """ Download movie
 
@@ -44,28 +42,28 @@ async def download_task(
     os.makedirs('/tmp/ytrss', exist_ok=True)
     try:
         with Mutex(f'/tmp/ytrss/movie-{movie.identity}.lock'):
-            if not database.is_new(movie, destination_id):
+            if not manager_service.database.is_new(movie, destination_id):
                 return False
             if not movie.is_ready:
                 logger.warning("Movie is not ready to download [%s] %s",
                                movie.url,
                                movie.title)
-                database.change_type(movie, DatabaseStatus.WAIT)
+                manager_service.database.change_type(movie, DatabaseStatus.WAIT)
                 return False
-            destination = configuration.destination_manager[destination_id]
+            destination = manager_service.destination_manager[destination_id]
             try:
-                database.change_type(movie, DatabaseStatus.PROGRESS)
-                await download_movie(configuration, movie, destination)
+                manager_service.database.change_type(movie, DatabaseStatus.PROGRESS)
+                await download_movie(movie, destination)
                 logger.info("Movie downloaded: [%s] %s",
                             movie.url,
                             movie.title)
-                database.change_type(movie, DatabaseStatus.DONE)
+                manager_service.database.change_type(movie, DatabaseStatus.DONE)
                 return True
             except DownloaderError:
                 logger.error("Cannot download movie: [%s] %s",
                              movie.url,
                              movie.title)
-                database.change_type(movie, DatabaseStatus.ERROR)
+                manager_service.database.change_type(movie, DatabaseStatus.ERROR)
     except BlockingIOError:
         logger.error("Cannot download movie: [%s] %s",
                      movie.url,
@@ -73,7 +71,7 @@ async def download_task(
     return False
 
 
-def download_all_movies(configuration: YtrssConfiguration) -> int:
+def download_all_movies(manager_service: ManagerService = default_manager_service()) -> int:
     """ Download all movies.
 
     This function download all files from database and send it to destination place. All the
@@ -82,10 +80,10 @@ def download_all_movies(configuration: YtrssConfiguration) -> int:
 
     logger.info("Starting download movies:")
     try:
-        database = create_database(configuration)
         loop = asyncio.get_event_loop()
         outputs = loop.run_until_complete(asyncio.gather(
-            *[download_task(configuration, movie, destination, database) for movie, destination in database.movies()]
+            *[download_task(movie, destination) for movie, destination in
+              manager_service.database.movies()]
         ))
         queue_len = len(outputs)
         downloaded = len(list(filter(lambda x: x, outputs)))
