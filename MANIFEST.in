@@ -1,2 +1,3 @@
 include README.rst scripts/* ytrss/configuration/*.json ytrss/configuration/*.yml ytrss/templates/*.xml
+ytrss/templates/*.html ytrss/templates/*.ico
 exclude *.orig *.pyc tests/*

@@ -1,6 +1,6 @@
 from jinja2 import Environment, Template, FileSystemLoader
 
-from ytrss import templates as ytrss_templates
+from ytrss.res import templates as ytrss_templates
 from ytrss.core.helpers.templates import format_str, format_desc, format_date
 
 

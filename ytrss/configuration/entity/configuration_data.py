@@ -63,3 +63,29 @@ class YtrssConfiguration:
                 return self._configuration_data['arguments']
             return [self._configuration_data['arguments']]
         return []
+
+    @property
+    def web_host(self) -> str:
+        """ website hostname """
+        if 'web_host' in self._configuration_data:
+            if isinstance(self._configuration_data['web_host'], str):
+                return self._configuration_data['web_host']
+        return "127.0.0.1"
+
+    @property
+    def web_port(self) -> int:
+        """ website port """
+        if 'web_port' in self._configuration_data:
+            if isinstance(self._configuration_data['web_port'], int):
+                return self._configuration_data['web_port']
+            if isinstance(self._configuration_data['web_port'], str):
+                return int(self._configuration_data['web_port'])
+        return 5555
+
+    @property
+    def web_prefix(self) -> str:
+        """ website prefix url """
+        if 'web_prefix' in self._configuration_data:
+            if isinstance(self._configuration_data['web_prefix'], str):
+                return self._configuration_data['web_prefix']
+        return "/"

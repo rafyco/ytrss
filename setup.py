@@ -60,6 +60,8 @@ setup(
         'jinja2 >= 3.0.3,< 3.2.0',
         'youtube_dl ~= 2021.12.17',
         'locks ~= 0.1.1',
+        'flask ~= 2.0.3',
+        'flask_restx ~= 0.5.1',
         'mutagen ~= 1.45.1'
     ],
     extras_require={
@@ -76,7 +78,8 @@ setup(
         ],
         "typing": [
             "mypy == 0.960",
-            "types-PyYAML == 6.0.8"
+            "types-PyYAML == 6.0.8",
+            "types-Flask == 1.1.6"
         ],
         "documentation": [
             "Sphinx == 5.0.1",
