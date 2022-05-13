@@ -131,3 +131,19 @@ class DownloadedMovie:
         with open(json_file, encoding="utf-8") as data_file:
             result = DownloadedMovie(destination_dir, json.load(data_file))
         return result
+
+    @property
+    def json(self) -> Dict[str, Any]:
+        """ Dictionary from downloaded movie. """
+        movie_data = {
+            "id": self.identity,
+            "url": self.url,
+            "title": self.title,
+            "uploader": self.author,
+            "description": self.description,
+            "date": utils.formatdate(time.mktime(self.date.timetuple())),
+            "resources": self.resources_files
+        }
+        if self.image is not None:
+            movie_data["image"] = self.image
+        return movie_data

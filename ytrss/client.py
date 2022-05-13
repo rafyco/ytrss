@@ -12,6 +12,7 @@ from ytrss.commands.generate import GenerateCommand
 from ytrss.commands.run import RunCommand
 from ytrss.commands.url import UrlCommand
 from ytrss.commands.version import VersionCommand
+from ytrss.commands.website import WebsiteCommand
 from ytrss.configuration.configuration import ConfigurationFileNotExistsError, ConfigurationError
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.factory import create_configuration
@@ -26,7 +27,8 @@ __subcommands__: List[BaseCommand] = [
     ConfigurationCommand(),
     GenerateCommand(),
     DownloadCommand(),
-    UrlCommand()
+    UrlCommand(),
+    WebsiteCommand()
 ]
 
 

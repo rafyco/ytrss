@@ -64,7 +64,7 @@ class ManagerService:
     def templates_manager(self) -> TemplatesManager:
         """ Templates manager """
         if self._templates_manager is None:
-            self._templates_manager = TemplatesManager()
+            self._templates_manager = TemplatesManager(self.configuration)
         return self._templates_manager
 
     @property

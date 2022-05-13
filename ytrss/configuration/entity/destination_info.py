@@ -23,6 +23,22 @@ class DestinationInfo:
         self.img: Optional[str] = None
         self.output_path: Optional[Path] = None
 
+    @property
+    def json(self) -> Dict[str, Any]:
+        """ Dictionary represents the destination """
+        return {
+            "id": self.identity,
+            "title": self.title,
+            "type": self.type,
+            "author": self.author,
+            "language": self.language,
+            "link": self.link,
+            "desc": self.desc,
+            "url_prefix": self.url_prefix,
+            "img": self.img,
+            "path": self.output_path
+        }
+
     @staticmethod
     def from_json(json: Optional[Dict[str, Any]], identity: DestinationId) -> 'DestinationInfo':
         """ Create object from json dictionary. """
