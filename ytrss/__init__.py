@@ -28,7 +28,7 @@ To more information try to call:
 import sys
 
 __title__ = 'ytrss'
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 __url__ = 'https://github.com/rafyco/ytrss.git'
 __author__ = 'Rafal Kobel'
 __author_email__ = 'rafalkobel@rafyco.pl'
