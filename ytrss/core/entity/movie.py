@@ -1,120 +1,64 @@
-#!/usr/bin/env python3
-###########################################################################
-#                                                                         #
-#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
-#                                                                         #
-#  This program is free software: you can redistribute it and/or modify   #
-#  it under the terms of the GNU General Public License as published by   #
-#  the Free Software Foundation, either version 3 of the License, or      #
-#  (at your option) any later version.                                    #
-#                                                                         #
-#  This program is distributed in the hope that it will be useful,        #
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of         #
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           #
-#  GNU General Public License for more details.                           #
-#                                                                         #
-#  You should have received a copy of the GNU General Public License      #
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
-#                                                                         #
-###########################################################################
-"""
-Element to download
-"""
 import abc
-from typing import Dict, Any, Optional
+from datetime import datetime
+from typing import Optional
 
-from ytrss.configuration.configuration import Configuration
-
-
-class InvalidStringJSONParseError(Exception):
-    """ Element Parse Exception """
+from ytrss.core.helpers.typing import Url
 
 
-class InvalidParameterMovieError(Exception):
-    """ Element Exception - Invalid Parameter """
+class MovieError(Exception):
+    """ Movie error
+
+    An error raised when the movie cannot be created or there are some issue with creation.
+    """
 
 
 class Movie(metaclass=abc.ABCMeta):
-    """
-    Movie's data.
+    """ A movie abstract class
+
+    This class represents a movie data. It should have an information about it, and be serialized to
+    and from url.
     """
 
     @property
     @abc.abstractmethod
-    def code(self) -> str:
-        """
-        Movie's ID
+    def identity(self) -> str:
+        """ A unique identity of the movie
+
+        This identity is used to check if the two movies are the same.
         """
 
     @property
     @abc.abstractmethod
-    def url(self) -> str:
-        """
-        URL to movie
-        """
+    def url(self) -> Url:
+        """ Movie's url """
 
     @property
     @abc.abstractmethod
     def title(self) -> str:
-        """
-        movie's title
-        """
+        """ Movie's title """
 
     @property
     @abc.abstractmethod
     def author(self) -> str:
-        """
-        movie's author
-        """
+        """ Movie's author """
 
     @property
     @abc.abstractmethod
-    def desc(self) -> str:
-        """
-        movie's description
-        """
+    def description(self) -> str:
+        """ Movie's description """
 
     @property
     @abc.abstractmethod
-    def date(self) -> str:
-        """
-        movie's create data
-        """
+    def date(self) -> datetime:
+        """ Create data """
 
     @property
     @abc.abstractmethod
-    def img_url(self) -> Optional[str]:
-        """
-        image's ULR
-        """
+    def img_url(self) -> Optional[Url]:
+        """ An Url to movie's image """
 
     @property
     @abc.abstractmethod
     def is_ready(self) -> bool:
-        """
-        Is movie is ready to download
-        """
-
-    @abc.abstractmethod
-    def download(self, settings: Configuration) -> bool:
-        """
-        Download element
-        """
-
-    @abc.abstractmethod
-    def to_string(self) -> str:
-        """
-        Make string representing object
-
-        @param self: object handler
-        @type self: L{Movie}
-        @return: JSON's string
-        @rtype: str
-        """
-
-    @property
-    @abc.abstractmethod
-    def json(self) -> Dict[str, Any]:
-        """
-        Return movie's description in JSON format
-        """
+        """ Tell if movie is ready to download """
+        return True

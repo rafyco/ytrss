@@ -1,19 +1,7 @@
 .. include:: ../README.rst
 
-###########
- Changelog
-###########
-
-   .. toctree::
-      :maxdepth: 3
-
-      changelog
-
-##################
- More information
-##################
-
-   .. toctree::
-      :maxdepth: 3
-
-      modules
+.. include:: installation.rst
+.. include:: configuration.rst
+.. include:: terminal.rst
+.. include:: plugins.rst
+.. include:: changelog.rst

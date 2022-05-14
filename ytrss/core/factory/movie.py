@@ -1,32 +1,22 @@
-#!/usr/bin/env python3
-###########################################################################
-#                                                                         #
-#  Copyright (C) 2017-2022 Rafal Kobel <rafalkobel@rafyco.pl>             #
-#                                                                         #
-#  This program is free software: you can redistribute it and/or modify   #
-#  it under the terms of the GNU General Public License as published by   #
-#  the Free Software Foundation, either version 3 of the License, or      #
-#  (at your option) any later version.                                    #
-#                                                                         #
-#  This program is distributed in the hope that it will be useful,        #
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of         #
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           #
-#  GNU General Public License for more details.                           #
-#                                                                         #
-#  You should have received a copy of the GNU General Public License      #
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
-#                                                                         #
-###########################################################################
-from typing import Union, Dict, Any
+from typing import Sequence, Callable, Optional
 
-from ytrss.configuration.consts import DEFAULT_PODCAST_DIR
-from ytrss.controlers.youtube.movie import YouTubeMovie
+from ytrss.plugins.youtube_dl.movie import YouTubeMovie
 from ytrss.core.entity.movie import Movie
+from ytrss.core.factory import BaseFactory
+from ytrss.core.helpers.typing import Url
 
 
-def create_movie(arg: Union[str, Dict[str, Any]],
-                 destination_dir: str = DEFAULT_PODCAST_DIR) -> Movie:
+class MovieFactory(BaseFactory[Url, Movie]):
     """
-    Create Movie object from args
+    Factory for Movie object
     """
-    return YouTubeMovie(arg, destination_dir)
+
+    @property
+    def plugins(self) -> Sequence[Callable[[Url], Optional[Movie]]]:
+        """ A list of functions that try to produce an object """
+        return [
+            YouTubeMovie
+        ]
+
+
+create_movie = MovieFactory()

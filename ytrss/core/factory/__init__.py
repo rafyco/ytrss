@@ -1,23 +1,41 @@
-#!/usr/bin/env python3
-###########################################################################
-#                                                                         #
-#  Copyright (C) 2017-2022 Rafal Kobel <rafalkobel@rafyco.pl>             #
-#                                                                         #
-#  This program is free software: you can redistribute it and/or modify   #
-#  it under the terms of the GNU General Public License as published by   #
-#  the Free Software Foundation, either version 3 of the License, or      #
-#  (at your option) any later version.                                    #
-#                                                                         #
-#  This program is distributed in the hope that it will be useful,        #
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of         #
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           #
-#  GNU General Public License for more details.                           #
-#                                                                         #
-#  You should have received a copy of the GNU General Public License      #
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
-#                                                                         #
-###########################################################################
-class CoreFactoryError(Exception):
+import abc
+from typing import TypeVar, Generic, Sequence, Callable, Optional
+
+
+RESULT = TypeVar("RESULT")
+PARAMS = TypeVar("PARAMS")
+
+
+class FactoryError(Exception):
+    """ Factory error
+
+    An exception raised when the factory cannot create an object from arguments.
     """
-    Core Factory Error
-    """
+
+
+class BaseFactory(Generic[PARAMS, RESULT], metaclass=abc.ABCMeta):
+    """ A base of factory """
+
+    @property
+    @abc.abstractmethod
+    def plugins(self) -> Sequence[Callable[[PARAMS], Optional[RESULT]]]:
+        """ A list of functions that try to produce an object """
+
+    def build(self, param: PARAMS) -> RESULT:
+        """
+        Build an object
+
+        Look for all plugins and try to build a new one object. It there are a problem with object
+        the FactoryError will be returned.
+        """
+        for plugin in self.plugins:
+            try:
+                result = plugin(param)
+                if result is not None:
+                    return result
+            except Exception:  # pylint: disable=W0703
+                pass
+        raise FactoryError(f"Cannot create object by ({type(self)}) from {param}")
+
+    def __call__(self, param: PARAMS) -> RESULT:
+        return self.build(param)

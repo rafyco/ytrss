@@ -3,8 +3,32 @@
 ###########
 
 *****
+ 0.3
+*****
+
+0.3.0_
+======
+
+.. warning::
+    This version has different configuration file format and terminal client. You can't use
+    configuration from previous version. Please read documentation and update it.
+
+- fix small bugs
+- new format of configuration (see: `configuration <configuration.html>`_)
+- new terminal tool (see: `terminal <terminal.html>`_)
+- support for all services from `youtube_dl <https://youtube-dl.org/>`_
+- locally download url
+- add url from console
+- auto made new configuration
+
+*****
  0.2
 *****
+
+0.2.8_
+======
+
+-  fix small bugs
 
 0.2.6_
 ======
@@ -153,3 +177,7 @@
 .. _0.2.5: https://github.com/rafyco/ytrss/releases/v0.2.5
 
 .. _0.2.6: https://github.com/rafyco/ytrss/releases/v0.2.6
+
+.. _0.2.8: https://github.com/rafyco/ytrss/releases/v0.2.8
+
+.. _0.3.0: https://github.com/rafyco/ytrss/releases/v0.3.0

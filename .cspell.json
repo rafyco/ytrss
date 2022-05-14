@@ -27,10 +27,12 @@
     "pytest",
     "ropeproject",
     "sdist",
+    "setuptools",
     "shellcheck",
     "typping",
     "unittests",
     "venv",
+    "ytdl",
     "ytrss"
   ]
 }
