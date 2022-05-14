@@ -5,6 +5,7 @@ from ytrss.configuration.entity.destination_info import DestinationId, Destinati
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
 
 from ytrss.core.helpers.typing import Path
+from ytrss.core.managers.templates_manager import TemplatesManager
 
 
 class DestinationError(Exception):
@@ -38,10 +39,10 @@ class Destination(metaclass=abc.ABCMeta):
     def saved_movies(self) -> Iterator[DownloadedMovie]:
         """ A list of movies saved in destination. """
 
-    def on_finish(self) -> None:
+    def on_finish(self, templates_manager: TemplatesManager) -> None:
         """ An optional method that generate additional files, or make an additional
          things after download like sending to external service. """
 
     @abc.abstractmethod
-    def save(self, files: Sequence[Path]) -> None:
+    def save(self, files: Sequence[Path], templates_manager: TemplatesManager) -> None:
         """ Save file from downloader cache to destination. """

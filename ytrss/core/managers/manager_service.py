@@ -4,6 +4,7 @@ from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.managers.destination_manager import DestinationManager
 from ytrss.core.managers.plugin_manager import PluginManager
 from ytrss.core.managers.sources_manager import SourcesManager
+from ytrss.core.managers.templates_manager import TemplatesManager
 from ytrss.database.database import Database
 from ytrss.database.sqlite.sqlite_database import SqliteDatabase
 
@@ -15,10 +16,11 @@ class ManagerService:
     """
 
     def __init__(self) -> None:
+        self._configuration: Optional[YtrssConfiguration] = None
         self._sources_manager: Optional[SourcesManager] = None
         self._destination_manager: Optional[DestinationManager] = None
         self._plugin_manager: Optional[PluginManager] = None
-        self._configuration: Optional[YtrssConfiguration] = None
+        self._templates_manager: Optional[TemplatesManager] = None
         self._database: Optional[Database] = None
 
     @property
@@ -57,6 +59,13 @@ class ManagerService:
         if self._plugin_manager is None:
             self._plugin_manager = PluginManager()
         return self._plugin_manager
+
+    @property
+    def templates_manager(self) -> TemplatesManager:
+        """ Templates manager """
+        if self._templates_manager is None:
+            self._templates_manager = TemplatesManager()
+        return self._templates_manager
 
     @property
     def database(self) -> Database:

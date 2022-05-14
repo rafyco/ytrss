@@ -2,6 +2,7 @@ import io
 import os
 
 from ytrss.core.entity.destination import DestinationError
+from ytrss.core.managers.templates_manager import TemplatesManager
 from ytrss.plugins.default.destination import DefaultDestination
 
 from ytrss.plugins.rss.podcast.podcast import Podcast
@@ -21,12 +22,12 @@ class RssDestination(DefaultDestination):
             raise DestinationError()
         DefaultDestination.__init__(self, info)
 
-    def on_finish(self) -> None:
+    def on_finish(self, templates_manager: TemplatesManager) -> None:
         if self.info.output_path is None:
             raise KeyError
         if os.path.isdir(self.info.output_path):
             logger.info("Generate RSS: %s", self.info.title)
-            podcast = Podcast(self.info)
+            podcast = Podcast(self.info, templates_manager)
             for movie in self.saved_movies:
                 logger.debug(" > %s", movie.title)
                 try:
