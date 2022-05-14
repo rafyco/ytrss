@@ -1,22 +1,3 @@
-#!/usr/bin/env python3
-###########################################################################
-#                                                                         #
-#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
-#                                                                         #
-#  This program is free software: you can redistribute it and/or modify   #
-#  it under the terms of the GNU General Public License as published by   #
-#  the Free Software Foundation, either version 3 of the License, or      #
-#  (at your option) any later version.                                    #
-#                                                                         #
-#  This program is distributed in the hope that it will be useful,        #
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of         #
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           #
-#  GNU General Public License for more details.                           #
-#                                                                         #
-#  You should have received a copy of the GNU General Public License      #
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
-#                                                                         #
-###########################################################################
 #
 # Configuration file for the Sphinx documentation builder.
 #
@@ -37,16 +18,16 @@
 
 # -- Project information -----------------------------------------------------
 
-import ytrss
+import ytrss as current_package
 
-project = 'ytrss'
-copyright = '2019, Rafał Kobel'
-author = 'Rafał Kobel'
+project = current_package.__title__
+copyright = f"2022, {current_package.__author__}"
+author = current_package.__author__
 
 # The short X.Y version
-version = ytrss.get_version()
+version = current_package.__version__
 # The full version, including alpha/beta/rc tags
-release = ytrss.get_version()
+release = current_package.__version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -60,8 +41,11 @@ release = ytrss.get_version()
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosectionlabel',
     'sphinx.ext.githubpages',
-    'sphinx_epytext',
+    'sphinx.ext.todo',
+    'sphinx_autorun',
+    'sphinx_epytext'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -81,7 +65,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -98,7 +82,7 @@ pygments_style = None
 # a list of builtin themes.
 #
 # html_theme = 'alabaster'
-html_theme = 'classic'
+html_theme = 'bizstyle'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -109,7 +93,8 @@ html_theme = 'classic'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = []
+html_static_path = ["_static/icon.png"]
+html_favicon = "_static/icon.png"
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -125,7 +110,7 @@ html_static_path = []
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'ytrssdoc'
+htmlhelp_basename = f"{current_package.__title__}doc"
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -152,7 +137,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ytrss.tex', 'ytrss Documentation',
+    (master_doc, '', f"{current_package.__title__} Documentation",
      'Rafał Kobel', 'manual'),
 ]
 
@@ -162,7 +147,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'ytrss', 'ytrss Documentation',
+    (master_doc, current_package.__title__, f"{current_package.__title__} Documentation",
      [author], 1)
 ]
 
@@ -173,8 +158,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'ytrss', 'ytrss Documentation',
-     author, 'ytrss', 'One line description of project.',
+    (master_doc, current_package.__title__, f"{current_package.__title__} Documentation",
+     author, current_package.__title__, 'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -197,3 +182,7 @@ epub_title = project
 epub_exclude_files = ['search.html']
 
 # -- Extension configuration -------------------------------------------------
+
+# todos extension
+todo_include_todos = True
+todo_emit_warnings = True

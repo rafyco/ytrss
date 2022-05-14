@@ -1,31 +1,11 @@
 #!/usr/bin/env python3
-###########################################################################
-#                                                                         #
-#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
-#                                                                         #
-#  This program is free software: you can redistribute it and/or modify   #
-#  it under the terms of the GNU General Public License as published by   #
-#  the Free Software Foundation, either version 3 of the License, or      #
-#  (at your option) any later version.                                    #
-#                                                                         #
-#  This program is distributed in the hope that it will be useful,        #
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of         #
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           #
-#  GNU General Public License for more details.                           #
-#                                                                         #
-#  You should have received a copy of the GNU General Public License      #
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
-#                                                                         #
-###########################################################################
-
 from __future__ import unicode_literals
-import sys
 from setuptools import setup
 from setuptools import find_packages
 
 
-def read_description(module_name):
-    module_doc = __import__(module_name).__doc__.splitlines()
+def read_description(local_current_package):
+    module_doc = local_current_package.__doc__.splitlines()
     result = ""
     for line in module_doc:
         if line:
@@ -34,42 +14,20 @@ def read_description(module_name):
     return result
 
 
-CURRENT_PYTHON = sys.version_info[:2]
-REQUIRED_PYTHON = (3, 6)
-
-if CURRENT_PYTHON < REQUIRED_PYTHON:
-    sys.stderr.write("""
-==========================
-Unsupported Python version
-==========================
-
-This version of YTRSS requires Python {}.{}, but you're trying to
-install it on Python {}.{}.
-This may be because you are using a version of pip that doesn't
-understand the python_requires classifier. Make sure you
-have Python {}.{} or newer, then try again:
-
-    $ python3 -m pip install --upgrade pip setuptools
-    $ pip3 install ytrss
-
-""".format(*(REQUIRED_PYTHON + CURRENT_PYTHON + REQUIRED_PYTHON)))
-    sys.exit(1)
-
-package_name = 'ytrss'
-version = __import__(package_name).get_version()
+current_package = __import__('ytrss')
 
 data_files = []
 
 setup(
-    name=package_name,
-    version=version,
-    license='GNU',
-    author="Rafal Kobel",
-    author_email="rafalkobel@rafyco.pl",
-    description=read_description(package_name),
-    python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
+    name=current_package.__title__,
+    version=current_package.__version__,
+    license=current_package.__license__,
+    author=current_package.__author__,
+    author_email=current_package.__author_email__,
+    description=read_description(current_package),
+    python_requires='>={}.{}'.format(*current_package.__required_python__),
     long_description=open("README.rst").read(),
-    url="https://github.com/rafyco/ytrss",
+    url=current_package.__url__,
     project_urls={
         "Source": "https://github.com/rafyco/ytrss",
         "Tracker": "https://github.com/rafyco/ytrss/issues",
@@ -88,10 +46,16 @@ setup(
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
+        'pyyaml',
         'astroid ~= 2.5',
-        'youtube_dl ~= 2021.6.6',
+        'jinja2 ~= 3.0.3',
+        'youtube_dl ~= 2021.12.17',
+        'locks ~= 0.1.1'
     ],
     extras_require={
+        "optional": [
+            "argcomplete"
+        ],
         "unittests": [
             "pytest"
         ],
@@ -101,23 +65,25 @@ setup(
             "pycodestyle == 2.8.0"
         ],
         "typing": [
-            "mypy == 0.910"
+            "mypy == 0.910",
+            "types-PyYAML == 6.0"
         ],
         "documentation": [
             "Sphinx == 4.3.1",
-            "sphinx-epytext == 0.0.4"
+            "sphinx-epytext == 0.0.4",
+            "sphinx-autorun == 1.1.1"
         ]
     },
     entry_points={
         'console_scripts': [
-            'ytdown = ytrss.ytdown:main',
+            'ytrss = ytrss.client:main',
         ]
     },
     command_options={
         'build_spninx': {
-            'project': ('setup.py', package_name),
-            'version': ('setup.py', version),
-            'release': ('setup.py', version),
+            'project': ('setup.py', current_package.__title__),
+            'version': ('setup.py', current_package.__version__),
+            'release': ('setup.py', current_package.__version__),
             'source_dir': ('setup.py', 'docs')
         }
     },

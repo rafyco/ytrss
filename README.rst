@@ -1,11 +1,11 @@
-=======================================
-YTRSS - Youtube subscription downloader
-=======================================
+#########################################
+ YTRSS - subscription downloader
+#########################################
 
-Program to automatic download YouTube files by ``youtube_dl`` scripts.
+Program to automatic download any types of files from Internet.
 
 .. image:: https://img.shields.io/badge/author-Rafa%C5%82%20Kobel-blue.svg
-    :target: https://rafyco.pl
+   :target: https://rafyco.pl
 
 .. image:: https://github.com/rafyco/ytrss/actions/workflows/pythonpackage.yml/badge.svg?branch=master
    :target: https://github.com/rafyco/ytrss/actions/workflows/pythonpackage.yml
@@ -25,61 +25,57 @@ Program to automatic download YouTube files by ``youtube_dl`` scripts.
 .. image:: https://img.shields.io/github/license/rafyco/ytrss.svg
    :target: https://www.gnu.org/licenses/gpl.html
 
+*************
+ Description
+*************
 
-Description
------------
+YTRSS is a program that checks defined sources and downloads a movie or sound files
+from them and arrange them to podcast files. It can be highly configured with many plugins
+that add any other destinations.
 
-YTRSS is a simple script to automate your YouTube podcast adventure.
-It is allow you to download your favourite movies, convert it to mp3
-and arrange them to podcast files.
+The program in basic version use `youtube_dl` script to download files, so it cooperates
+with all services implements by this library. However user can extends this capabilities by
+his own custom plugins with external Downloaders.
 
-How to start
-------------
+Fast start
+==========
 
-First of all you need to prepare config file, which helps you descirbe
-all the channels or playlists that you want to subscribe. After that you
-need to share generated podcast on your private http server.
+The installation can be carried out in two ways. You can download
+packages from PyPi repository or install it from sources.
 
-Remember that this library have no secure podcast file from other viewers.
-You public it on your own responsibility. Please make sure that autor of your
-favourite movies allows you to make podcast from his files.
+For installation from PyPi you can use ``pip`` program. It is likely
+that you must use ``pip3`` instead ``pip``.
 
-Installation
-~~~~~~~~~~~~
+.. code::
 
-The installation can be carried out in two ways. You can download packages from
-PyPi repository or install it from sources.
+   pip install ytrss
 
-For installation from PyPi you can use ``pip`` program. It is likely that you must
-use ``pip3`` instead ``pip``.
+You can also use source from github repository to install ``ytrss``. To
+make that download code and invoke command:
 
-::
+.. code::
 
-    pip install ytrss
+   python setup.py install
 
-You can also use source from github repository to install ``ytrss``. To make that
-download code and invoke command:
+To checking the installation you can use to call ``ytrss``.
 
-::
+.. code::
 
-    python setup.py install
+    $ ytrss --help
 
-To checking the installation you can use to call ``ytss``. Unittest can be also
-helpfull with verification.
+For more information about installation, configuration and bash completion read the documentation.
 
-Unit test
----------
-
-``ytrss`` have a few unittest that you can use to checking code corectness. You can
-call it from ``setup.py`` file or using ``ytrss.tests`` module after installation. Check
-one of below command and try it yourselfe.
-
-::
-
-    python setup.py test
-    python -m ytrss.tests
-
-Author
-------
+********
+ Author
+********
 
 Rafal Kobel rafalkobel@rafyco.pl
+
+.. image:: https://img.shields.io/static/v1.svg?label=Linkedin&message=Rafal%20Kobel&color=blue&logo=linkedin
+   :target: https://www.linkedin.com/in/rafa%C5%82-kobel-03850910a/
+
+.. image:: https://img.shields.io/static/v1.svg?label=Github&message=rafyco&color=blue&logo=github
+   :target: https://github.com/rafyco
+
+.. image:: https://img.shields.io/static/v1.svg?label=Facebook&message=Rafal%20Kobel&color=blue&logo=facebook
+   :target: https://facebook.com/rafyco

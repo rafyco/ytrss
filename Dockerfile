@@ -4,11 +4,9 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip install --upgrade pip
-
-RUN pip install .
-
-RUN adduser ytrss
+RUN pip install --no-cache-dir --upgrade pip==21.3.1; \
+    pip install --no-cache-dir .; \
+    adduser ytrss
 
 USER ytrss
 

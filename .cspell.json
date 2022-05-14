@@ -1,0 +1,38 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/vscode-extension/**",
+    "**/.git/**",
+    "**/.idea/**",
+    "**/.tox/**",
+    ".vscode",
+    "package-lock.json",
+    "report"
+  ],
+  "words": [
+    "Arvrzhe",
+    "Kobel",
+    "Rafal",
+    "WORKDIR",
+    "adduser",
+    "algorithms",
+    "automodule",
+    "consts",
+    "controls",
+    "endfor",
+    "pypa",
+    "pypi",
+    "pytest",
+    "ropeproject",
+    "sdist",
+    "setuptools",
+    "shellcheck",
+    "typping",
+    "unittests",
+    "venv",
+    "ytdl",
+    "ytrss"
+  ]
+}

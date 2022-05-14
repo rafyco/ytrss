@@ -1,22 +1,3 @@
-#!/usr/bin/env python3
-###########################################################################
-#                                                                         #
-#  Copyright (C) 2017-2021 Rafal Kobel <rafalkobel@rafyco.pl>             #
-#                                                                         #
-#  This program is free software: you can redistribute it and/or modify   #
-#  it under the terms of the GNU General Public License as published by   #
-#  the Free Software Foundation, either version 3 of the License, or      #
-#  (at your option) any later version.                                    #
-#                                                                         #
-#  This program is distributed in the hope that it will be useful,        #
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of         #
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the           #
-#  GNU General Public License for more details.                           #
-#                                                                         #
-#  You should have received a copy of the GNU General Public License      #
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.  #
-#                                                                         #
-###########################################################################
 """
 Tools for downloading mp3 from YouTube subscription and playlists.
 
@@ -38,22 +19,49 @@ From sources::
 Usage
 =====
 
-Before you using this tools you should create configuration file. More
-information you can find L{here<ytrss.core.settings>}.
+To more information try to call:
 
-YTRSS allow you to run a few command-line tool.
-
-    - L{ytrss.daemon}
-    - L{ytrss.ytdown}
-    - L{ytrss.subs}
-    - L{ytrss.rssgenerate}
+    ytrss --help
 
 """
 
+import sys
 
-def get_version() -> str:
-    """ Get version of ytrss package. """
-    return "0.2.8"
+__title__ = 'ytrss'
+__version__ = "0.3.0"
+__url__ = 'https://github.com/rafyco/ytrss.git'
+__author__ = 'Rafal Kobel'
+__author_email__ = 'rafalkobel@rafyco.pl'
+__license__ = 'GNU'
+
+__required_python__ = (3, 6)
 
 
-__version__ = get_version()
+def check_python_version() -> None:
+    """
+    Check if python is in appropriate version
+    """
+    current_python = sys.version_info[:2]
+    if current_python < __required_python__:
+        current_python_str = '.'.join([str(el) for el in current_python])
+        required_python_str = '.'.join([str(el) for el in __required_python__])
+        sys.stderr.write(f"""
+==========================
+Unsupported Python version
+==========================
+
+This version of {__title__} requires Python {required_python_str}, but you're trying to
+install it on Python {current_python_str}.
+This may be because you are using a version of pip that doesn't
+understand the python_requires classifier. Make sure you
+have Python {required_python_str} or newer, then try again:
+
+    $ python3 -m pip install --upgrade pip setuptools
+    $ pip3 install {__title__}
+
+""")
+        sys.exit(1)
+
+
+if __name__ != "__main__":
+    check_python_version()
