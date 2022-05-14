@@ -4,7 +4,7 @@ Testing Podcast module.
 
 import unittest
 
-from ytrss.plugins.rss.podcast.helpers import format_desc
+from ytrss.core.helpers.templates import format_desc
 
 
 class TestPodcast(unittest.TestCase):  # pylint: disable=R0904

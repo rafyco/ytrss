@@ -12,5 +12,5 @@ class GenerateCommand(BaseCommand):
 
     def run(self, options: Namespace) -> int:
         for destination in self.manager_service.destination_manager.destinations:
-            destination.on_finish()
+            destination.on_finish(self.manager_service.templates_manager)
         return 0

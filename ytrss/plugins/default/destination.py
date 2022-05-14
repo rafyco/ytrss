@@ -9,6 +9,7 @@ from ytrss.core.entity.downloaded_movie import DownloadedMovie, MovieFileError
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
 from ytrss.core.helpers.logging import logger
 from ytrss.core.helpers.typing import Path
+from ytrss.core.managers.templates_manager import TemplatesManager
 
 
 class DefaultDestination(Destination):
@@ -42,7 +43,7 @@ class DefaultDestination(Destination):
                 except MovieFileError as ex:
                     logger.info(ex)
 
-    def save(self, files: Sequence[Path]) -> None:
+    def save(self, files: Sequence[Path], templates_manager: TemplatesManager) -> None:
         if self.info.output_path is None:
             raise KeyError
         os.makedirs(self.info.output_path, exist_ok=True)
@@ -51,4 +52,4 @@ class DefaultDestination(Destination):
                 shutil.move(file, self.info.output_path)
             except shutil.Error as ex:
                 logger.error(ex)
-        self.on_finish()
+        self.on_finish(templates_manager)
