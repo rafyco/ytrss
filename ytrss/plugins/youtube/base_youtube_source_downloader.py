@@ -44,5 +44,8 @@ class BaseYouTubeSourceDownloader(SourceDownloader):
         for elem in tags:
             url: Url = Url(elem.getAttribute("href"))
             if "watch?v=" in url:  # pylint: disable=E1135
-                yield YouTubeMovie(url), self.destination
+                try:
+                    yield YouTubeMovie(url), self.destination
+                except Exception:  # pylint: disable=W0703
+                    logger.error("Problem with url in source: %s", self.url)
         return result
