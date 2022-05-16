@@ -27,14 +27,18 @@ To more information try to call:
 
 import sys
 
+from ytrss.core.version import Version
+
 __title__ = 'ytrss'
-__version__ = "0.3.3"
+__version__ = Version().version
 __url__ = 'https://github.com/rafyco/ytrss.git'
 __author__ = 'Rafal Kobel'
 __author_email__ = 'rafalkobel@rafyco.pl'
 __license__ = 'GNU'
 
 __required_python__ = (3, 6)
+
+import ytrss.core.version
 
 
 def check_python_version() -> None:
