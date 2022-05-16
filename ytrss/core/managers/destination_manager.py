@@ -1,10 +1,9 @@
 from typing import Dict, Iterator
 
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
-from ytrss.core.entity.destination import Destination
-from ytrss.core.factory import FactoryError
-from ytrss.core.factory.destination import create_destination
+from ytrss.core.entity.destination import Destination, DestinationError
 from ytrss.core.helpers.logging import logger
+from ytrss.core.managers.plugin_manager import PluginManager
 
 
 class DestinationManager:
@@ -14,7 +13,8 @@ class DestinationManager:
     An object that managed all destinations available in application.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, plugin_manager: PluginManager) -> None:
+        self._plugin_manager = plugin_manager
         self._destinations: Dict[DestinationId, Destination] = {}
 
     def add_from_info(self, info: DestinationInfo) -> None:
@@ -22,8 +22,8 @@ class DestinationManager:
         Add a destination from DestinationInfo object.
         """
         try:
-            self._destinations[info.identity] = create_destination(info)
-        except FactoryError:
+            self._destinations[info.identity] = self._plugin_manager.create_destination(info)
+        except DestinationError:
             logger.error("Cannot create destination from info: %s (type=%s)", info, info.type)
 
     def __contains__(self, item: DestinationId) -> bool:

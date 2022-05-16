@@ -5,12 +5,11 @@ from sqlite3 import Connection
 from typing import Iterable, Iterator, Tuple
 
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
-from ytrss.core.factory import FactoryError
-from ytrss.core.factory.movie import create_movie
 
 from ytrss.configuration.entity.destination_info import DestinationId
-from ytrss.core.entity.movie import Movie
+from ytrss.core.entity.movie import Movie, MovieError
 from ytrss.core.helpers.logging import logger
+from ytrss.core.managers.plugin_manager import PluginManager
 
 from ytrss.database.database import Database, DatabaseStatus
 
@@ -26,8 +25,9 @@ class SqliteDatabase(Database):
         yield conn
         conn.close()
 
-    def __init__(self, configuration: YtrssConfiguration):
+    def __init__(self, configuration: YtrssConfiguration, plugin_manager: PluginManager):
         self.__configuration = configuration
+        self._plugin_manager = plugin_manager
         self._db_file = os.path.join(configuration.config_path, "ytrss.db")
         with self._database_handler() as conn:
             conn.execute('''
@@ -72,8 +72,8 @@ class SqliteDatabase(Database):
 
         for row in rows:
             try:
-                movie = create_movie(row[1])
-            except FactoryError:
+                movie = self._plugin_manager.create_movie(row[1])
+            except MovieError:
                 logger.error("Not valid url or movie not exists: %s", row[1])
                 continue
             destination = DestinationId(row[2])

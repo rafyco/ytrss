@@ -6,7 +6,7 @@ on:
     branches:
       - master
     paths-ignore:
-      - "ytrss/__init_.py"
+      - "ytrss/core/version.py"
 
 jobs:
   CI-upgrade:
@@ -23,17 +23,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "${GITHUB_TOKEN}"
-          VERSION="$(python ./setup.py --version)"
-          # shellcheck disable=SC2001
-          MAJOR="$(echo "${VERSION}" | sed 's/\([0-9]*\)\.[0-9]*\.[0-9]*/\1/')"
-          # shellcheck disable=SC2001
-          MINOR="$(echo "${VERSION}" | sed 's/[0-9]*\.\([0-9]*\)\.[0-9]*/\1/')"
-          # shellcheck disable=SC2001
-          PATCH="$(echo "${VERSION}" | sed 's/[0-9]*\.[0-9]*\.\([0-9]*\)/\1/')"
-          GIT_TAG="$MAJOR.$MINOR."$(( PATCH + 1 ))
+          RC="$(sed 's/\s*self\._rc\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
+          NEW_RC=$(( RC + 1 ))
+
+          sed -i "s/self\._rc = [0-9]*/self._rc = ${NEW_RC}/" ytrss/core/version.py
+
+          GIT_TAG="$(python ./setup.py --version)"
+
           # spellcheck disable=SC2001
-          sed -i "s/__version__ = \"[0-9\.]*\"/__version__ = \"${GIT_TAG}\"/" ytrss/__init__.py
           echo ::set-output name="git_tag::${GIT_TAG}"
       - name: Commit massage
         run: |

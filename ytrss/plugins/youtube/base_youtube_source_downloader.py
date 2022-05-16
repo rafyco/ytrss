@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from typing import Iterable, Tuple, List
+from typing import Iterable, Tuple
 from urllib.request import urlopen
 from xml.dom import minidom
 
@@ -32,7 +32,6 @@ class BaseYouTubeSourceDownloader(SourceDownloader):
     def movies(self) -> Iterable[Tuple[Movie, DestinationId]]:
         logger.debug("Source url: %s", self.url)
 
-        result: List[Tuple[Movie, DestinationId]] = []
         try:
             xml_str = urlopen(str(self.source_url)).read()
             xmldoc = minidom.parseString(xml_str)
@@ -40,7 +39,7 @@ class BaseYouTubeSourceDownloader(SourceDownloader):
         # We want catch every exception in ulr like invalid channel or web
         except Exception:  # pylint: disable=W0703
             logger.error("Problem with url: %s", self.url)
-            return result
+            return
         for elem in tags:
             url: Url = Url(elem.getAttribute("href"))
             if "watch?v=" in url:  # pylint: disable=E1135
@@ -48,4 +47,3 @@ class BaseYouTubeSourceDownloader(SourceDownloader):
                     yield YouTubeMovie(url), self.destination
                 except Exception:  # pylint: disable=W0703
                     logger.error("Problem with url in source: %s", self.url)
-        return result

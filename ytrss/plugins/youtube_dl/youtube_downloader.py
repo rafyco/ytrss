@@ -11,6 +11,7 @@ from ytrss.core.entity.movie import Movie
 from ytrss.core.helpers.files import cwd
 from ytrss.core.helpers.logging import logger
 from ytrss.core.helpers.typing import Path
+from ytrss.plugins.youtube_dl.movie import YouTubeMovie
 
 
 class YouTubeDownloader(Downloader):
@@ -21,8 +22,11 @@ class YouTubeDownloader(Downloader):
     a movie file from any url that can be use by `youtube_dl` service.
     """
 
-    def __init__(self, configuration: YtrssConfiguration) -> None:
+    def __init__(self, movie: Movie, configuration: YtrssConfiguration) -> None:
+        if not isinstance(movie, YouTubeMovie):
+            raise DownloaderError()
         self.configuration = configuration
+        self._movie = movie
 
     @classmethod
     def __invoke_ytdl(cls, args: Sequence[str]) -> int:
@@ -36,10 +40,7 @@ class YouTubeDownloader(Downloader):
                 status = ex.code  # pylint: disable=E0012,R0204
         return status
 
-    def download(
-            self,
-            movie: Movie
-    ) -> DownloadedMovie:
+    def download(self) -> DownloadedMovie:
         try:
             os.makedirs(self.configuration.cache_path)
         except OSError:
@@ -47,14 +48,15 @@ class YouTubeDownloader(Downloader):
 
         with cwd(self.configuration.cache_path):
 
-            logger.info("Downloading movie: [%s] %s", movie.url, movie.title)
-            status = self.__invoke_ytdl(list(self.configuration.args) + ['-o', f"{movie.identity}.mp3", movie.url])
+            logger.info("Downloading movie: [%s] %s", self._movie.url, self._movie.title)
+            status = self.__invoke_ytdl(list(self.configuration.args) + ['-o', f"{self._movie.identity}.mp3",
+                                                                         self._movie.url])
 
             if status != 0:
                 raise DownloaderError(f"youtube_dl raise with state: {status}")
 
-            full_file_name = Path(f"{movie.identity}.mp3")
+            full_file_name = Path(f"{self._movie.identity}.mp3")
             if not os.path.isfile(full_file_name):
                 raise DownloaderError(f"File {full_file_name} not downloaded")
 
-        return DownloadedMovie.create_movie_desc(self.configuration.cache_path, movie, [full_file_name])
+        return DownloadedMovie.create_movie_desc(self.configuration.cache_path, self._movie, [full_file_name])
