@@ -7,7 +7,6 @@ from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.destination import Destination
 from ytrss.core.entity.downloader import DownloaderError
 from ytrss.core.entity.movie import Movie
-from ytrss.core.factory.downloader import create_downloader
 from ytrss.core.helpers.logging import logger
 from ytrss.core.managers.manager_service import ManagerService, default_manager_service
 from ytrss.database.database import DatabaseStatus
@@ -22,8 +21,7 @@ async def download_movie(
 
     This function download movie and save in destination, but it not check any conditions.
     """
-    downloader = create_downloader(manager_service.configuration)
-    downloaded_movie = downloader.download(movie)
+    downloaded_movie = manager_service.plugin_manager.create_downloader(movie, manager_service.configuration).download()
     os.makedirs('/tmp/ytrss', exist_ok=True)
     with Mutex(f'/tmp/ytrss/destination.{destination.identity}.lock', timeout=5.0):
         destination.save(downloaded_movie.data_paths)

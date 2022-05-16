@@ -1,7 +1,6 @@
 import abc
 
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
-from ytrss.core.entity.movie import Movie
 
 
 class DownloaderError(Exception):
@@ -18,10 +17,7 @@ class Downloader(metaclass=abc.ABCMeta):
     """
 
     @abc.abstractmethod
-    def download(
-            self,
-            movie: Movie
-    ) -> DownloadedMovie:
+    def download(self) -> DownloadedMovie:
         """
         Download movie
 
