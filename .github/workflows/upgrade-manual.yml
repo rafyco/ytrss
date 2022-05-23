@@ -1,15 +1,10 @@
 ---
-name: Package upgrade
+name: Package new version
 
-on:
-  push:
-    branches:
-      - master
-    paths-ignore:
-      - "ytrss/core/version.py"
+on: workflow_dispatch
 
 jobs:
-  CI-upgrade:
+  CI-upgrade-version:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +18,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RC="$(sed 's/\s*self\._rc\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
-          NEW_RC=$(( RC + 1 ))
+          PATCH="$(sed 's/\s*self\._patch\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
+          NEW_PATCH=$(( PATCH + 1 ))
 
-          sed -i "s/self\._rc = [0-9]*/self._rc = ${NEW_RC}/" ytrss/core/version.py
+          sed -i "s/self\._rc = [0-9]*/self._rc = 0/" ytrss/core/version.py
+          sed -i "s/self\._patch = [0-9]*/self._patch = ${NEW_PATCH}/" ytrss/core/version.py
 
           GIT_TAG="$(python ./setup.py --version)"
 
