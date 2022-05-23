@@ -4,8 +4,8 @@ class Version:
     def __init__(self) -> None:
         self._major = 0
         self._minor = 3
-        self._patch = 3
-        self._rc = 3
+        self._patch = 4
+        self._rc = 0
 
     @property
     def version(self) -> str:
