@@ -8,7 +8,7 @@
           <option name="linkRegexp" value="https://github.com/rafyco/ytrss/issues/$2" />
         </IssueNavigationLink>
         <IssueNavigationLink>
-          <option name="issueRegexp" value="version (v[0-9]*.[0-9]*.[0-9]*)" />
+          <option name="issueRegexp" value="version (v[0-9]+.[0-9]+.[0-9]+(rc[0-9]+)?)" />
           <option name="linkRegexp" value="https://github.com/rafyco/ytrss/releases/tag/$1" />
         </IssueNavigationLink>
         <IssueNavigationLink>
@@ -16,7 +16,7 @@
           <option name="linkRegexp" value="https://github.com/rafyco/ytrss/pull/$1" />
         </IssueNavigationLink>
         <IssueNavigationLink>
-          <option name="issueRegexp" value="([0-9]+.[0-9]+.[0-9]+) version" />
+          <option name="issueRegexp" value="([0-9]+.[0-9]+.[0-9]+(rc[0-9]+)?) version" />
           <option name="linkRegexp" value="https://github.com/rafyco/ytrss/releases/tag/v$1" />
         </IssueNavigationLink>
       </list>
