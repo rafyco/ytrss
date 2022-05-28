@@ -5,8 +5,8 @@ import youtube_dl
 
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
-from ytrss.core.entity.downloader import Downloader, DownloaderError
 from ytrss.core.entity.movie import Movie
+from ytrss.core.helpers.exceptions import DownloadMovieError
 
 from ytrss.core.helpers.files import cwd
 from ytrss.core.helpers.logging import logger
@@ -14,7 +14,7 @@ from ytrss.core.helpers.typing import Path
 from ytrss.plugins.youtube_dl.movie import YouTubeMovie
 
 
-class YouTubeDownloader(Downloader):
+class YouTubeDownloader:
     """
     YouTube downloader
 
@@ -24,7 +24,7 @@ class YouTubeDownloader(Downloader):
 
     def __init__(self, movie: Movie, configuration: YtrssConfiguration) -> None:
         if not isinstance(movie, YouTubeMovie):
-            raise DownloaderError()
+            raise DownloadMovieError()
         self.configuration = configuration
         self._movie = movie
 
@@ -41,6 +41,7 @@ class YouTubeDownloader(Downloader):
         return status
 
     def download(self) -> DownloadedMovie:
+        """ Download movie using YouTube_dl tool """
         try:
             os.makedirs(self.configuration.cache_path)
         except OSError:
@@ -53,10 +54,10 @@ class YouTubeDownloader(Downloader):
                                                                          self._movie.url])
 
             if status != 0:
-                raise DownloaderError(f"youtube_dl raise with state: {status}")
+                raise DownloadMovieError(f"youtube_dl raise with state: {status}")
 
             full_file_name = Path(f"{self._movie.identity}.mp3")
             if not os.path.isfile(full_file_name):
-                raise DownloaderError(f"File {full_file_name} not downloaded")
+                raise DownloadMovieError(f"File {full_file_name} not downloaded")
 
         return DownloadedMovie.create_movie_desc(self.configuration.cache_path, self._movie, [full_file_name])
