@@ -12,6 +12,7 @@ from ytrss.configuration.entity.destination_info import DestinationInfo
 
 from ytrss.core.entity.movie import Movie
 from ytrss.core.entity.source_downloader import SourceDownloader
+from ytrss.core.entity.downloaded_movie import DownloadedMovie
 from ytrss.core.helpers.string_utils import first_line
 
 from ytrss.core.helpers.typing import Url
@@ -47,6 +48,10 @@ class BasePlugin(metaclass=abc.ABCMeta):
     def create_source_downloader(self, source: Source) -> Optional[SourceDownloader]:
         """ Method that creates a source downloader object. """
 
+    @abc.abstractmethod
+    def modify_res_files(self, downloaded_movie: DownloadedMovie) -> None:
+        """ Method that modify downloaded files. """
+
 
 class Plugin(BasePlugin):
     """ An implementation of plugin that not return any of new objects.
@@ -65,3 +70,6 @@ class Plugin(BasePlugin):
 
     def create_movie(self, url: Url) -> Optional[Movie]:
         return None
+
+    def modify_res_files(self, downloaded_movie: DownloadedMovie) -> None:
+        pass
