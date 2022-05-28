@@ -2,8 +2,6 @@ import abc
 
 from typing import Optional
 
-from ytrss.core.entity.downloader import Downloader
-
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.entity.source import Source
 from ytrss.core.entity.destination import Destination
@@ -41,8 +39,8 @@ class BasePlugin(metaclass=abc.ABCMeta):
         """ Method that creates destination object. """
 
     @abc.abstractmethod
-    def create_downloader(self, movie: Movie, configuration: YtrssConfiguration) -> Optional[Downloader]:
-        """ Method that creates a downloader object. """
+    def download_movie(self, movie: Movie, configuration: YtrssConfiguration) -> Optional[DownloadedMovie]:
+        """ Method that download a movie. """
 
     @abc.abstractmethod
     def create_source_downloader(self, source: Source) -> Optional[SourceDownloader]:
@@ -62,7 +60,7 @@ class Plugin(BasePlugin):
     def create_destination(self, info: DestinationInfo) -> Optional[Destination]:
         return None
 
-    def create_downloader(self, movie: Movie, configuration: YtrssConfiguration) -> Optional[Downloader]:
+    def download_movie(self, movie: Movie, configuration: YtrssConfiguration) -> Optional[DownloadedMovie]:
         return None
 
     def create_source_downloader(self, source: Source) -> Optional[SourceDownloader]:

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from ytrss.core.entity.downloader import Downloader
+from ytrss.core.entity.downloaded_movie import DownloadedMovie
 
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.entity.movie import Movie, MovieError
@@ -19,5 +19,5 @@ class YouTubeDlPlugin(Plugin):
         except MovieError:
             return None
 
-    def create_downloader(self, movie: Movie, configuration: YtrssConfiguration) -> Optional[Downloader]:
-        return YouTubeDownloader(movie, configuration)
+    def download_movie(self, movie: Movie, configuration: YtrssConfiguration) -> Optional[DownloadedMovie]:
+        return YouTubeDownloader(movie, configuration).download()

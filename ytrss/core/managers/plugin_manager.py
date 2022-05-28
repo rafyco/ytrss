@@ -5,10 +5,10 @@ from ytrss.configuration.entity.destination_info import DestinationInfo
 from ytrss.configuration.entity.source import Source
 from ytrss.core.entity.destination import Destination, DestinationError
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
-from ytrss.core.entity.downloader import Downloader, DownloaderError
 from ytrss.core.entity.movie import Movie, MovieError
 from ytrss.core.entity.plugin import BasePlugin
 from ytrss.core.entity.source_downloader import SourceDownloader, SourceDownloaderError
+from ytrss.core.helpers.exceptions import DownloadMovieError
 from ytrss.core.helpers.logging import logger
 from ytrss.core.helpers.typing import Url
 from ytrss.plugins.default.plugin import DefaultPlugin
@@ -53,15 +53,15 @@ class PluginManager(BasePlugin):
                 pass
         raise DestinationError()
 
-    def create_downloader(self, movie: Movie, configuration: YtrssConfiguration) -> Downloader:
+    def download_movie(self, movie: Movie, configuration: YtrssConfiguration) -> DownloadedMovie:
         for plugin in self._plugins:
             try:
-                downloader = plugin.create_downloader(movie, configuration)  # pylint: disable=E1128
-                if downloader is not None:
-                    return downloader
+                downloaded_movie = plugin.download_movie(movie, configuration)  # pylint: disable=E1128
+                if downloaded_movie is not None:
+                    return downloaded_movie
             except Exception:  # pylint: disable=W0703
                 pass
-        raise DownloaderError()
+        raise DownloadMovieError()
 
     def create_source_downloader(self, source: Source) -> SourceDownloader:
         for plugin in self._plugins:

@@ -2,10 +2,9 @@ import os
 import shutil
 from argparse import Namespace, ArgumentParser
 
-from ytrss.core.entity.downloader import DownloaderError
-
 from ytrss.commands import BaseCommand
 from ytrss.core.entity.movie import MovieError
+from ytrss.core.helpers.exceptions import DownloadMovieError
 from ytrss.core.helpers.logging import logger
 from ytrss.core.helpers.typing import Url
 
@@ -34,9 +33,10 @@ class DownloadCommand(BaseCommand):
             downloaded_movie = self\
                 .manager_service\
                 .plugin_manager\
-                .create_downloader(movie,
-                                   self.manager_service.configuration).download()
-        except DownloaderError:
+                .download_movie(movie,
+                                self.manager_service.configuration)
+            self.manager_service.plugin_manager.modify_res_files(downloaded_movie)
+        except DownloadMovieError:
             logger.error("There are no downloaded files for movie from: %s", movie.url)
             return 1
 
