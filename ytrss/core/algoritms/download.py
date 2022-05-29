@@ -22,7 +22,7 @@ async def download_movie(
     This function download movie and save in destination, but it not check any conditions.
     """
     downloaded_movie = manager_service.plugin_manager.download_movie(movie, manager_service.configuration)
-    manager_service.plugin_manager.modify_res_files(downloaded_movie)
+    manager_service.plugin_manager.modify_res_files(downloaded_movie, manager_service.configuration)
     os.makedirs('/tmp/ytrss', exist_ok=True)
     with Mutex(f'/tmp/ytrss/destination.{destination.identity}.lock', timeout=5.0):
         destination.save(downloaded_movie.data_paths)

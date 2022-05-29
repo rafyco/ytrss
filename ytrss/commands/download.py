@@ -35,7 +35,7 @@ class DownloadCommand(BaseCommand):
                 .plugin_manager\
                 .download_movie(movie,
                                 self.manager_service.configuration)
-            self.manager_service.plugin_manager.modify_res_files(downloaded_movie)
+            self.manager_service.plugin_manager.modify_res_files(downloaded_movie, self.manager_service.configuration)
         except DownloadMovieError:
             logger.error("There are no downloaded files for movie from: %s", movie.url)
             return 1

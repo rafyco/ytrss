@@ -47,7 +47,7 @@ class BasePlugin(metaclass=abc.ABCMeta):
         """ Method that creates a source downloader object. """
 
     @abc.abstractmethod
-    def modify_res_files(self, downloaded_movie: DownloadedMovie) -> None:
+    def modify_res_files(self, downloaded_movie: DownloadedMovie, configuration: YtrssConfiguration) -> None:
         """ Method that modify downloaded files. """
 
 
@@ -69,5 +69,5 @@ class Plugin(BasePlugin):
     def create_movie(self, url: Url) -> Optional[Movie]:
         return None
 
-    def modify_res_files(self, downloaded_movie: DownloadedMovie) -> None:
+    def modify_res_files(self, downloaded_movie: DownloadedMovie, configuration: YtrssConfiguration) -> None:
         pass
