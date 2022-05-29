@@ -50,7 +50,8 @@ setup(
         'astroid ~= 2.5',
         'jinja2 >= 3.0.3,< 3.2.0',
         'youtube_dl ~= 2021.12.17',
-        'locks ~= 0.1.1'
+        'locks ~= 0.1.1',
+        'mutagen ~= 1.45.1'
     ],
     extras_require={
         "optional": [

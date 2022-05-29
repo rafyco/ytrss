@@ -9,9 +9,9 @@ from ytrss.core.entity.movie import Movie, MovieError
 from ytrss.core.entity.plugin import BasePlugin
 from ytrss.core.entity.source_downloader import SourceDownloader, SourceDownloaderError
 from ytrss.core.helpers.exceptions import DownloadMovieError
-from ytrss.core.helpers.logging import logger
 from ytrss.core.helpers.typing import Url
 from ytrss.plugins.default.plugin import DefaultPlugin
+from ytrss.plugins.mp3_tags.plugin import Mp3TagsPlugin
 from ytrss.plugins.rss.plugin import RssPlugin
 from ytrss.plugins.youtube.plugin import YouTubePlugin
 from ytrss.plugins.youtube_dl.plugin import YouTubeDlPlugin
@@ -25,7 +25,8 @@ class PluginManager(BasePlugin):
             DefaultPlugin(),
             RssPlugin(),
             YouTubePlugin(),
-            YouTubeDlPlugin()
+            YouTubeDlPlugin(),
+            Mp3TagsPlugin()
         ]
 
     @property
@@ -73,9 +74,9 @@ class PluginManager(BasePlugin):
                 pass
         raise SourceDownloaderError()
 
-    def modify_res_files(self, downloaded_movie: DownloadedMovie) -> None:
+    def modify_res_files(self, downloaded_movie: DownloadedMovie, configuration: YtrssConfiguration) -> None:
         for plugin in self._plugins:
-            try:
-                plugin.modify_res_files(downloaded_movie)
-            except Exception as ex:  # pylint: disable=W0703
-                logger.error("Problem with modify file: %s", ex)
+            # try:
+            plugin.modify_res_files(downloaded_movie, configuration)
+            # except Exception as ex:  # pylint: disable=W0703
+            #     logger.error("Problem with modify file: %s", ex)
