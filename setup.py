@@ -48,7 +48,7 @@ setup(
     install_requires=[
         'pyyaml',
         'astroid ~= 2.5',
-        'jinja2 ~= 3.0.3',
+        'jinja2 >= 3.0.3,< 3.2.0',
         'youtube_dl ~= 2021.12.17',
         'locks ~= 0.1.1'
     ],
