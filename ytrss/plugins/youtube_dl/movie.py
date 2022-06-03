@@ -41,8 +41,8 @@ class YouTubeMovie(Movie):
         self._json_data = {}
         try:
             self._json_data = json.load(StringIO(json_output))
-        except JSONDecodeError:
-            raise InvalidDataMovieError(f"Invalid address type: [{url}] -> {self._error}")
+        except JSONDecodeError as exc:
+            raise InvalidDataMovieError(f"Invalid address type: [{url}] -> {self._error}") from exc
 
     @property
     def url(self) -> Url:

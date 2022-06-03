@@ -107,7 +107,7 @@ class DownloadedMovie:
                           resource_list: Sequence[Path]) -> 'DownloadedMovie':
         """ Create DownloadedMovie from movie object and files. """
         metadata_path = os.path.join(destination_path, f"{movie.identity}.json")
-        with open(metadata_path, 'w') as file_handler:
+        with open(metadata_path, 'w', encoding="utf-8") as file_handler:
             movie_data: Dict[str, Any] = {
                 "id": movie.identity,
                 "url": movie.url,
@@ -128,6 +128,6 @@ class DownloadedMovie:
         json_file = os.path.join(destination_dir, filename_path)
         if not os.path.isfile(json_file):
             raise MovieJSONError
-        with open(json_file) as data_file:
+        with open(json_file, encoding="utf-8") as data_file:
             result = DownloadedMovie(destination_dir, json.load(data_file))
         return result

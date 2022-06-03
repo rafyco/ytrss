@@ -72,5 +72,4 @@ class TestMovie(unittest.TestCase):  # pylint: disable=R0904
             elem2 = YouTubeMovie(Url(elem['ob2']))
             self.assertEqual(elem1,
                              elem2,
-                             "Not equal [{} != {}".format(elem['ob1'],
-                                                          elem['ob2']))
+                             f"Not equal [{elem['ob1']} != {elem['ob2']}")
