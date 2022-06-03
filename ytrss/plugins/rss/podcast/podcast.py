@@ -24,7 +24,7 @@ class Podcast:
     def generate(self) -> str:
         """ Generate rss file for object """
         env = Environment(
-            loader=FileSystemLoader(os.path.join(ytrss.__path__[0], "templates")),  # type: ignore
+            loader=FileSystemLoader(os.path.join(ytrss.__path__[0], "templates")),
         )
         env.filters["format_str"] = format_str
         env.filters["format_desc"] = format_desc
