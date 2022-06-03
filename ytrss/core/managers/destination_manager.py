@@ -35,13 +35,13 @@ class DestinationManager:
         raise KeyError  # TODO: Default destination from code
 
     def __iter__(self) -> Iterator[Destination]:
-        for key in self._destinations:
-            yield self._destinations[key]
+        for _, value in self._destinations.items():
+            yield value
 
     @property
     def destinations(self) -> Iterator[Destination]:
         """
         Creator of all destinations available from manager.
         """
-        for key in self._destinations:
-            yield self._destinations[key]
+        for _, value in self._destinations.items():
+            yield value

@@ -26,7 +26,6 @@ class SqliteDatabase(Database):
         conn.close()
 
     def __init__(self, configuration: YtrssConfiguration, plugin_manager: PluginManager):
-        self.__configuration = configuration
         self._plugin_manager = plugin_manager
         self._db_file = os.path.join(configuration.config_path, "ytrss.db")
         with self._database_handler() as conn:

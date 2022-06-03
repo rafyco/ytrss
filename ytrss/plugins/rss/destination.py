@@ -35,6 +35,5 @@ class RssDestination(DefaultDestination):
                     logger.info("Cannot add item to rss [%s] %s", movie.identity, movie.title)
             podcast_file = os.path.join(self.info.output_path, "podcast.xml")
             logger.debug("Create rss file: \"%s\"", podcast_file)
-            file_handler = io.open(podcast_file, "w", encoding="utf-8")
-            file_handler.write(podcast.generate())
-            file_handler.close()
+            with io.open(podcast_file, "w", encoding="utf-8") as file_handler:
+                file_handler.write(podcast.generate())

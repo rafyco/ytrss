@@ -33,9 +33,9 @@ class BaseYouTubeSourceDownloader(SourceDownloader):
         logger.debug("Source url: %s", self.url)
 
         try:
-            xml_str = urlopen(str(self.source_url)).read()
-            xmldoc = minidom.parseString(xml_str)
-            tags = xmldoc.getElementsByTagName('link')
+            with urlopen(str(self.source_url)) as xml_str:
+                xmldoc = minidom.parseString(xml_str.read())
+                tags = xmldoc.getElementsByTagName('link')
         # We want catch every exception in ulr like invalid channel or web
         except Exception:  # pylint: disable=W0703
             logger.error("Problem with url: %s", self.url)
