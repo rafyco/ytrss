@@ -12,6 +12,7 @@ from ytrss.core.helpers.exceptions import DownloadMovieError
 from ytrss.core.helpers.typing import Url
 from ytrss.plugins.default.plugin import DefaultPlugin
 from ytrss.plugins.mp3_tags.plugin import Mp3TagsPlugin
+from ytrss.plugins.polskie_radio.plugin import PolskieRadioPlugin
 from ytrss.plugins.rss.plugin import RssPlugin
 from ytrss.plugins.youtube.plugin import YouTubePlugin
 from ytrss.plugins.youtube_dl.plugin import YouTubeDlPlugin
@@ -22,6 +23,7 @@ class PluginManager(BasePlugin):
 
     def __init__(self) -> None:
         self._plugins: List[BasePlugin] = [
+            PolskieRadioPlugin(),
             DefaultPlugin(),
             RssPlugin(),
             YouTubePlugin(),
