@@ -1,7 +1,7 @@
 ---
-name: Package new version
+name: Manual upgrade to new version
 
-on: workflow_dispatch
+on: workflow_dispatch # yamllint disable-line rule:truthy
 
 jobs:
   CI-upgrade-version:
