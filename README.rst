@@ -7,9 +7,6 @@ Program to automatic download any types of files from Internet.
 .. image:: https://img.shields.io/badge/author-Rafa%C5%82%20Kobel-blue.svg
    :target: https://rafyco.pl
 
-.. image:: https://github.com/rafyco/ytrss/actions/workflows/pythonpackage.yml/badge.svg?branch=develop
-   :target: https://github.com/rafyco/ytrss/actions/workflows/pythonpackage.yml
-
 .. image:: https://img.shields.io/readthedocs/ytrss.svg
    :target: https://ytrss.readthedocs.io
 
