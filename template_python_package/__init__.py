@@ -2,9 +2,10 @@
 TODO: Add description to package
 """
 import sys
+from template_python_package.version import Version
 
 __title__ = 'template_python_package'
-__version__ = "0.0.1"
+__version__ = Version().version
 __url__ = 'https://github.com/rafyco/template_python_package.git'
 __author__ = 'Rafal Kobel'
 __author_email__ = 'rafalkobel@rafyco.pl'

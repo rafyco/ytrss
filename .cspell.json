@@ -11,10 +11,13 @@
         "report"
     ],
     "words": [
+        "Autobuild",
+        "autobuild",
+        "codeql",
         "pypa",
         "pypi",
-        "sdist",
         "pytest",
+        "sdist",
         "shellcheck",
         "typping",
         "unittests"

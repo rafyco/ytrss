@@ -1,0 +1,50 @@
+---
+name: Manual upgrade to new version
+
+on: workflow_dispatch # yamllint disable-line rule:truthy
+
+jobs:
+  CI-upgrade-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.10"
+      # TODO: change package name
+      - name: Upgrade version
+        id: vars
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PATCH="$(sed 's/\s*self\._patch\s*=\s*\([0-9]*\)\s/\1/gp;d' template-python-package/version.py)"
+          NEW_PATCH=$(( PATCH + 1 ))
+
+          sed -i "s/self\._rc = [0-9]*/self._rc = 0/" template-python-package/version.py
+          sed -i "s/self\._patch = [0-9]*/self._patch = ${NEW_PATCH}/" template-python-package/version.py
+
+          GIT_TAG="$(python ./setup.py --version)"
+
+          # spellcheck disable=SC2001
+          echo ::set-output name="git_tag::${GIT_TAG}"
+      - name: Commit massage
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          export GIT_TAG=${{ steps.vars.outputs.git_tag }}
+          git commit -a -m "Upgrade to ${GIT_TAG} version"
+          git tag v${GIT_TAG} -a -m "Upgrade to ${GIT_TAG} version"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build distribution
+        run: python setup.py sdist
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.pypi_password }}

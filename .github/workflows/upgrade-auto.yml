@@ -1,13 +1,16 @@
 ---
-name: Package upgrade
+name: Package auto upgrade
 
-on:
+on: # yamllint disable-line rule:truthy
   push:
     branches:
       - master
       # TODO: change package name
     paths-ignore:
-      - 'template-python-package/__init_.py'
+      - "template-python-package/version.py"
+      - "docs/"
+      - ".github/"
+      - "*.rst"
 
 jobs:
   CI-upgrade:
@@ -17,27 +20,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Set up Python 3.6
+      - name: Set up Python 3.10
         uses: actions/setup-python@v1
         with:
-          python-version: 3.6
+          python-version: "3.10"
       - name: Upgrade version
         id: vars
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # TODO: change package name
         run: |
-          echo "${GITHUB_TOKEN}"
-          VERSION="$(python ./setup.py --version)"
-          # shellcheck disable=SC2001
-          MAJOR="$(echo "${VERSION}" | sed 's/\([0-9]*\)\.[0-9]*\.[0-9]*/\1/')"
-          # shellcheck disable=SC2001
-          MINOR="$(echo "${VERSION}" | sed 's/[0-9]*\.\([0-9]*\)\.[0-9]*/\1/')"
-          # shellcheck disable=SC2001
-          PATCH="$(echo "${VERSION}" | sed 's/[0-9]*\.[0-9]*\.\([0-9]*\)/\1/')"
-          GIT_TAG="$MAJOR.$MINOR."$(( PATCH + 1 ))
+          RC="$(sed 's/\s*self\._rc\s*=\s*\([0-9]*\)\s/\1/gp;d' template-python-package/version.py)"
+          NEW_RC=$(( RC + 1 ))
+
+          sed -i "s/self\._rc = [0-9]*/self._rc = ${NEW_RC}/" template-python-package/version.py
+
+          GIT_TAG="$(python ./setup.py --version)"
+
           # spellcheck disable=SC2001
-          sed -i "s/__version__ = \"[0-9\.]*\"/__version__ = \"${GIT_TAG}\"/" template_python_package/__init__.py
           echo ::set-output name="git_tag::${GIT_TAG}"
       - name: Commit massage
         run: |

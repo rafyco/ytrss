@@ -38,7 +38,12 @@ setup(
     package_dir={'template-python-package': 'template-python-package'},
     classifiers=[
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     install_requires=[
@@ -48,15 +53,16 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 2.5.3",
+            "pylint == 2.14.0",
             "pep8 == 1.7.1",
             "pycodestyle == 2.8.0"
         ],
         "typing": [
-            "mypy == 0.910"
+            "mypy == 0.960",
+            "types-PyYAML == 6.0.8"
         ],
         "documentation": [
-            "Sphinx == 4.3.1",
+            "Sphinx == 5.0.1",
             "sphinx-epytext == 0.0.4"
         ]
     },
