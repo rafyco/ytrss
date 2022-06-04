@@ -31,7 +31,7 @@ setup(
     project_urls={
         "Source": "https://github.com/rafyco/ytrss",
         "Tracker": "https://github.com/rafyco/ytrss/issues",
-        "Changelog": "https://github.com/rafyco/ytrss/blob/master/dosc/changelog.rst",
+        "Changelog": "https://github.com/rafyco/ytrss/blob/master/docs/changelog.rst",
         "Documentation": "https://ytrss.readthedocs.io"
     },
     packages=find_packages(),
