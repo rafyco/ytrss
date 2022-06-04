@@ -39,11 +39,20 @@ setup(
     package_dir={'ytrss': 'ytrss'},
     classifiers=[
         'Environment :: Console',
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Topic :: Multimedia :: Sound/Audio',
+        'Operating System :: POSIX',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.6',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Topic :: Multimedia :: Sound/Audio',
+        'Topic :: Multimedia :: Video',
+        'Typing :: Typed'
     ],
     install_requires=[
         'pyyaml',
