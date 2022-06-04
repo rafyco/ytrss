@@ -2,3 +2,4 @@
 DISABLE:
   - PYTHON
   - RST
+FILTER_REGEX_EXCLUDE: (report/|\.tox/|build/|venv/)
