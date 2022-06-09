@@ -51,6 +51,10 @@ def _configure_logging(debug_log: bool) -> None:
     )
 
 
+def _command_help_desc(command: BaseCommand) -> str:
+    return f"{'(experimental) ' if command.is_experimental else ''}{first_line(command.__doc__)}"
+
+
 def main(argv: Optional[Sequence[str]] = None) -> None:
     """
     Main function for command line program.
@@ -60,7 +64,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     subparsers = parser.add_subparsers(title="commands", description="Use once of this commands", dest="command")
     subparsers.add_parser("help", help="Print help message")
     for command in __subcommands__:
-        subparser = subparsers.add_parser(command.name, help=first_line(command.__doc__))
+        subparser = subparsers.add_parser(command.name, help=_command_help_desc(command))
         command.arg_parser(subparser)
 
     options = parser.parse_args(argv)
