@@ -196,12 +196,21 @@ jobs:
           export GIT_TAG=${{ steps.vars.outputs.git_tag }}
           git commit -a -m "Upgrade to ${GIT_TAG} version"
           git tag v${GIT_TAG} -a -m "Upgrade to ${GIT_TAG} version"
+      - name: Upload artefacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: version
+          path: ytrss/core/version.py
 
   CI-upgrade-with-base:
     runs-on: ubuntu-latest
     needs: CI-upgrade
     steps:
       - uses: actions/checkout@v1
+      - name: Download artefacts
+        uses: actions/download-artifact@v3
+        with:
+          name: version
       - name: Set up Python 3.10
         uses: actions/setup-python@v1
         with:
