@@ -211,7 +211,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: version
-          path: version.py
+          path: ytrss/core
       - name: Set up Python 3.10
         uses: actions/setup-python@v1
         with:
@@ -220,7 +220,6 @@ jobs:
         run: python setup.py sdist
       - name: Publish package
         run: |
-          mv version.py ytrss/core/version.py
           python ./setup.py --version
           cat ytrss/core/version.py
 
