@@ -165,3 +165,66 @@ jobs:
         uses: github/codeql-action/autobuild@v2
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
+
+  CI-upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.10"
+      - name: Upgrade version
+        id: vars
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RC="$(sed 's/\s*self\._rc\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
+          NEW_RC=$(( RC + 1 ))
+
+          sed -i "s/self\._rc = [0-9]*/self._rc = ${NEW_RC}/" ytrss/core/version.py
+
+          GIT_TAG="$(python ./setup.py --version)"
+
+          # spellcheck disable=SC2001
+          echo ::set-output name="git_tag::${GIT_TAG}"
+      - name: Commit massage
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          export GIT_TAG=${{ steps.vars.outputs.git_tag }}
+          git commit -a -m "Upgrade to ${GIT_TAG} version"
+          git tag v${GIT_TAG} -a -m "Upgrade to ${GIT_TAG} version"
+
+  CI-upgrade-with-base:
+    runs-on: ubuntu-latest
+    needs: CI-upgrade
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.10"
+      - name: Build distribution
+        run: python setup.py sdist
+      - name: Publish package
+        run: |
+          python ./setup.py --version
+          cat ytrss/core/version.py
+
+  CI-upgrade-without-base:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.10"
+      - name: Build distribution
+        run: python setup.py sdist
+      - name: Publish package
+        run: |
+          python ./setup.py --version
+          cat ytrss/core/version.py
+          
