@@ -15,6 +15,11 @@ class BaseCommand(metaclass=abc.ABCMeta):
     def run(self, options: Namespace) -> int:
         """ A main work that be done in subcommand from terminal client """
 
+    @property
+    def is_experimental(self) -> bool:
+        """ Tells if command is experimental or no. """
+        return False
+
     def arg_parser(self, parser: ArgumentParser) -> None:
         """ Parse argument
 
