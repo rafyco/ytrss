@@ -2,10 +2,6 @@
  Changelog
 ###########
 
-*****
- 0.3
-*****
-
 0.3.0_
 ======
 
@@ -20,10 +16,6 @@
 - locally download url
 - add url from console
 - auto made new configuration
-
-*****
- 0.2
-*****
 
 0.2.8_
 ======
@@ -68,10 +60,6 @@
 -  Read data of downloaded movie
 -  Generate RSS channel for downloaded movie
 
-*****
- 0.1
-*****
-
 0.1.6_
 ======
 
@@ -108,10 +96,6 @@
 ======
 
 -  fix small bugs
-
-*****
- 0.0
-*****
 
 0.0.5_
 ======
