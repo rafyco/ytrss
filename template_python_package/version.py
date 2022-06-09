@@ -10,7 +10,10 @@ class Version:
     @property
     def version(self) -> str:
         """ A string name of version """
-        return f"{self._major}.{self._minor}.{self._patch}" + (f"rc{self._rc}" if self._rc > 0 else "")
+        # If the rc value is greater than 0, patch version must be increment, because rc is release candidate
+        # of version that not exist yet.
+        return f"{self._major}.{self._minor}.{self._patch if self._rc > 0 else self._rc + 1}"\
+               + (f"rc{self._rc}" if self._rc > 0 else "")
 
     def __str__(self) -> str:
         return self.version
