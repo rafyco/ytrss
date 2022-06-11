@@ -165,3 +165,36 @@ jobs:
         uses: github/codeql-action/autobuild@v2
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
+
+  synchronization:
+    name: Synchronization with template
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        repo:
+          - "git@github.com:rafyco/template-python-package.git"
+    env:
+      TEMPLATE_REMOTE: template
+      TEMPLATE_BRANCH: main
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: ssh keys preparation
+        run: |
+          mkdir -p /tmp/.ssh
+          export SRC_SSH_PRIVATEKEY_ABS_PATH="/tmp/.ssh/id_rsa_actions_template_sync"
+          echo "${{ secrets.SOURCE_REPO_SSH_PRIVATE_KEY }}" > ${SRC_SSH_PRIVATEKEY_ABS_PATH}
+          chmod 600 "${SRC_SSH_PRIVATEKEY_ABS_PATH}"
+
+          export GIT_SSH_COMMAND="ssh -i ${SRC_SSH_PRIVATEKEY_ABS_PATH}"
+
+          git remote add "${TEMPLATE_REMOTE}" "${{ matrix.repo }}"
+          git fetch --all
+      - name: Check synchronization
+        run: |
+          .github/scripts/merge_check.sh -b "${TEMPLATE_REMOTE}/${TEMPLATE_BRANCH}"
