@@ -79,7 +79,7 @@ setup(
             "types-PyYAML == 6.0.10"
         ],
         "documentation": [
-            "Sphinx == 5.0.2",
+            "Sphinx == 5.1.0",
             "sphinx-epytext == 0.0.4",
             "sphinx-autorun == 1.1.1"
         ]
