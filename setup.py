@@ -58,7 +58,7 @@ setup(
             "pycodestyle == 2.8.0"
         ],
         "typing": [
-            "mypy == 0.961",
+            "mypy == 0.971",
             "types-PyYAML == 6.0.8"
         ],
         "documentation": [
