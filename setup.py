@@ -75,11 +75,11 @@ setup(
             "pycodestyle == 2.8.0"
         ],
         "typing": [
-            "mypy == 0.961",
-            "types-PyYAML == 6.0.10"
+            "mypy == 0.971",
+            "types-PyYAML == 6.0.11"
         ],
         "documentation": [
-            "Sphinx == 5.0.2",
+            "Sphinx == 5.1.0",
             "sphinx-epytext == 0.0.4",
             "sphinx-autorun == 1.1.1"
         ]
