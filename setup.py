@@ -62,7 +62,7 @@ setup(
             "types-PyYAML == 6.0.12"
         ],
         "documentation": [
-            "Sphinx == 5.2.3",
+            "Sphinx == 5.3.0",
             "sphinx-epytext == 0.0.4"
         ]
     },
