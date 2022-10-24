@@ -60,7 +60,7 @@ setup(
         'jinja2 >= 3.0.3,< 3.2.0',
         'youtube_dl ~= 2021.12.17',
         'locks ~= 0.1.1',
-        'mutagen ~= 1.45.1'
+        'mutagen >= 1.45.1,< 1.47.0'
     ],
     extras_require={
         "optional": [
