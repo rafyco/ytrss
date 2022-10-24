@@ -70,16 +70,16 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 2.14.5",
+            "pylint == 2.15.5",
             "pep8 == 1.7.1",
-            "pycodestyle == 2.8.0"
+            "pycodestyle == 2.9.1"
         ],
         "typing": [
-            "mypy == 0.971",
-            "types-PyYAML == 6.0.11"
+            "mypy == 0.982",
+            "types-PyYAML == 6.0.12"
         ],
         "documentation": [
-            "Sphinx == 5.1.1",
+            "Sphinx == 5.3.0",
             "sphinx-epytext == 0.0.4",
             "sphinx-autorun == 1.1.1"
         ]
