@@ -1,5 +1,5 @@
 import os
-from typing import Sequence
+from typing import Sequence, Union
 
 import youtube_dl
 
@@ -32,12 +32,14 @@ class YouTubeDownloader:
     def __invoke_ytdl(cls, args: Sequence[str]) -> int:
         try:
             youtube_dl.main(args)
-            status = 0
+            status: Union[str, int] = 0
         except SystemExit as ex:
             if ex.code is None:
                 status = 0
             else:
                 status = ex.code  # pylint: disable=E0012,R0204
+        if isinstance(status, str):
+            return 0
         return status
 
     def download(self) -> DownloadedMovie:
