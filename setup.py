@@ -44,7 +44,6 @@ setup(
         'Operating System :: POSIX',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -70,7 +69,7 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 2.15.8",
+            "pylint == 2.15.9",
             "pep8 == 1.7.1",
             "pycodestyle == 2.10.0"
         ],
@@ -79,7 +78,7 @@ setup(
             "types-PyYAML == 6.0.12.2"
         ],
         "documentation": [
-            "Sphinx == 5.3.0",
+            "Sphinx == 6.0.0",
             "sphinx-epytext == 0.0.4",
             "sphinx-autorun == 1.1.1"
         ]
