@@ -86,7 +86,6 @@ setup(
     entry_points={
         'console_scripts': [
             'ytrss = ytrss.client:main',
-            "sphinx-epytext == 0.0.4"
         ]
     },
     command_options={
