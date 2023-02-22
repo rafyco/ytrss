@@ -1,25 +1,29 @@
 {
-    "version": "0.2",
-    "language": "en",
-    "ignorePaths": [
-        "**/node_modules/**",
-        "**/vscode-extension/**",
-        "**/.git/**",
-        "**/.idea/**",
-        ".vscode",
-        "package-lock.json",
-        "report"
-    ],
-    "words": [
-        "Autobuild",
-        "autobuild",
-        "codeql",
-        "pypa",
-        "pypi",
-        "pytest",
-        "sdist",
-        "shellcheck",
-        "typping",
-        "unittests"
-    ]
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/vscode-extension/**",
+    "**/.git/**",
+    "**/.idea/**",
+    "**/.tox/**",
+    ".gitignore",
+    ".vscode",
+    "package-lock.json",
+    "report"
+  ],
+  "words": [
+    "Autobuild",
+    "autobuild",
+    "codeql",
+    "Kobel",
+    "pypa",
+    "pypi",
+    "pytest",
+    "Rafal",
+    "sdist",
+    "shellcheck",
+    "typping",
+    "unittests"
+  ]
 }

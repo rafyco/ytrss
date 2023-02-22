@@ -56,14 +56,14 @@ download code and invoke command:
     python setup.py install
 
 To checking the installation you can use to call ``template-python-package``. Unittest can be also
-helpfull with verification.
+helpful with verification.
 
 Unit test
 ---------
 
-``template-python-package`` have a few unittest that you can use to checking code corectness. You can
+``template-python-package`` have a few unittest that you can use to checking code correctness. You can
 call it from ``setup.py`` file or using ``template-python-package.tests`` module after installation. Check
-one of below command and try it yourselfe.
+one of below command and try it yourself.
 
 ::
 
