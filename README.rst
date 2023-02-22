@@ -34,8 +34,8 @@ The program in basic version use `youtube_dl` script to download files, so it co
 with all services implements by this library. However user can extends this capabilities by
 his own custom plugins with external Downloaders.
 
-Fast start
-==========
+Installation
+============
 
 The installation can be carried out in two ways. You can download
 packages from PyPi repository or install it from sources.
@@ -54,11 +54,23 @@ make that download code and invoke command:
 
    python setup.py install
 
-To checking the installation you can use to call ``ytrss``.
+To checking the installation you can use to call ``ytrss``. Unittest can be also
+helpful with verification.
+
+Unit test
+=========
+
+``ytrss`` have a few unittest that you can use to checking code correctness. You can
+call it from ``setup.py`` file or using ``ytrss.tests`` module after installation. Check
+one of below command and try it yourself.
 
 .. code::
 
-    $ ytrss --help
+    python setup.py test
+    python -m ytrss.tests
+
+Other information
+=================
 
 For more information about installation, configuration and bash completion read the documentation.
 

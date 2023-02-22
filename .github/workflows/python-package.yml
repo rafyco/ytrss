@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python 3.10
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: Install tox
@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python 3.10
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: Install tox
@@ -50,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python ${{ matrix.versions }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.versions }}
       - name: Install tox
@@ -68,7 +68,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python 3.10
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: Install tox
@@ -78,7 +78,7 @@ jobs:
           tox -e documentation
       - name: Archive documentation
         if: ${{ success() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: documentation
           path: build/sphinx/html/
@@ -112,7 +112,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python 3.10
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       - name: Install tox
@@ -124,6 +124,11 @@ jobs:
   megalinter:
     name: MegaLinter
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      issues: write
+      pull-requests: write
     needs:
       - execute
     steps:
@@ -134,18 +139,17 @@ jobs:
           fetch-depth: 0
       - name: MegaLinter
         id: ml
-        uses: megalinter/megalinter@v5
+        uses: megalinter/megalinter@v6
         env:
           VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }} # Validates all source when push on main, else just the git diff with main. Override with true if you always want to lint all sources
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Archive production artifacts
         if: ${{ success() }} || ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: MegaLinter reports
           path: |
-            report
-            mega-linter.log
+            megalinter-reports
 
   analyze:
     name: CodeQL Analyze
