@@ -54,10 +54,10 @@ setup(
         'Typing :: Typed'
     ],
     install_requires=[
+        'youtube_dl @ git+https://github.com/ytdl-org/youtube-dl.git@master#egg=youtube_dl',
         'pyyaml',
         'astroid ~= 2.5',
         'jinja2 >= 3.0.3,< 3.2.0',
-        'youtube_dl ~= 2021.12.17',
         'locks ~= 0.1.1',
         'mutagen >= 1.45.1,< 1.47.0'
     ],
@@ -69,13 +69,13 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 2.15.10",
+            "pylint == 2.16.2",
             "pep8 == 1.7.1",
             "pycodestyle == 2.10.0"
         ],
         "typing": [
-            "mypy == 0.991",
-            "types-PyYAML == 6.0.12.2"
+            "mypy == 1.0.1",
+            "types-PyYAML == 6.0.12.8"
         ],
         "documentation": [
             "Sphinx == 6.1.3",

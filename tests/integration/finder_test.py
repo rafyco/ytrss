@@ -12,10 +12,10 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
 
     def test_channel_with_code_find(self) -> None:
         """ Test channel finder with code. """
-        source = YouTubeChannelSourceDownloader(Source.from_json(dict(
-            url="https://www.youtube.com/channel/UC5SdvjkYXdGAqmqAGlxTnpw",
-            destination="default",
-        )))
+        source = YouTubeChannelSourceDownloader(Source.from_json({
+            'url': "https://www.youtube.com/channel/UC5SdvjkYXdGAqmqAGlxTnpw",
+            'destination': "default",
+        }))
         movies = list(source.movies)
         self.assertGreater(len(movies), 0)
         for movie, _ in movies:
@@ -25,10 +25,10 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
 
     def test_channel_with_name_find(self) -> None:
         """ Test channel finder with name. """
-        source = YouTubeNamedChannelSourceDownloader(Source.from_json(dict(
-            url="https://www.youtube.com/c/MinnivaOfficial",
-            destination="default",
-        )))
+        source = YouTubeNamedChannelSourceDownloader(Source.from_json({
+            'url': "https://www.youtube.com/c/MinnivaOfficial",
+            'destination': "default"
+        }))
         movies = list(source.movies)
         self.assertGreater(len(movies), 0)
         for movie, _ in movies:
@@ -38,10 +38,10 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
 
     def test_playlist_find(self) -> None:
         """ Test playlist finder. """
-        source = YouTubePlaylistSourceDownloader(Source.from_json(dict(
-            url="https://www.youtube.com/playlist?list=PL6ZLc-zZUnxlkB9t8CcpFZeV6V5I_cVgu",
-            destination="default",
-        )))
+        source = YouTubePlaylistSourceDownloader(Source.from_json({
+            'url': "https://www.youtube.com/playlist?list=PL6ZLc-zZUnxlkB9t8CcpFZeV6V5I_cVgu",
+            'destination': "default",
+        }))
         movies = list(source.movies)
         self.assertGreater(len(movies), 0)
         for movie, _ in movies:
