@@ -103,6 +103,11 @@ jobs:
   megalinter:
     name: MegaLinter
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      issues: write
+      pull-requests: write
     needs:
       - unittests
     steps:
@@ -123,8 +128,7 @@ jobs:
         with:
           name: MegaLinter reports
           path: |
-            report
-            mega-linter.log
+            megalinter-reports
 
   analyze:
     # TODO: delete to turn on
