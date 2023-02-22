@@ -2,4 +2,5 @@
 DISABLE:
   - PYTHON
   - RST
+  - REPOSITORY
 FILTER_REGEX_EXCLUDE: (report/|\.tox/|build/|venv/)
