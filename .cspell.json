@@ -10,6 +10,7 @@
     ".gitignore",
     ".vscode",
     "package-lock.json",
+    "megalinter-reports",
     "report"
   ],
   "words": [
@@ -21,6 +22,7 @@
     "pypi",
     "pytest",
     "Rafal",
+    "rafyco",
     "sdist",
     "shellcheck",
     "typping",
