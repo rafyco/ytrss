@@ -5,6 +5,7 @@ on: # yamllint disable-line rule:truthy
   push:
     branches-ignore:
       - master
+      - main
 
 jobs:
   style:
