@@ -158,6 +158,7 @@ jobs:
   prepare_synchronization:
     name: Check synchronization environment
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - name: Checks synchronization environment
         run: |
@@ -166,6 +167,7 @@ jobs:
   synchronization:
     name: Synchronization with template
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     needs:
       - prepare_synchronization
     continue-on-error: true
