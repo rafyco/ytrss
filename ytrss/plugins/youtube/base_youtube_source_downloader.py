@@ -45,5 +45,6 @@ class BaseYouTubeSourceDownloader(SourceDownloader):
             if "watch?v=" in url:  # pylint: disable=E1135
                 try:
                     yield YouTubeMovie(url), self.destination
-                except Exception:  # pylint: disable=W0703
+                except Exception as ex:  # pylint: disable=W0703
                     logger.error("Problem with url in source: %s", self.url)
+                    logger.error(ex)

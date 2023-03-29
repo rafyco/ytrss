@@ -69,12 +69,12 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 2.16.2",
+            "pylint == 2.17.1",
             "pep8 == 1.7.1",
             "pycodestyle == 2.10.0"
         ],
         "typing": [
-            "mypy == 1.0.1",
+            "mypy == 1.1.1",
             "types-PyYAML == 6.0.12.8"
         ],
         "documentation": [

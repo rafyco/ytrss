@@ -1,5 +1,5 @@
 {
   "threshold": 40,
   "reporters": ["html", "markdown"],
-  "ignore": ["**/.git/**", "**/*.md", "**/.*/**", "**/build/**"]
+  "ignore": ["**/.git/**", "**/*.md", "**/.*/**", "**/build/**", "tests/**"]
 }

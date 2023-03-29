@@ -3,7 +3,10 @@ name: Repeatedly checks
 
 on: # yamllint disable-line rule:truthy
   schedule:
-    - cron: "26 5 3,18 * *"
+    - cron: "26 5 10 * *"
+
+env:
+  SRC_SSH_PRIVATEKEY_ABS_PATH: /tmp/.ssh/id_rsa_actions_template_sync
 
 jobs:
   analyze:
@@ -44,9 +47,20 @@ jobs:
         run: |
           tox -e integration
 
+  prepare_synchronization:
+    name: Check synchronization environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checks synchronization environment
+        run: |
+          test "${{ secrets.SOURCE_REPO_SSH_PRIVATE_KEY }}" != ""
+
   synchronization:
     name: Synchronization with template
     runs-on: ubuntu-latest
+    needs:
+      - prepare_synchronization
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -64,14 +78,13 @@ jobs:
       - name: ssh keys preparation
         run: |
           mkdir -p /tmp/.ssh
-          export SRC_SSH_PRIVATEKEY_ABS_PATH="/tmp/.ssh/id_rsa_actions_template_sync"
-          echo "${{ secrets.SOURCE_REPO_SSH_PRIVATE_KEY }}" > ${SRC_SSH_PRIVATEKEY_ABS_PATH}
+          echo "${{ secrets.SOURCE_REPO_SSH_PRIVATE_KEY }}" > "${SRC_SSH_PRIVATEKEY_ABS_PATH}"
           chmod 600 "${SRC_SSH_PRIVATEKEY_ABS_PATH}"
-
+      - name: Fetch all repositories
+        run: |
           export GIT_SSH_COMMAND="ssh -i ${SRC_SSH_PRIVATEKEY_ABS_PATH}"
-
           git remote add "${TEMPLATE_REMOTE}" "${{ matrix.repo }}"
           git fetch --all
       - name: Check synchronization
         run: |
-          .github/scripts/merge_check.sh -b "${TEMPLATE_REMOTE}/${TEMPLATE_BRANCH}"
+          bash .github/scripts/merge_check.sh -b "${TEMPLATE_REMOTE}/${TEMPLATE_BRANCH}"
