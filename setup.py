@@ -75,7 +75,7 @@ setup(
         ],
         "typing": [
             "mypy == 1.1.1",
-            "types-PyYAML == 6.0.12.9"
+            "types-PyYAML == 6.0.12.11"
         ],
         "documentation": [
             "Sphinx == 6.1.3",
