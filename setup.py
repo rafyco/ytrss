@@ -52,13 +52,14 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 2.17.2",
+            "pylint == 2.17.4",
             "pep8 == 1.7.1",
             "pycodestyle == 2.10.0"
         ],
         "typing": [
             "mypy == 1.4.1",
-            "types-PyYAML == 6.0.12.9"
+            "types-PyYAML == 6.0.12.11"
+
         ],
         "documentation": [
             "Sphinx == 6.2.0",
