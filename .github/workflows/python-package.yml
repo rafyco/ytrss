@@ -196,7 +196,6 @@ jobs:
         repo:
           - "git@github.com:rafyco/template-python-package.git"
     env:
-      TEMPLATE_REMOTE: template
       TEMPLATE_BRANCH: main
 
     steps:
@@ -209,11 +208,8 @@ jobs:
           mkdir -p /tmp/.ssh
           echo "${{ secrets.SOURCE_REPO_SSH_PRIVATE_KEY }}" > "${SRC_SSH_PRIVATEKEY_ABS_PATH}"
           chmod 600 "${SRC_SSH_PRIVATEKEY_ABS_PATH}"
-      - name: Fetch all repositories
-        run: |
-          export GIT_SSH_COMMAND="ssh -i ${SRC_SSH_PRIVATEKEY_ABS_PATH}"
-          git remote add "${TEMPLATE_REMOTE}" "${{ matrix.repo }}"
-          git fetch --all
       - name: Check synchronization
-        run: |
-          bash .github/scripts/merge_check.sh -b "${TEMPLATE_REMOTE}/${TEMPLATE_BRANCH}"
+        uses: rafyco/synchronized-with@main
+        with:
+          ssh_privatekey: ${SRC_SSH_PRIVATEKEY_ABS_PATH}
+          remote_repo: ${{ matrix.repo }}
