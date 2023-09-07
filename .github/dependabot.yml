@@ -12,3 +12,5 @@ updates:
     milestone: 4
     commit-message:
       prefix: "[dependency]"
+    ignore:
+      - dependency-name: "Sphinx"
