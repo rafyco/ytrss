@@ -59,7 +59,7 @@ setup(
         'astroid ~= 2.5',
         'jinja2 >= 3.0.3,< 3.2.0',
         'locks ~= 0.1.1',
-        'mutagen >= 1.45.1,< 1.47.0'
+        'mutagen >= 1.45.1,< 1.48.0'
     ],
     extras_require={
         "optional": [
@@ -69,16 +69,16 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 2.17.2",
+            "pylint == 2.17.5",
             "pep8 == 1.7.1",
-            "pycodestyle == 2.10.0"
+            "pycodestyle == 2.11.0"
         ],
         "typing": [
-            "mypy == 1.4.1",
-            "types-PyYAML == 6.0.12.9"
+            "mypy == 1.5.1",
+            "types-PyYAML == 6.0.12.11"
         ],
         "documentation": [
-            "Sphinx == 6.1.3",
+            "Sphinx == 6.2.0",
             "sphinx-epytext == 0.0.4",
             "sphinx-autorun == 1.1.1"
         ]
