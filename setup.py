@@ -59,7 +59,7 @@ setup(
         'astroid ~= 2.5',
         'jinja2 >= 3.0.3,< 3.2.0',
         'locks ~= 0.1.1',
-        'mutagen >= 1.45.1,< 1.47.0'
+        'mutagen >= 1.45.1,< 1.48.0'
     ],
     extras_require={
         "optional": [
