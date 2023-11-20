@@ -71,10 +71,10 @@ setup(
         "style": [
             "pylint == 3.0.2",
             "pep8 == 1.7.1",
-            "pycodestyle == 2.11.0"
+            "pycodestyle == 2.11.1"
         ],
         "typing": [
-            "mypy == 1.5.1",
+            "mypy == 1.7.0",
             "types-PyYAML == 6.0.12.12"
         ],
         "documentation": [
