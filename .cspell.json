@@ -11,6 +11,7 @@
     ".vscode",
     "package-lock.json",
     "megalinter-reports",
+    ".mega-linter.yml",
     "report"
   ],
   "words": [
