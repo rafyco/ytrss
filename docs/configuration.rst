@@ -195,9 +195,3 @@ Destinations structure
       - \-
       - Path that the file should be saved
 
-*****
-Invoke script
-*****
-.. TODO::
-    Configuration's documentation
-
