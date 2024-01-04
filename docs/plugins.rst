@@ -19,10 +19,10 @@ Downloader
 **********
 
 .. TODO::
-    Configuration's documentation
+    Configuration's documentation `#40 <https://github.com/rafyco/ytrss/issues/40>`_
 
 Destination
 ***********
 
 .. TODO::
-    Configuration's documentation
+    Configuration's documentation `#40 <https://github.com/rafyco/ytrss/issues/40>`_

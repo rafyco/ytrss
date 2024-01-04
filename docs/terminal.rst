@@ -3,7 +3,7 @@ Terminal client
 ###############
 
 .. TODO::
-    Configuration's documentation
+    Configuration's documentation  `#41 <https://github.com/rafyco/ytrss/issues/41>`_
 
 .. runblock:: console
 
@@ -12,3 +12,6 @@ Terminal client
 
 completions
 *****************
+
+.. TODO::
+    Configuration's documentation  `#42 <https://github.com/rafyco/ytrss/issues/42>`_
