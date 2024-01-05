@@ -5,6 +5,7 @@ on: # yamllint disable-line rule:truthy
   push:
     branches:
       - master
+      - main
     paths-ignore:
       - "ytrss/core/version.py"
       - "docs/"
