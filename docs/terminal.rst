@@ -17,13 +17,6 @@ More information about available commands you can search using `--help` argument
 
     $ ytrss --help
 
-
-completions
-***********
-
-.. TODO::
-    Configuration's documentation  `#42 <https://github.com/rafyco/ytrss/issues/42>`_
-
 recommendations
 ***************
 
