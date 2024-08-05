@@ -54,7 +54,7 @@ setup(
         "style": [
             "pylint == 3.2.5",
             "pep8 == 1.7.1",
-            "pycodestyle == 2.12.0"
+            "pycodestyle == 2.12.1"
         ],
         "typing": [
             "mypy == 1.11.1",
