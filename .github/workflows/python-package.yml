@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        versions: ["3.7", "3.8", "3.9", "3.10"]
+        versions: ["3.8", "3.9", "3.10"]
     needs:
       - style
       - typing
@@ -82,7 +82,7 @@ jobs:
           tox -e documentation
       - name: Archive documentation
         if: ${{ success() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: documentation
           path: build/sphinx/html/
@@ -124,36 +124,6 @@ jobs:
       - name: Run console program
         run: |
           tox -e integration
-
-  megalinter:
-    name: MegaLinter
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-      issues: write
-      pull-requests: write
-    needs:
-      - execute
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-      - name: MegaLinter
-        id: ml
-        uses: megalinter/megalinter@v6
-        env:
-          VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }} # Validates all source when push on main, else just the git diff with main. Override with true if you always want to lint all sources
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Archive production artifacts
-        if: ${{ success() }} || ${{ failure() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: MegaLinter reports
-          path: |
-            megalinter-reports
 
   analyze:
     name: CodeQL Analyze
