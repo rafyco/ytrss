@@ -82,7 +82,7 @@ jobs:
           tox -e documentation
       - name: Archive documentation
         if: ${{ success() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: documentation
           path: build/sphinx/html/
@@ -122,13 +122,13 @@ jobs:
           fetch-depth: 0
       - name: MegaLinter
         id: ml
-        uses: megalinter/megalinter@v6
+        uses: megalinter/megalinter@v8
         env:
           VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }} # Validates all source when push on main, else just the git diff with main. Override with true if you always want to lint all sources
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Archive production artifacts
         if: ${{ success() }} || ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: MegaLinter reports
           path: |
