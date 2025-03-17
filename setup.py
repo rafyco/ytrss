@@ -80,7 +80,7 @@ setup(
         "documentation": [
             "Sphinx == 6.2.0",
             "sphinx-epytext == 0.0.4",
-            "sphinx-autorun == 1.1.1"
+            "sphinx-autorun == 2.0.0"
         ]
     },
     entry_points={
