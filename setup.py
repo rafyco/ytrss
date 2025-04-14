@@ -69,13 +69,13 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 3.3.4",
+            "pylint == 3.3.6",
             "pep8 == 1.7.1",
-            "pycodestyle == 2.12.1"
+            "pycodestyle == 2.13.0"
         ],
         "typing": [
             "mypy == 1.15.0",
-            "types-PyYAML == 6.0.12.20241230"
+            "types-PyYAML == 6.0.12.20250402"
         ],
         "documentation": [
             "Sphinx == 6.2.0",
