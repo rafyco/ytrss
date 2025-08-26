@@ -5,7 +5,7 @@ class Version:
         self._major = 0
         self._minor = 3
         self._patch = 5
-        self._rc = 16
+        self._rc = 17
 
     @property
     def version(self) -> str:
