@@ -9,7 +9,6 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
-    milestone: 4
     commit-message:
       prefix: "[dependency]"
     ignore:
