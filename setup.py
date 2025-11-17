@@ -52,7 +52,7 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 4.0.2",
+            "pylint == 4.0.3",
             "pep8 == 1.7.1",
             "pycodestyle == 2.14.0"
         ],
