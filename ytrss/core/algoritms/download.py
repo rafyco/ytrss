@@ -59,7 +59,7 @@ async def download_task(
                 manager_service.database.change_type(movie, DatabaseStatus.DONE)
                 return True
             except DownloadMovieError as ex:
-                logger.error("Cannot download movie (%s): [%s] %s -> %s (%s)",
+                logger.error("Cannot download movie (%s): [%s] %s",
                              str(ex),
                              movie.url,
                              movie.title)

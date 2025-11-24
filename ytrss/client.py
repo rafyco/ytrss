@@ -96,7 +96,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         for command in __subcommands__:
             if command.name == options.command:
                 sys.exit(command(options))
-    except Exception as ex:
+    except Exception as ex:  # pylint: disable=W0718
         logger.error("Unexpected error: %s", str(ex))
 
 

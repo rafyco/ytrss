@@ -1,4 +1,3 @@
-import mimetypes
 import re
 import time
 from datetime import datetime
@@ -56,9 +55,12 @@ def format_date(date: Optional[datetime]) -> str:
     print_date: datetime = date if date is not None else datetime.now()
     return utils.formatdate(time.mktime(print_date.timetuple()))
 
+
 def get_mimetype(file_name: Optional[str]) -> str:
     """
     This function returns mimetype from file name
     """
+    if file_name is None:
+        return ""
     mime_types, _ = guess_type(file_name)
     return mime_types if mime_types is not None else "audio/mpeg"
