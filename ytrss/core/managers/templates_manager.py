@@ -1,7 +1,7 @@
 from jinja2 import Environment, Template, FileSystemLoader
 
 from ytrss import templates as ytrss_templates
-from ytrss.core.helpers.templates import format_str, format_desc, format_date
+from ytrss.core.helpers.templates import format_str, format_desc, format_date, get_mimetype
 
 
 class TemplatesManager:
@@ -17,6 +17,7 @@ class TemplatesManager:
         self._env.filters["format_str"] = format_str
         self._env.filters["format_desc"] = format_desc
         self._env.filters["format_date"] = format_date
+        self._env.filters["mimetype"] = get_mimetype
 
     def _get_template(self, path: str) -> Template:
         return self._env.get_template(path)

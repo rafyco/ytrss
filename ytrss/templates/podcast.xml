@@ -47,7 +47,7 @@
             ]]>
             </description>
             {% for file_path in movie.resources_files %}
-            <enclosure url="{{ podcast_info.url_prefix }}/{{ file_path }}" type='audio/mpeg' />
+            <enclosure url="{{ podcast_info.url_prefix }}/{{ file_path }}" type='{{ file_path | mimetype }}' />
             {% endfor %}
             <pubDate>{{ movie.date | format_date }}</pubDate>
         </item>
