@@ -1,13 +1,19 @@
-FROM python:3.8-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
 COPY . /app
 
-RUN pip install --no-cache-dir --upgrade pip==21.3.1; \
-    pip install --no-cache-dir .; \
-    adduser ytrss
+RUN apt-get update; \
+    apt-get install git ffmpeg -y; \
+    adduser ytrss;
+
+RUN pip install --no-cache-dir .
 
 USER ytrss
 
-CMD ["python", "-m", "ytrss"]
+RUN mkdir -p /home/ytrss/.config/ytrss/cache; \
+    mkdir -p /home/ytrss/.config/ytrss/config; \
+    mkdir -p /home/ytrss/podcasts
+
+CMD ["ytrss", "run"]

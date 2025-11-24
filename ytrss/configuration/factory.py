@@ -45,6 +45,10 @@ class _ConfigurationFactory:
 
     @classmethod
     def _create_for_unix(cls, program_name: str) -> ConfigurationReader:
+        if os.path.isfile(os.path.expanduser(f"~/.config/{program_name}/config/config.yml")):
+            return YamlConfiguration(f"~/.config/{program_name}/config/config.yml")
+        if os.path.isfile(os.path.expanduser(f"~/.config/{program_name}/config/config.json")):
+            return JsonConfiguration(f"~/.config/{program_name}/config/config.json")
         if os.path.isfile(os.path.expanduser(f"~/.config/{program_name}/config.yml")):
             return YamlConfiguration(f"~/.config/{program_name}/config.yml")
         if os.path.isfile(os.path.expanduser(f"~/.config/{program_name}/config.json")):
