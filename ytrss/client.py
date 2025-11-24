@@ -24,7 +24,6 @@ __subcommands__: List[BaseCommand] = [
     RunCommand(),
     GenerateCommand(),
     ConfigurationCommand(),
-    GenerateCommand(),
     DownloadCommand(),
     UrlCommand()
 ]
