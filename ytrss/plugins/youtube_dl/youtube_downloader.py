@@ -24,7 +24,7 @@ class YouTubeDownloader:
 
     def __init__(self, movie: Movie, configuration: YtrssConfiguration) -> None:
         if not isinstance(movie, YouTubeMovie):
-            raise DownloadMovieError()
+            raise DownloadMovieError("YouTubeMovie instance not exists")
         self.configuration = configuration
         self._movie = movie
 
@@ -52,14 +52,15 @@ class YouTubeDownloader:
         with cwd(self.configuration.cache_path):
 
             logger.info("Downloading movie: [%s] %s", self._movie.url, self._movie.title)
-            status = self.__invoke_ytdl(list(self.configuration.args) + ['-o', f"{self._movie.identity}.mp3",
+            status = self.__invoke_ytdl(list(self.configuration.args) + ['-o', f"{self._movie.identity}",
                                                                          self._movie.url])
 
             if status != 0:
                 raise DownloadMovieError(f"youtube_dl raise with state: {status}")
 
-            full_file_name = Path(f"{self._movie.identity}.mp3")
-            if not os.path.isfile(full_file_name):
-                raise DownloadMovieError(f"File {full_file_name} not downloaded")
-
-        return DownloadedMovie.create_movie_desc(self.configuration.cache_path, self._movie, [full_file_name])
+            for extension in ['mp3', 'mp4', 'webm', 'mkv', 'ogg']:
+                full_file_name = Path(f"{self._movie.identity}.{extension}")
+                if os.path.isfile(full_file_name):
+                    return DownloadedMovie.create_movie_desc(self.configuration.cache_path, self._movie,
+                                                             [full_file_name])
+        raise DownloadMovieError(f"File {self._movie.identity} not downloaded")

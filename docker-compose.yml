@@ -3,5 +3,5 @@ services:
   ytrss:
     build: .
     volumes:
-      - ./docker/ytrss/config:/home/ytrss/.config/ytrss
-      - ./docker/ytrss/output:/home/ytrss/ytrss/output
+      - ./docker/ytrss/config:/home/ytrss/.config/ytrss/config
+      - ./docker/ytrss/output:/home/ytrss/podcasts

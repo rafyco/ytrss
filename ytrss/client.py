@@ -24,7 +24,6 @@ __subcommands__: List[BaseCommand] = [
     RunCommand(),
     GenerateCommand(),
     ConfigurationCommand(),
-    GenerateCommand(),
     DownloadCommand(),
     UrlCommand()
 ]
@@ -93,11 +92,12 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         parser.print_help()
         sys.exit(0)
 
-    for command in __subcommands__:
-        if command.name == options.command:
-            sys.exit(command(options))
-
-    logger.error("command: %s", options.command)
+    try:
+        for command in __subcommands__:
+            if command.name == options.command:
+                sys.exit(command(options))
+    except Exception as ex:  # pylint: disable=W0718
+        logger.error("Unexpected error: %s", str(ex))
 
 
 if __name__ == "__main__":

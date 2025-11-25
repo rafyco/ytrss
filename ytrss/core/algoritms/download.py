@@ -58,13 +58,15 @@ async def download_task(
                             movie.title)
                 manager_service.database.change_type(movie, DatabaseStatus.DONE)
                 return True
-            except DownloadMovieError:
-                logger.error("Cannot download movie: [%s] %s",
+            except DownloadMovieError as ex:
+                logger.error("Cannot download movie (%s): [%s] %s",
+                             str(ex),
                              movie.url,
                              movie.title)
                 manager_service.database.change_type(movie, DatabaseStatus.ERROR)
-    except BlockingIOError:
-        logger.error("Cannot download movie: [%s] %s",
+    except BlockingIOError as ex:
+        logger.error("Cannot download movie (%s): [%s] %s",
+                     str(ex),
                      movie.url,
                      movie.title)
     return False
