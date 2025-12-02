@@ -17,7 +17,7 @@ services:
       ports:
         - "8080:3000"
       volumes:
-        - ./docker/ytrss/podcasts:/home/static:ro
+        - ./volumes/ytrss/podcasts:/home/static:ro
       depends_on:
         - ytrss
       networks:

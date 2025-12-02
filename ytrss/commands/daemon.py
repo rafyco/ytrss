@@ -22,22 +22,22 @@ class DaemonCommand(BaseCommand):
         BaseCommand.__init__(self, "daemon")
 
     async def run(self, options: Namespace) -> int:
-        
+
         logger.info("""
  -------------------------------------------------
- 
-             /$$                                 
-            | $$                                 
+
+             /$$
+            | $$
  /$$   /$$ /$$$$$$    /$$$$$$   /$$$$$$$ /$$$$$$$
 | $$  | $$|_  $$_/   /$$__  $$ /$$_____//$$_____/
-| $$  | $$  | $$    | $$  \__/|  $$$$$$|  $$$$$$ 
-| $$  | $$  | $$ /$$| $$       \____  $$\____  $$
+| $$  | $$  | $$    | $$  \\__/|  $$$$$$|  $$$$$$
+| $$  | $$  | $$ /$$| $$       \\____  $$\\____  $$
 |  $$$$$$$  |  $$$$/| $$       /$$$$$$$//$$$$$$$/
- \____  $$   \___/  |__/      |_______/|_______/ 
- /$$  | $$                                       
-|  $$$$$$/                                       
- \______/                                        
- 
+ \\____  $$   \\___/  |__/      |_______/|_______/
+ /$$  | $$
+|  $$$$$$/
+ \\______/
+
  -------------------------------------------------
         """)
 
@@ -54,7 +54,7 @@ class DaemonCommand(BaseCommand):
             except BlockingIOError:
                 logger.info("Program is already started")
                 return 1
-            except Exception as ex:
+            except Exception as ex:  # pylint: disable=W0703
                 logger.error("Unexpected daemon problem: %s", str(ex))
 
             time.sleep(3600)

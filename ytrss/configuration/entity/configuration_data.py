@@ -60,11 +60,11 @@ class YtrssConfiguration:
         """ Path to database directory """
         database_dir = self.config_path
         try:
-            database_dir = os.path.join(self.config_path, "database")
+            database_dir = Path(os.path.join(self.config_path, "database"))
             os.makedirs(database_dir)
         except OSError:
             pass
-        return Path(database_dir)
+        return database_dir
 
     @property
     def args(self) -> Sequence[str]:

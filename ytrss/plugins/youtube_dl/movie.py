@@ -1,15 +1,14 @@
 import copy
 from json import JSONDecodeError
-from typing import Optional
+from typing import Optional, Dict
 
-import sys
 import json
 from datetime import datetime
 from io import StringIO
-import youtube_dl
 
 from ytrss.core.entity.movie import Movie, MovieError
 from ytrss.core.helpers.typing import Url
+from ytrss.plugins.youtube_dl.wrapper import youtube_main_wrapper
 
 
 class InvalidDataMovieError(MovieError):
@@ -25,24 +24,17 @@ class YouTubeMovie(Movie):
     def __init__(self, url: Url) -> None:
         self._url: Url = url
         self._date: Optional[datetime] = None
+        self._json_data = self._get_movie_data()
 
-        old_stdout = sys.stdout
-        old_stderr = sys.stderr
-        sys.stdout = tmp_stdout = StringIO()
-        sys.stderr = tmp_stderr = StringIO()
+    def _get_movie_data(self) -> Dict[str, str]:
+        _, json_output, self._error = youtube_main_wrapper('--dump-json', self._url)
         try:
-            youtube_dl.main(['--dump-json', url])
-        except SystemExit:
-            pass
-        sys.stdout = old_stdout
-        sys.stderr = old_stderr
-        json_output = tmp_stdout.getvalue()
-        self._error = tmp_stderr.getvalue()
-        self._json_data = {}
-        try:
-            self._json_data = json.load(StringIO(json_output))
+            output = json.load(StringIO(json_output))
+            if isinstance(output, dict):
+                return output
+            raise InvalidDataMovieError(f"output element is not dictionary {type(output)}")
         except JSONDecodeError as exc:
-            raise InvalidDataMovieError(f"Invalid address type: [{url}] -> {self._error}") from exc
+            raise InvalidDataMovieError(f"Invalid address type: [{self._url}] -> {self._error}") from exc
 
     @property
     def url(self) -> Url:
