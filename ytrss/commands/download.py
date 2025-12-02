@@ -21,7 +21,7 @@ class DownloadCommand(BaseCommand):
         parser.add_argument("url",
                             help="Url that should be downloaded")
 
-    def run(self, options: Namespace) -> int:
+    async def run(self, options: Namespace) -> int:
         try:
             movie = self.manager_service.plugin_manager.create_movie(Url(options.url))
 

@@ -11,7 +11,7 @@ def prepare_urls(manager_service: ManagerService = default_manager_service()) ->
     queue = manager_service.database
     for movie, destination in manager_service.sources_manager.movies:
         if queue.queue_mp3(movie, destination):
-            logger.info("Found new movie: [%s] %s [%s] => %s",
+            logger.info("🎥 Found new movie: [%s] %s [%s] => %s",
                         movie.url,
                         movie.title,
                         movie.identity,

@@ -12,7 +12,7 @@ class ConfigurationCommand(BaseCommand):
     def __init__(self) -> None:
         BaseCommand.__init__(self, "configuration")
 
-    def run(self, options: Namespace) -> int:
+    async def run(self, options: Namespace) -> int:
         logger.info("subscriptions:")
         for source in self.manager_service.configuration.sources:
             logger.info("\t%s [%s]%s (%s)",

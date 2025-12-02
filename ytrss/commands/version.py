@@ -14,7 +14,7 @@ class VersionCommand(BaseCommand):
     def __init__(self) -> None:
         BaseCommand.__init__(self, "version")
 
-    def run(self, options: Namespace) -> int:
+    async def run(self, options: Namespace) -> int:
         logger.info("ytrss: %s", Version().version)
         logger.info("youtube_dl: %s", youtube_dl_version)
         return 0

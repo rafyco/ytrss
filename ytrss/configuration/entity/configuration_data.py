@@ -56,6 +56,17 @@ class YtrssConfiguration:
         return Path(os.path.join(self.config_path, "cache"))
 
     @property
+    def database_path(self) -> Path:
+        """ Path to database directory """
+        database_dir = self.config_path
+        try:
+            database_dir = os.path.join(self.config_path, "database")
+            os.makedirs(database_dir)
+        except OSError:
+            pass
+        return Path(database_dir)
+
+    @property
     def args(self) -> Sequence[str]:
         """ youtube_dl argument """
         if 'arguments' in self._configuration_data:

@@ -2,6 +2,7 @@
 *_docs
 build/
 dist/
+volumes/
 report/
 envs/
 .eggs/
