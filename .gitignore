@@ -12,3 +12,4 @@ envs/
 
 .idea
 !.idea/vcs.xml
+!.idea/icon.svg
