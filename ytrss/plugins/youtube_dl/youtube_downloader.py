@@ -1,7 +1,4 @@
 import os
-from typing import Sequence, Union
-
-import youtube_dl
 
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
@@ -12,6 +9,7 @@ from ytrss.core.helpers.files import cwd
 from ytrss.core.helpers.logging import logger
 from ytrss.core.helpers.typing import Path
 from ytrss.plugins.youtube_dl.movie import YouTubeMovie
+from ytrss.plugins.youtube_dl.wrapper import youtube_main_wrapper
 
 
 class YouTubeDownloader:
@@ -28,20 +26,6 @@ class YouTubeDownloader:
         self.configuration = configuration
         self._movie = movie
 
-    @classmethod
-    def __invoke_ytdl(cls, args: Sequence[str]) -> int:
-        try:
-            youtube_dl.main(args)
-            status: Union[str, int] = 0
-        except SystemExit as ex:
-            if ex.code is None:
-                status = 0
-            else:
-                status = ex.code  # pylint: disable=E0012,R0204
-        if isinstance(status, str):
-            return 0
-        return status
-
     def download(self) -> DownloadedMovie:
         """ Download movie using YouTube_dl tool """
         try:
@@ -50,10 +34,14 @@ class YouTubeDownloader:
             pass
 
         with cwd(self.configuration.cache_path):
-
             logger.info("Downloading movie: [%s] %s", self._movie.url, self._movie.title)
-            status = self.__invoke_ytdl(list(self.configuration.args) + ['-o', f"{self._movie.identity}",
-                                                                         self._movie.url])
+            status, _, _ = youtube_main_wrapper(
+                *self.configuration.args,
+                '-o',
+                self._movie.identity,
+                self._movie.url,
+                show_output=True
+            )
 
             if status != 0:
                 raise DownloadMovieError(f"youtube_dl raise with state: {status}")

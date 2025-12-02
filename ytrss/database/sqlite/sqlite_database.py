@@ -27,7 +27,7 @@ class SqliteDatabase(Database):
 
     def __init__(self, configuration: YtrssConfiguration, plugin_manager: PluginManager):
         self._plugin_manager = plugin_manager
-        self._db_file = os.path.join(configuration.config_path, "ytrss.db")
+        self._db_file = os.path.join(configuration.database_path, "ytrss.db")
         with self._database_handler() as conn:
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS movies_tasks (

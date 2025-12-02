@@ -1,4 +1,3 @@
-import asyncio
 import os
 import sys
 from locks import Mutex
@@ -72,7 +71,7 @@ async def download_task(
     return False
 
 
-def download_all_movies(manager_service: ManagerService = default_manager_service()) -> int:
+async def download_all_movies(manager_service: ManagerService = default_manager_service()) -> int:
     """ Download all movies.
 
     This function download all files from database and send it to destination place. All the
@@ -81,14 +80,12 @@ def download_all_movies(manager_service: ManagerService = default_manager_servic
 
     logger.info("Starting download movies:")
     try:
-        loop = asyncio.get_event_loop()
-        outputs = loop.run_until_complete(asyncio.gather(
-            *[download_task(movie, destination) for movie, destination in
-              manager_service.database.movies()]
-        ))
+        outputs = []
+        for movie, destination in manager_service.database.movies():
+            output = await download_task(movie, destination)
+            outputs.append(output)
         queue_len = len(outputs)
         downloaded = len(list(filter(lambda x: x, outputs)))
-        loop.close()
 
     except KeyboardInterrupt:
         logger.info("Keyboard Interrupt by user.")

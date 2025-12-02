@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # PYTHON_ARGCOMPLETE_OK
+import asyncio
 import logging
 import sys
 from argparse import ArgumentParser
@@ -7,6 +8,7 @@ from typing import Optional, Sequence, List
 
 from ytrss.commands import BaseCommand
 from ytrss.commands.configuration import ConfigurationCommand
+from ytrss.commands.daemon import DaemonCommand
 from ytrss.commands.download import DownloadCommand
 from ytrss.commands.generate import GenerateCommand
 from ytrss.commands.run import RunCommand
@@ -22,6 +24,7 @@ from ytrss.core.managers.manager_service import default_manager_service
 __subcommands__: List[BaseCommand] = [
     VersionCommand(),
     RunCommand(),
+    DaemonCommand(),
     GenerateCommand(),
     ConfigurationCommand(),
     DownloadCommand(),
@@ -95,7 +98,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     try:
         for command in __subcommands__:
             if command.name == options.command:
-                sys.exit(command(options))
+                sys.exit(asyncio.run(command(options)))
     except Exception as ex:  # pylint: disable=W0718
         logger.error("Unexpected error: %s", str(ex))
 

@@ -1,7 +1,27 @@
-version: "3.3"
+version: "3.8"
 services:
   ytrss:
     build: .
+    container_name: ytrss
+    user: 1000:1000
+    restart: always
     volumes:
-      - ./docker/ytrss/config:/home/ytrss/.config/ytrss/config
-      - ./docker/ytrss/output:/home/ytrss/podcasts
+      - ./volumes/ytrss/cache:/home/ytrss/.config/ytrss/cache
+      - ./volumes/ytrss/config.yml:/home/ytrss/.config/ytrss/config/config.yml:ro
+      - ./volumes/ytrss/database:/home/ytrss/.config/ytrss/database
+      - ./volumes/ytrss/podcasts:/home/ytrss/podcasts
+
+  webserver:
+      image: lipanski/docker-static-website:latest
+      restart: always
+      ports:
+        - "8080:3000"
+      volumes:
+        - ./volumes/ytrss/podcasts:/home/static:ro
+      depends_on:
+        - ytrss
+      networks:
+        - ytrss_network
+networks:
+  ytrss_network:
+    driver: bridge

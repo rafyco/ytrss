@@ -13,7 +13,7 @@ class YouTubeNamedChannelSourceDownloader(BaseYouTubeSourceDownloader):
     """
 
     def __init__(self, source: Source) -> None:
-        match = re.match(r"https?:\/\/(www\.)?youtube\.com\/c\/(?P<user>[\dA-Za-z_\-]+)", source.url)
+        match = re.match(r"https?:\/\/(www\.)?youtube\.com\/c\/(?P<user>[\dA-Za-z0-9_\-%]+)", source.url)
         if match is None:
             raise SourceDownloaderError()
         self._name = match.group('user')

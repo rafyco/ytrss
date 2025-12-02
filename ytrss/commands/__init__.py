@@ -12,7 +12,7 @@ class BaseCommand(metaclass=abc.ABCMeta):
         self.name = name
 
     @abc.abstractmethod
-    def run(self, options: Namespace) -> int:
+    async def run(self, options: Namespace) -> int:
         """ A main work that be done in subcommand from terminal client """
 
     @property
@@ -26,5 +26,5 @@ class BaseCommand(metaclass=abc.ABCMeta):
         In this method terminal arguments from subcommand should be registered in main subparser.
         """
 
-    def __call__(self, options: Namespace) -> int:
-        return self.run(options)
+    async def __call__(self, options: Namespace) -> int:
+        return await self.run(options)

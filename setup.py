@@ -44,10 +44,10 @@ setup(
         'Operating System :: POSIX',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Topic :: Multimedia :: Sound/Audio',
         'Topic :: Multimedia :: Video',
@@ -69,15 +69,16 @@ setup(
             "pytest"
         ],
         "style": [
-            "pylint == 4.0.3",
+            "pylint == 4.0.4",
             "pep8 == 1.7.1",
             "pycodestyle == 2.14.0"
         ],
         "typing": [
-            "mypy == 1.18.2",
+            "mypy == 1.19.0",
             "types-PyYAML == 6.0.12.20250915"
         ],
         "documentation": [
+            "setuptools == 80.9.0",
             "Sphinx == 6.2.0",
             "sphinx-epytext == 0.0.4",
             "sphinx-autorun == 2.0.0"

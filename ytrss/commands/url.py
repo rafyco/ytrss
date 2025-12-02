@@ -20,7 +20,7 @@ class UrlCommand(BaseCommand):
         parser.add_argument("-d", "--destination", dest="destination",
                             help="destination [default: default]", default="default", metavar="DEST")
 
-    def run(self, options: Namespace) -> int:
+    async def run(self, options: Namespace) -> int:
         try:
             movie = self.manager_service.plugin_manager.create_movie(Url(options.url))
         except MovieError:

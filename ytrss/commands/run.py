@@ -16,12 +16,12 @@ class RunCommand(BaseCommand):
     def __init__(self) -> None:
         BaseCommand.__init__(self, "run")
 
-    def run(self, options: Namespace) -> int:
+    async def run(self, options: Namespace) -> int:
         os.makedirs('/tmp/ytrss', exist_ok=True)
         try:
             with Mutex('/tmp/ytrss/ytrss.lock'):
                 prepare_urls()
-                download_all_movies()
+                await download_all_movies()
         except BlockingIOError:
             logger.info("Program is already started")
             return 1
