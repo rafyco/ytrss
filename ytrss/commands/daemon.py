@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime
 from argparse import Namespace
 
 from locks import Mutex
@@ -50,9 +51,11 @@ class DaemonCommand(BaseCommand):
             os.makedirs('/tmp/ytrss', exist_ok=True)
             try:
                 with Mutex('/tmp/ytrss/ytrss.lock'):
+                    logger.info("Start process: %s", datetime.now())
                     prepare_urls()
                     await download_all_movies()
                     await clean_tasks()
+                    logger.info("Stop process: %s", datetime.now())
             except BlockingIOError:
                 logger.info("Program is already started")
                 return 1
