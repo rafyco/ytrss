@@ -8,6 +8,7 @@ from typing import Optional, Sequence, List
 
 from ytrss.commands import BaseCommand
 from ytrss.commands.configuration import ConfigurationCommand
+from ytrss.commands.clean import CleanCommand
 from ytrss.commands.daemon import DaemonCommand
 from ytrss.commands.download import DownloadCommand
 from ytrss.commands.generate import GenerateCommand
@@ -25,6 +26,7 @@ __subcommands__: List[BaseCommand] = [
     VersionCommand(),
     RunCommand(),
     DaemonCommand(),
+    CleanCommand(),
     GenerateCommand(),
     ConfigurationCommand(),
     DownloadCommand(),

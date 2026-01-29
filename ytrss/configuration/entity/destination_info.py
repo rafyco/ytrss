@@ -22,6 +22,7 @@ class DestinationInfo:
         self.url_prefix: str = ""
         self.img: Optional[str] = None
         self.output_path: Optional[Path] = None
+        self.limit: int = 20
 
     @staticmethod
     def from_json(json: Optional[Dict[str, Any]], identity: DestinationId) -> 'DestinationInfo':
@@ -46,4 +47,7 @@ class DestinationInfo:
                 podcast.img = json['img']
             if 'path' in json and isinstance(json['path'], str):
                 podcast.output_path = Path(os.path.expanduser(json['path']))
+            if 'filters' in json and isinstance(json, Dict):
+                if 'limit' in json['filters'] and isinstance(json['filters']['limit'], int):
+                    podcast.limit = json['filters']['limit']
         return podcast

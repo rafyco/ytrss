@@ -46,3 +46,7 @@ class Destination(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def save(self, files: Sequence[Path], templates_manager: TemplatesManager) -> None:
         """ Save file from downloader cache to destination. """
+
+    @abc.abstractmethod
+    def delete(self, movie: DownloadedMovie, templates_manager: TemplatesManager) -> None:
+        """ Delete movie from destination. """

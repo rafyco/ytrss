@@ -52,7 +52,7 @@ class PluginManager(BasePlugin):
                     return destination
             except Exception:  # pylint: disable=W0703
                 pass
-        raise DestinationError()
+        raise DestinationError("Unable to create destination")
 
     def download_movie(self, movie: Movie, configuration: YtrssConfiguration) -> DownloadedMovie:
         for plugin in self._plugins:

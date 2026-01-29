@@ -195,3 +195,28 @@ Destinations structure
       - \-
       - Path that the file should be saved
 
+    * - filters
+      - optional
+      - limit: 20
+      - An object with rules what files should be delete :ref:`Filters`
+
+Filters
+=======
+
+Filter is a mechanism that tells software when movies can be deleted
+
+We support following values:
+
+.. list-table:: Filters
+    :widths: 20 20 20 40
+    :header-rows: 1
+
+    * - key
+      - default value
+      - description
+
+    * - limit
+      - 20
+      - A count of movies that can be stored for one destination
+
+:warn: The movie are deleted after downloaded.

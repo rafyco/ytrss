@@ -34,14 +34,17 @@ class DefaultDestination(Destination):
     @property
     def saved_movies(self) -> Iterator[DownloadedMovie]:
         if self.info.output_path is None:
-            logger.error("output_path is None")
+            logger.error("Destination %s output_path is None", self.identity)
             return
-        for filename in os.listdir(self.info.output_path):
-            if filename.endswith(".json"):
-                try:
-                    yield DownloadedMovie.from_file(self.info.output_path, filename)
-                except MovieFileError as ex:
-                    logger.info(ex)
+        try:
+            for filename in os.listdir(self.info.output_path):
+                if filename.endswith(".json"):
+                    try:
+                        yield DownloadedMovie.from_file(self.info.output_path, filename)
+                    except MovieFileError as ex:
+                        logger.info(ex)
+        except FileNotFoundError as ex:
+            logger.warning("Destination %s directory not exists: %s", self.identity, ex.filename)
 
     def save(self, files: Sequence[Path], templates_manager: TemplatesManager) -> None:
         if self.info.output_path is None:
@@ -52,4 +55,13 @@ class DefaultDestination(Destination):
                 shutil.move(file, self.info.output_path)
             except shutil.Error as ex:
                 logger.error(ex)
+        self.on_finish(templates_manager)
+
+    def delete(self, movie: DownloadedMovie, templates_manager: TemplatesManager) -> None:
+        for file_path in movie.data_paths:
+            try:
+                os.remove(file_path)
+                logger.info("\tdelete file: %s from %s", file_path, movie.identity)
+            except Exception as ex:  # pylint: disable=W0718
+                logger.error("Cannot remove %s: %s", file_path, str(ex))
         self.on_finish(templates_manager)
