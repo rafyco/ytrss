@@ -54,7 +54,7 @@ setup(
         'Typing :: Typed'
     ],
     install_requires=[
-        'youtube_dl @ git+https://github.com/ytdl-org/youtube-dl.git@master#egg=youtube_dl',
+        'yt_dlp @ git+https://github.com/yt-dlp/yt-dlp.git@master#egg=yt_dlp',
         'pyyaml',
         'requests >= 2.32.5',
         'astroid >= 2.5,< 5.0',

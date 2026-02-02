@@ -1,5 +1,5 @@
 from argparse import Namespace
-from youtube_dl.version import __version__ as youtube_dl_version
+from yt_dlp.version import __version__ as yt_dlp_version
 
 from ytrss.core.version import Version
 from ytrss.commands import BaseCommand
@@ -16,5 +16,5 @@ class VersionCommand(BaseCommand):
 
     async def run(self, options: Namespace) -> int:
         logger.info("ytrss: %s", Version().version)
-        logger.info("youtube_dl: %s", youtube_dl_version)
+        logger.info("yt_dlp: %s", yt_dlp_version)
         return 0

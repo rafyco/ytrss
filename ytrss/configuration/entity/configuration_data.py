@@ -70,7 +70,7 @@ class YtrssConfiguration:
 
     @property
     def args(self) -> Sequence[str]:
-        """ youtube_dl argument """
+        """ yt_dlp argument """
         if 'arguments' in self._configuration_data:
             if isinstance(self._configuration_data['arguments'], list):
                 return self._configuration_data['arguments']

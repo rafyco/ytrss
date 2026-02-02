@@ -11,7 +11,7 @@ from ytrss.plugins.youtube_dl.youtube_downloader import YouTubeDownloader
 
 
 class YouTubeDlPlugin(Plugin):
-    """ Plugin implements mechanisms from youtube_dl """
+    """ Plugin implements mechanisms from yt_dlp """
 
     def create_movie(self, url: Url) -> Optional[Movie]:
         try:

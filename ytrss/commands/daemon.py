@@ -5,8 +5,6 @@ from argparse import Namespace
 
 from locks import Mutex
 
-from youtube_dl.version import __version__ as youtube_dl_version
-
 from ytrss.commands.configuration import ConfigurationCommand
 from ytrss.commands.version import VersionCommand
 from ytrss.commands import BaseCommand
