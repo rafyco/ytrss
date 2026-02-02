@@ -28,4 +28,13 @@ class ConfigurationCommand(BaseCommand):
         logger.info("\nplugins:")
         for plugin in self.manager_service.plugin_manager.plugins:
             logger.info("\t[%s] => %s", plugin.plugin_name, plugin.plugin_description)
+
+        logger.info("\nwebhooks:")
+        webhooks = self.manager_service.configuration.webhooks
+        for webhook in webhooks:
+            logger.info("\t[%s] =>", webhook)
+            for webhook_url in self.manager_service.configuration.get_webhook(webhook):
+                logger.info("\t  - %s", webhook_url)
+        if not webhooks:
+            logger.info("\t No webhook found")
         return 0

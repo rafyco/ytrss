@@ -56,6 +56,7 @@ setup(
     install_requires=[
         'youtube_dl @ git+https://github.com/ytdl-org/youtube-dl.git@master#egg=youtube_dl',
         'pyyaml',
+        'requests >= 2.32.5',
         'astroid >= 2.5,< 5.0',
         'jinja2 >= 3.0.3,< 3.2.0',
         'locks ~= 0.1.1',
@@ -75,7 +76,8 @@ setup(
         ],
         "typing": [
             "mypy == 1.19.1",
-            "types-PyYAML == 6.0.12.20250915"
+            "types-PyYAML == 6.0.12.20250915",
+            "types-requests == 2.32.4.20260107"
         ],
         "documentation": [
             "setuptools == 80.9.0",

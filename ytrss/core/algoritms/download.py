@@ -5,6 +5,7 @@ from locks import Mutex
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.destination import Destination
 from ytrss.core.entity.movie import Movie
+from ytrss.core.entity.webhooks import SuccessDownloadMovieWebhook, FailedDownloadMovieWebhook
 from ytrss.core.helpers.exceptions import DownloadMovieError
 from ytrss.core.helpers.logging import logger
 from ytrss.core.managers.manager_service import ManagerService, default_manager_service
@@ -56,6 +57,7 @@ async def download_task(
                             movie.url,
                             movie.title)
                 manager_service.database.change_type(movie, DatabaseStatus.DONE)
+                manager_service.webhook_manager.invoke_hook(SuccessDownloadMovieWebhook(movie))
                 return True
             except DownloadMovieError as ex:
                 logger.error("Cannot download movie (%s): [%s] %s",
@@ -63,6 +65,7 @@ async def download_task(
                              movie.url,
                              movie.title)
                 manager_service.database.change_type(movie, DatabaseStatus.ERROR)
+                manager_service.webhook_manager.invoke_hook(FailedDownloadMovieWebhook(movie, ex))
     except BlockingIOError as ex:
         logger.error("Cannot download movie (%s): [%s] %s",
                      str(ex),

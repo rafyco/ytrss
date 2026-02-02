@@ -13,6 +13,7 @@ from ytrss.commands import BaseCommand
 from ytrss.core.algoritms.clean import clean_tasks
 from ytrss.core.algoritms.download import download_all_movies
 from ytrss.core.algoritms.finder import prepare_urls
+from ytrss.core.entity.webhooks import StartDaemonWebhook
 from ytrss.core.helpers.logging import logger
 
 
@@ -24,6 +25,8 @@ class DaemonCommand(BaseCommand):
         BaseCommand.__init__(self, "daemon")
 
     async def run(self, options: Namespace) -> int:
+
+        self.manager_service.webhook_manager.invoke_hook(StartDaemonWebhook())
 
         logger.info("""
  -------------------------------------------------
