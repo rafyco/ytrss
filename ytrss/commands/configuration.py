@@ -24,6 +24,8 @@ class ConfigurationCommand(BaseCommand):
         logger.info("\ndestinations:")
         for destination in self.manager_service.destination_manager.destinations:
             logger.info("\t[%s] => %s", destination.identity, destination.info.title)
+            logger.info("\t\toutput_path => %s", destination.info.output_path)
+            logger.info("\t\turl => %s", destination.info.url_prefix)
 
         logger.info("\nplugins:")
         for plugin in self.manager_service.plugin_manager.plugins:

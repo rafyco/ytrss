@@ -27,7 +27,7 @@ class YtrssConfiguration:
         result: Dict[str, DestinationInfo] = {}
         if 'destinations' in self._configuration_data and isinstance(self._configuration_data['destinations'], dict):
             for key, value in self._configuration_data['destinations'].items():
-                result[key] = DestinationInfo.from_json(value, DestinationId(key))
+                result[key] = DestinationInfo.from_json(value, DestinationId(key), self.url_prefix, self.file_storage)
         return result
 
     @property
@@ -96,3 +96,13 @@ class YtrssConfiguration:
         except KeyError:
             logger.debug("No webhooks defined in configuration")
         return []
+
+    @property
+    def url_prefix(self) -> str:
+        """ Url prefix to rss generated file """
+        return str(self._configuration_data.get('url_prefix', 'http://localhost'))
+
+    @property
+    def file_storage(self) -> Path:
+        """ A place where the files should be hosted by default """
+        return Path(self._configuration_data.get('storage', os.path.expanduser(os.path.join("~/podcasts"))))
