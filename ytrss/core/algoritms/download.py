@@ -66,7 +66,7 @@ async def download_task(
                              movie.title)
                 manager_service.database.change_type(movie, DatabaseStatus.ERROR)
                 manager_service.webhook_manager.invoke_hook(FailedDownloadMovieWebhook(movie, ex))
-    except BlockingIOError as ex:
+    except Exception as ex:  # pylint: disable=W0703
         logger.error("Cannot download movie (%s): [%s] %s",
                      str(ex),
                      movie.url,
@@ -94,7 +94,7 @@ async def download_all_movies(manager_service: ManagerService = default_manager_
         logger.info("Keyboard Interrupt by user.")
         sys.exit(1)
     except Exception as ex:
-        logger.error("Unexpected Error: %s", type(ex))
+        logger.error("Unexpected Error: [%s] - %s", type(ex), str(ex))
         raise ex
     if queue_len == 0:
         logger.warning("Cannot find url to download")

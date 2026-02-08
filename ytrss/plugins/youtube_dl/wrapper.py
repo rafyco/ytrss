@@ -54,6 +54,8 @@ def youtube_main_wrapper(*args: str, show_output: bool = False) -> tuple[int, st
         sys.stderr = tmp_stderr = StringIO()
 
     try:
+        logger.debug("Invoke command: yt-dlp %s", " ".join(args))
+
         yt_dlp.main(list(args))
         status: Union[str, int] = 0
     except SystemExit as ex:
