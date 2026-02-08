@@ -2,8 +2,8 @@ import os
 import sys
 from typing import Optional
 
-from ytrss.configuration.configuration import Configuration, ConfigurationError, \
-    ConfigurationFileNotExistsError
+from ytrss.configuration.configuration import Configuration
+from ytrss.configuration.exceptions import ConfigurationError, ConfigurationFileNotExistsError
 from ytrss.configuration.readers.base import ConfigurationReader
 from ytrss.configuration.readers.default_configuration import DefaultConfiguration
 from ytrss.configuration.readers.json_configuration import JsonConfiguration

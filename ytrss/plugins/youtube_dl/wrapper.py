@@ -1,7 +1,7 @@
 import sys
 from io import StringIO, TextIOBase
 from typing import Union
-import youtube_dl
+import yt_dlp
 from ytrss.core.helpers.logging import logger
 
 
@@ -38,7 +38,7 @@ class _Tee(TextIOBase):
 
 def youtube_main_wrapper(*args: str, show_output: bool = False) -> tuple[int, str, str]:
     """
-    A wrapper to youtube_dl function with output values
+    A wrapper to yt_dlp function with output values
     """
     old_stdout = sys.stdout
     old_stderr = sys.stderr
@@ -54,7 +54,9 @@ def youtube_main_wrapper(*args: str, show_output: bool = False) -> tuple[int, st
         sys.stderr = tmp_stderr = StringIO()
 
     try:
-        youtube_dl.main(list(args))
+        logger.debug("Invoke command: yt-dlp %s", " ".join(args))
+
+        yt_dlp.main(list(args))
         status: Union[str, int] = 0
     except SystemExit as ex:
         if ex.code is None:

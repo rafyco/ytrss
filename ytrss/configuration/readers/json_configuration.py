@@ -3,7 +3,7 @@ import json
 
 from typing import Any
 
-from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError
+from ytrss.configuration.exceptions import ConfigurationError, ConfigurationFileNotExistsError
 from ytrss.configuration.readers.file_dict_configuration import FileDictConfiguration
 
 

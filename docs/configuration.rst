@@ -47,6 +47,8 @@ The configuration file has yaml format. The example of the file looks like this:
 .. code-block:: yaml
 
     ---
+    url_prefix: https://my.domain/ytdown
+    storage: /home/user/podcasts/ytdown
     subscriptions:
       - name: Private playlist
         url: https://youtube.com/playlist?list=<playlist_id>
@@ -56,23 +58,20 @@ The configuration file has yaml format. The example of the file looks like this:
         url: https://www.youtube.com/@YouTube
     destinations:
       default:
-        type: rss
         title: Youtube - podcast
-        url_prefix: https://my.domain/ytdown/default
         author: youtube
         link: https://youtube.com
         desc: My favourite movies from YouTube
         img: https://www.youtube.com/yts/img/yt_1200-vfl4C3T0K.png
-        path: /home/user/podcasts/default
+        directory: default
+
       youtube:
-        type: rss
         title: Youtube channel
-        url_prefix: https://my.domain/ytdown/youtube
         author: youtube
         link: https://youtube.com
         desc: YouTube channel
         img: https://www.youtube.com/yts/img/yt_1200-vfl4C3T0K.png
-        path: /home/user/podcasts/youtube
+        directory: youtube
 
 Main structure
 ==============
@@ -110,6 +109,16 @@ Main structure
       - optional
       - []
       - A list of parameters that are added to ``youtube_dl`` command
+
+    * - url_prefix
+      - optional
+      - http://localhost
+      - A default url that is add to podcast address
+
+    * - storage
+      - optional
+      - ~/podcasts
+      - A place with all subscriptions
 
 Subscriptions structure
 =======================
@@ -156,8 +165,8 @@ Destinations structure
       - description
 
     * - type
-      - required
-      - \-
+      - optional
+      - rss
       - Type of destination (e.x. rss for podcast)
 
     * - title
@@ -191,7 +200,37 @@ Destinations structure
       - Optional url to podcast image
 
     * - path
-      - required
+      - optional
       - \-
-      - Path that the file should be saved
+      - Full path that the file should be saved (cannot be used with 'directory' option)
 
+    * - directory
+      - optional
+      - \-
+      - A directory to store files in storage destinaltion (cannot be used with 'path' option)
+
+    * - filters
+      - optional
+      - limit: 20
+      - An object with rules what files should be delete :ref:`Filters`
+
+Filters
+=======
+
+Filter is a mechanism that tells software when movies can be deleted
+
+We support following values:
+
+.. list-table:: Filters
+    :widths: 20 20 20 40
+    :header-rows: 1
+
+    * - key
+      - default value
+      - description
+
+    * - limit
+      - 20
+      - A count of movies that can be stored for one destination
+
+:warn: The movie are deleted after downloaded.

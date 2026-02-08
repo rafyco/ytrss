@@ -44,7 +44,6 @@ setup(
         'Operating System :: POSIX',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
@@ -54,8 +53,9 @@ setup(
         'Typing :: Typed'
     ],
     install_requires=[
-        'youtube_dl @ git+https://github.com/ytdl-org/youtube-dl.git@master#egg=youtube_dl',
+        'yt_dlp @ git+https://github.com/yt-dlp/yt-dlp.git@master#egg=yt_dlp',
         'pyyaml',
+        'requests >= 2.32.5',
         'astroid >= 2.5,< 5.0',
         'jinja2 >= 3.0.3,< 3.2.0',
         'locks ~= 0.1.1',
@@ -74,11 +74,12 @@ setup(
             "pycodestyle == 2.14.0"
         ],
         "typing": [
-            "mypy == 1.19.0",
-            "types-PyYAML == 6.0.12.20250915"
+            "mypy == 1.19.1",
+            "types-PyYAML == 6.0.12.20250915",
+            "types-requests == 2.32.4.20260107"
         ],
         "documentation": [
-            "setuptools == 80.9.0",
+            "setuptools == 80.10.2",
             "Sphinx == 6.2.0",
             "sphinx-epytext == 0.0.4",
             "sphinx-autorun == 2.0.0"

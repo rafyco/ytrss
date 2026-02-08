@@ -1,8 +1,9 @@
 import os
 import sqlite3
 from contextlib import contextmanager
+from datetime import datetime
 from sqlite3 import Connection
-from typing import Iterable, Iterator, Tuple
+from typing import Iterable, Iterator, Tuple, Optional
 
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 
@@ -11,7 +12,7 @@ from ytrss.core.entity.movie import Movie, MovieError
 from ytrss.core.helpers.logging import logger
 from ytrss.core.managers.plugin_manager import PluginManager
 
-from ytrss.database.database import Database, DatabaseStatus
+from ytrss.database.database import Database, DatabaseStatus, MovieSelect, get_movie_id
 
 
 class SqliteDatabase(Database):
@@ -41,21 +42,21 @@ class SqliteDatabase(Database):
                 )
             ''')
 
-    def change_type(self, movie: Movie, db_type: DatabaseStatus) -> None:
+    def change_type(self, movie: MovieSelect, db_type: DatabaseStatus) -> None:
         with self._database_handler() as conn:
             conn.execute(f'''
                 UPDATE movies_tasks
                 set state = "{db_type.value}"
-                where identity = "{movie.identity}"
+                where identity = "{get_movie_id(movie)}"
             ''')
             conn.commit()
 
-    def is_new(self, movie: Movie, destination: DestinationId) -> bool:
+    def is_new(self, movie: MovieSelect, destination: DestinationId) -> bool:
         with self._database_handler() as conn:
             cursor = conn.execute(f'''
                 SELECT identity
                 FROM movies_tasks
-                WHERE identity = "{movie.identity}" and state IN ("wait", "error", "progress")
+                WHERE identity = "{get_movie_id(movie)}" and state IN ("wait", "error", "progress")
             ''')
             rows = cursor.fetchall()
         return len(rows) > 0
@@ -93,3 +94,15 @@ class SqliteDatabase(Database):
         except sqlite3.IntegrityError:
             return False
         return True
+
+    def get_created_data(self, movie: MovieSelect) -> Optional[datetime]:
+        with self._database_handler() as conn:
+            cursor = conn.execute(f'''
+                SELECT created
+                FROM movies_tasks
+                WHERE identity = "{get_movie_id(movie)}"
+            ''')
+            rows = cursor.fetchall()
+            if len(rows) < 1:
+                return None
+            return datetime.fromisoformat(rows[0][0])

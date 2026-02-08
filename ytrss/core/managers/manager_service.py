@@ -5,6 +5,7 @@ from ytrss.core.managers.destination_manager import DestinationManager
 from ytrss.core.managers.plugin_manager import PluginManager
 from ytrss.core.managers.sources_manager import SourcesManager
 from ytrss.core.managers.templates_manager import TemplatesManager
+from ytrss.core.managers.webhook_manager import WebhookManager
 from ytrss.database.database import Database
 from ytrss.database.sqlite.sqlite_database import SqliteDatabase
 
@@ -21,6 +22,7 @@ class ManagerService:
         self._destination_manager: Optional[DestinationManager] = None
         self._plugin_manager: Optional[PluginManager] = None
         self._templates_manager: Optional[TemplatesManager] = None
+        self._webhook_manager: Optional[WebhookManager] = None
         self._database: Optional[Database] = None
 
     @property
@@ -75,6 +77,15 @@ class ManagerService:
         if self._database is None:
             self._database = SqliteDatabase(self.configuration, self.plugin_manager)
         return self._database
+
+    @property
+    def webhook_manager(self) -> WebhookManager:
+        """
+        WebHook manager
+        """
+        if self._webhook_manager is None:
+            self._webhook_manager = WebhookManager(self.configuration)
+        return self._webhook_manager
 
 
 _manager_service = ManagerService()

@@ -1,7 +1,7 @@
 import os
 from typing import Any
 import yaml
-from ytrss.configuration.configuration import ConfigurationError, ConfigurationFileNotExistsError
+from ytrss.configuration.exceptions import ConfigurationError, ConfigurationFileNotExistsError
 from ytrss.configuration.readers.file_dict_configuration import FileDictConfiguration
 
 

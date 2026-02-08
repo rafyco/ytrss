@@ -1,11 +1,13 @@
 import os
 import sys
 
-from typing import Dict, Sequence, Iterable
+from typing import Dict, Sequence, Iterable, Union
 
 from ytrss.configuration.configuration import Configuration
 from ytrss.configuration.entity.destination_info import DestinationId, DestinationInfo
 from ytrss.configuration.entity.source import Source
+from ytrss.core.entity.webhooks import WebhookType
+from ytrss.core.helpers.logging import logger
 from ytrss.core.helpers.typing import Path
 
 
@@ -25,7 +27,7 @@ class YtrssConfiguration:
         result: Dict[str, DestinationInfo] = {}
         if 'destinations' in self._configuration_data and isinstance(self._configuration_data['destinations'], dict):
             for key, value in self._configuration_data['destinations'].items():
-                result[key] = DestinationInfo.from_json(value, DestinationId(key))
+                result[key] = DestinationInfo.from_json(value, DestinationId(key), self.url_prefix, self.file_storage)
         return result
 
     @property
@@ -68,9 +70,39 @@ class YtrssConfiguration:
 
     @property
     def args(self) -> Sequence[str]:
-        """ youtube_dl argument """
+        """ yt_dlp argument """
         if 'arguments' in self._configuration_data:
             if isinstance(self._configuration_data['arguments'], list):
                 return self._configuration_data['arguments']
             return [self._configuration_data['arguments']]
         return []
+
+    def get_webhook(self, webhook: Union[WebhookType, str]) -> Iterable[str]:
+        """ Get list of urls to defined webhook"""
+        webhook_key = webhook if isinstance(webhook, str) else webhook.name
+        try:
+            webhooks = self._configuration_data['webhooks'][webhook_key]
+            return webhooks if isinstance(webhooks, list) else [webhooks]
+        except KeyError:
+            return []
+
+    @property
+    def webhooks(self) -> Sequence[str]:
+        """ List of all webhooks that has at least one defined url """
+        try:
+            webhooks = self._configuration_data['webhooks']
+            if isinstance(webhooks, dict):
+                return list(webhooks.keys())
+        except KeyError:
+            logger.debug("No webhooks defined in configuration")
+        return []
+
+    @property
+    def url_prefix(self) -> str:
+        """ Url prefix to rss generated file """
+        return str(self._configuration_data.get('url_prefix', 'http://localhost'))
+
+    @property
+    def file_storage(self) -> Path:
+        """ A place where the files should be hosted by default """
+        return Path(self._configuration_data.get('storage', os.path.expanduser(os.path.join("~/podcasts"))))

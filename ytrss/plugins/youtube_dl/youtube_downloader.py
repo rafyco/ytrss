@@ -16,8 +16,8 @@ class YouTubeDownloader:
     """
     YouTube downloader
 
-    Downloader that use `youtube_dl <https://rg3.github.io/youtube-dl/>`_ implementation. It downloads
-    a movie file from any url that can be use by `youtube_dl` service.
+    Downloader that use `yt_dlp <https://rg3.github.io/youtube-dl/>`_ implementation. It downloads
+    a movie file from any url that can be use by `yt_dlp` service.
     """
 
     def __init__(self, movie: Movie, configuration: YtrssConfiguration) -> None:
@@ -44,7 +44,7 @@ class YouTubeDownloader:
             )
 
             if status != 0:
-                raise DownloadMovieError(f"youtube_dl raise with state: {status}")
+                raise DownloadMovieError(f"yt_dlp raise with state: {status}")
 
             for extension in ['mp3', 'mp4', 'webm', 'mkv', 'ogg']:
                 full_file_name = Path(f"{self._movie.identity}.{extension}")

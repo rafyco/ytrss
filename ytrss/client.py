@@ -8,13 +8,14 @@ from typing import Optional, Sequence, List
 
 from ytrss.commands import BaseCommand
 from ytrss.commands.configuration import ConfigurationCommand
+from ytrss.commands.clean import CleanCommand
 from ytrss.commands.daemon import DaemonCommand
 from ytrss.commands.download import DownloadCommand
 from ytrss.commands.generate import GenerateCommand
 from ytrss.commands.run import RunCommand
 from ytrss.commands.url import UrlCommand
 from ytrss.commands.version import VersionCommand
-from ytrss.configuration.configuration import ConfigurationFileNotExistsError, ConfigurationError
+from ytrss.configuration.exceptions import ConfigurationFileNotExistsError, ConfigurationError
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.factory import create_configuration
 from ytrss.core.helpers.logging import DebugFormatter, ClientFormatter, logger
@@ -25,6 +26,7 @@ __subcommands__: List[BaseCommand] = [
     VersionCommand(),
     RunCommand(),
     DaemonCommand(),
+    CleanCommand(),
     GenerateCommand(),
     ConfigurationCommand(),
     DownloadCommand(),

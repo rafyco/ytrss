@@ -1,3 +1,4 @@
+from ytrss.core.entity.webhooks import FoundNewMovieWebhook
 from ytrss.core.helpers.logging import logger
 from ytrss.core.managers.manager_service import ManagerService, default_manager_service
 
@@ -16,6 +17,7 @@ def prepare_urls(manager_service: ManagerService = default_manager_service()) ->
                         movie.title,
                         movie.identity,
                         destination)
+            manager_service.webhook_manager.invoke_hook(FoundNewMovieWebhook(movie, destination))
         else:
             logger.debug("Element exists: %s", movie.url)
     return True

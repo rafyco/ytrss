@@ -24,8 +24,19 @@ class ConfigurationCommand(BaseCommand):
         logger.info("\ndestinations:")
         for destination in self.manager_service.destination_manager.destinations:
             logger.info("\t[%s] => %s", destination.identity, destination.info.title)
+            logger.info("\t\toutput_path => %s", destination.info.output_path)
+            logger.info("\t\turl => %s", destination.info.url_prefix)
 
         logger.info("\nplugins:")
         for plugin in self.manager_service.plugin_manager.plugins:
             logger.info("\t[%s] => %s", plugin.plugin_name, plugin.plugin_description)
+
+        logger.info("\nwebhooks:")
+        webhooks = self.manager_service.configuration.webhooks
+        for webhook in webhooks:
+            logger.info("\t[%s] =>", webhook)
+            for webhook_url in self.manager_service.configuration.get_webhook(webhook):
+                logger.info("\t  - %s", webhook_url)
+        if not webhooks:
+            logger.info("\t No webhook found")
         return 0

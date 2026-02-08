@@ -1,16 +1,17 @@
 import os
 import time
+from datetime import datetime
 from argparse import Namespace
 
 from locks import Mutex
 
-from youtube_dl.version import __version__ as youtube_dl_version
-
 from ytrss.commands.configuration import ConfigurationCommand
 from ytrss.commands.version import VersionCommand
 from ytrss.commands import BaseCommand
+from ytrss.core.algoritms.clean import clean_tasks
 from ytrss.core.algoritms.download import download_all_movies
 from ytrss.core.algoritms.finder import prepare_urls
+from ytrss.core.entity.webhooks import StartDaemonWebhook
 from ytrss.core.helpers.logging import logger
 
 
@@ -22,6 +23,8 @@ class DaemonCommand(BaseCommand):
         BaseCommand.__init__(self, "daemon")
 
     async def run(self, options: Namespace) -> int:
+
+        self.manager_service.webhook_manager.invoke_hook(StartDaemonWebhook())
 
         logger.info("""
  -------------------------------------------------
@@ -49,8 +52,11 @@ class DaemonCommand(BaseCommand):
             os.makedirs('/tmp/ytrss', exist_ok=True)
             try:
                 with Mutex('/tmp/ytrss/ytrss.lock'):
+                    logger.info("Start process: %s", datetime.now())
                     prepare_urls()
                     await download_all_movies()
+                    await clean_tasks()
+                    logger.info("Stop process: %s", datetime.now())
             except BlockingIOError:
                 logger.info("Program is already started")
                 return 1

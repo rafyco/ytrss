@@ -3,7 +3,7 @@ import os
 
 from typing import Any
 
-from ytrss.configuration.configuration import ConfigurationError
+from ytrss.configuration.exceptions import ConfigurationError
 from ytrss.configuration.readers.base import ConfigurationReader
 
 

@@ -23,8 +23,8 @@ class DestinationManager:
         """
         try:
             self._destinations[info.identity] = self._plugin_manager.create_destination(info)
-        except DestinationError:
-            logger.error("Cannot create destination from info: %s (type=%s)", info, info.type)
+        except DestinationError as ex:
+            logger.error("Cannot create destination from info: %s (type=%s): %s", info.identity, info.type, str(ex))
 
     def __contains__(self, item: DestinationId) -> bool:
         return item in self._destinations
