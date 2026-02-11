@@ -1,8 +1,9 @@
-#########################################
- YTRSS - subscription downloader
-#########################################
+################################
+ YTRSS - automatic podcast maker
+################################
 
-Program to automatic download any types of files from Internet.
+Program to automatic download any types of files from Internet and
+generates podcast from them.
 
 .. image:: https://img.shields.io/badge/author-Rafa%C5%82%20Kobel-blue.svg
    :target: https://rafyco.pl
@@ -23,12 +24,8 @@ Program to automatic download any types of files from Internet.
    :target: https://www.gnu.org/licenses/gpl.html
 
 
-
-
-
-*************
- Description
-*************
+Description
+============
 
 YTRSS is a program that checks defined sources and downloads a movie or sound files
 from them and arrange them to podcast files. It can be highly configured with many plugins
@@ -38,8 +35,15 @@ The program in basic version use `youtube_dl` script to download files, so it co
 with all services implements by this library. However user can extends this capabilities by
 his own custom plugins with external Downloaders.
 
+Requires
+--------
+
+To download files, ytrss use following programs:
+
+* `yt-dlp <https://github.com/yt-dlp/yt-dlp>`_
+
 Installation
-============
+------------
 
 The installation can be carried out in two ways. You can download
 packages from PyPi repository or install it from sources.
@@ -61,26 +65,13 @@ make that download code and invoke command:
 To checking the installation you can use to call ``ytrss``. Unittest can be also
 helpful with verification.
 
-Unit test
-=========
-
-``ytrss`` have a few unittest that you can use to checking code correctness. You can
-call it from ``setup.py`` file or using ``ytrss.tests`` module after installation. Check
-one of below command and try it yourself.
-
-.. code::
-
-    python setup.py test
-    python -m ytrss.tests
-
 Other information
-=================
+-----------------
 
-For more information about installation, configuration and bash completion read the documentation.
+For more information about installation, configuration and bash completion read the `documentation <https://ytrss.readthedocs.io>`_.
 
-********
- Author
-********
+Author
+======
 
 Rafal Kobel rafalkobel@rafyco.pl
 
