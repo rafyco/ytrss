@@ -19,9 +19,10 @@
 # -- Project information -----------------------------------------------------
 
 import ytrss as current_package
+from datetime import datetime
 
 project = current_package.__title__
-copyright = f"2022, {current_package.__author__}"
+copyright = f"2022-{datetime.now().year}, {current_package.__author__}"
 author = current_package.__author__
 
 # The short X.Y version
@@ -82,18 +83,24 @@ pygments_style = None
 # a list of builtin themes.
 #
 # html_theme = 'alabaster'
-html_theme = 'bizstyle'
+html_theme = 'conestack'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_logo = "_static/logo.png"
+html_theme_options = {
+    'logo_url': '/_static/icon.png',
+    'logo_title': f'ytrss - youtube podcast maker - {current_package.__version__}',
+    'github_url': 'https://github.com/rafyco/ytrss',
+    'pypi_url': 'https://pypi.org/pypi/ytrss',
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static/icon.png"]
+html_static_path = ["_static"]
 html_favicon = "_static/icon.png"
 
 # Custom sidebar templates, must be a dictionary that maps document names

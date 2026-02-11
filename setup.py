@@ -79,8 +79,9 @@ setup(
             "types-requests == 2.32.4.20260107"
         ],
         "documentation": [
-            "setuptools == 80.10.2",
+            "setuptools == 82.0.0",
             "Sphinx == 6.2.0",
+            "sphinx-conestack-theme",
             "sphinx-epytext == 0.0.4",
             "sphinx-autorun == 2.0.0"
         ]

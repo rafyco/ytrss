@@ -1,25 +1,8 @@
-#############
 Configuration
-#############
+=============
 
-*******
-How to start
-*******
-
-First of all you need to prepare config file, which helps you describe
-all the sources that you want to subscribe and destinations where movies should
-be downloaded. More information about
-
-After that you need to share generated podcast on your private http server.
-
-Remember that this library have no secure podcast file from other
-viewers. You public it on your own responsibility. Please make sure that
-author of your favorite movies allows you to make podcast from his
-files
-
-*****
 Configuration file
-*****
+------------------
 
 The behaviour of the program you can define in configuration file.
 It tells what sources should be checked for new files and where will be
@@ -27,7 +10,7 @@ saved or how to distribute them. The configuration file is a simple yaml
 (or json) file that named: ``config.yml`` (or ``config.json`` for json).
 
 Localization
-============
+~~~~~~~~~~~~
 
 The ytrss looking for following directory to find this file and get first
 available to work with.
@@ -40,7 +23,7 @@ User also can set specific configuration file by define it with
 ``-c`` or ``--conf`` parameter in terminal client
 
 Example configuration file
-==========================
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The configuration file has yaml format. The example of the file looks like this:
 
@@ -74,7 +57,7 @@ The configuration file has yaml format. The example of the file looks like this:
         directory: youtube
 
 Main structure
-==============
+~~~~~~~~~~~~~~
 
 .. list-table:: Configuration keys
     :widths: 20 20 20 40
@@ -121,7 +104,7 @@ Main structure
       - A place with all subscriptions
 
 Subscriptions structure
-=======================
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table:: Subscriptions structure
     :widths: 20 20 20 40
@@ -153,7 +136,7 @@ Subscriptions structure
       - If set to ``False`` the source won't be used
 
 Destinations structure
-======================
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table:: Destination structure
     :widths: 20 20 20 40
@@ -215,14 +198,14 @@ Destinations structure
       - An object with rules what files should be delete :ref:`Filters`
 
 Filters
-=======
+~~~~~~~
 
 Filter is a mechanism that tells software when movies can be deleted
 
 We support following values:
 
 .. list-table:: Filters
-    :widths: 20 20 20 40
+    :widths: 20 20 40
     :header-rows: 1
 
     * - key

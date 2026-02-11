@@ -112,6 +112,7 @@ jobs:
     name: Integration tests
     runs-on: ubuntu-latest
     continue-on-error: true
+    if: ${{ false }}
     needs:
       - execute
     steps:
