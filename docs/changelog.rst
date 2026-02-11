@@ -1,13 +1,20 @@
-###########
- Changelog
-###########
 Changelog
 =========
 
+0.4
+---
 
-*****
- 0.3
-*****
+0.4.0_
+~~~~~~
+
+- Official docker support and docker-compose example
+- Autoclean old movies (limit destination)
+- Webhooks
+- Support for more sources url from `yt-dlp <https://github.com/yt-dlp/yt-dlp>`_
+- change downloading program from `youtube_dl <https://youtube-dl.org/>`_ to `yt-dlp <https://github.com/yt-dlp/yt-dlp>`_
+- Drop support for python 3.7, 3.8 and 3.9
+- fixing documentation
+
 0.3
 ---
 
@@ -214,3 +221,5 @@ Changelog
 .. _0.3.4: https://github.com/rafyco/ytrss/releases/v0.3.4
 
 .. _0.3.5: https://github.com/rafyco/ytrss/releases/v0.3.5
+
+.. _0.4.0: https://github.com/rafyco/ytrss/releases/v0.4.0
