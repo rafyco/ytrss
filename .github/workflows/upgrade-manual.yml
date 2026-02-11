@@ -6,6 +6,11 @@ on: workflow_dispatch # yamllint disable-line rule:truthy
 jobs:
   CI-upgrade-version:
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/ytrss
+    permissions:
+      id-token: write
 
     steps:
       - uses: actions/checkout@v1
