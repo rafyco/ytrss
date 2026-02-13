@@ -3,7 +3,7 @@ name: Package auto upgrade
 
 on: # yamllint disable-line rule:truthy
   push:
-    branches:
+    branches-ignore:
       - master
       - main
     paths-ignore:
@@ -15,12 +15,6 @@ on: # yamllint disable-line rule:truthy
 jobs:
   CI-upgrade:
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/ytrss
-    permissions:
-      id-token: write
-
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python 3.10
@@ -53,7 +47,22 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build distribution
-        run: python setup.py sdist
-      - name: Publish package
-        uses: pypa/gh-action-pypi-publish@release/v1
+
+  PyPi-deploy:
+    runs-on: ubunut-latest
+    needs: [CI-upgrade]
+    environment:
+      name: pypi
+      url: https://pypi.org/p/ytrss
+    permissions:
+      id-token: write
+    steps:
+        - uses: actions/checkout@v1
+        - name: Set up Python 3.10
+          uses: actions/setup-python@v1
+          with:
+            python-version: "3.10"
+        - name: Build distribution
+          run: python setup.py sdist
+        - name: Publish package
+          uses: pypa/gh-action-pypi-publish@release/v1
