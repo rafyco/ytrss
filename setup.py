@@ -53,8 +53,8 @@ setup(
         'Typing :: Typed'
     ],
     install_requires=[
-        'yt_dlp @ git+https://github.com/yt-dlp/yt-dlp.git@master#egg=yt_dlp',
-        'pyyaml',
+        'yt_dlp >= 2026.2.4',
+        'pyyaml >= 6.0.3',
         'requests >= 2.32.5',
         'astroid >= 2.5,< 5.0',
         'jinja2 >= 3.0.3,< 3.2.0',
