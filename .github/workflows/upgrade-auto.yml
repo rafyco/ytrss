@@ -23,6 +23,9 @@ on: # yamllint disable-line rule:truthy
           - major
         default: rc
 
+permissions:
+  contents: write
+
 jobs:
   CI-upgrade:
     runs-on: ubuntu-latest
@@ -30,8 +33,10 @@ jobs:
       git_tag: ${{ steps.vars.outputs.git_tag }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up Python 3.10
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
       - name: Upgrade version
@@ -44,7 +49,7 @@ jobs:
           PATCH="$(sed 's/\s*self\._patch\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
           RC="$(sed 's/\s*self\._rc\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
           
-          UPGRADE_TYPE="${{ github.event.inputs.upgrade-type || "rc" }}"
+          UPGRADE_TYPE="${{ github.event.inputs.upgrade-type || 'rc' }}"
           
           case "${UPGRADE_TYPE}" in
              "major")
@@ -74,6 +79,10 @@ jobs:
           GIT_TAG="$(python ./setup.py --version)"
           # spellcheck disable=SC2001
           echo "git_tag=${GIT_TAG}" >> $GITHUB_OUTPUT
+      - name: Build Package
+        run: |
+          pip install build
+          python -m build
       - name: Commit massage
         run: |
           git config --local user.email "action@github.com"
@@ -82,10 +91,8 @@ jobs:
           export GIT_TAG=${{ steps.vars.outputs.git_tag }}
           git commit -a -m "release: Upgrade to ${GIT_TAG} version"
           git tag v${GIT_TAG} -a -m "Upgrade to ${GIT_TAG} version"
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git push origin HEAD:${{ github.ref_name }} --tags
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
