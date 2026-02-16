@@ -7,9 +7,6 @@ on: # yamllint disable-line rule:truthy
       - master
       - main
 
-env:
-  SRC_SSH_PRIVATEKEY_ABS_PATH: /tmp/.ssh/id_rsa_actions_template_sync
-
 jobs:
   style:
     name: Checks code style
@@ -145,43 +142,3 @@ jobs:
         uses: github/codeql-action/autobuild@v2
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-
-  prepare_synchronization:
-    name: Check synchronization environment
-    runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    steps:
-      - name: Checks synchronization environment
-        run: |
-          test "${{ secrets.SOURCE_REPO_SSH_PRIVATE_KEY }}" != ""
-
-  synchronization:
-    name: Synchronization with template
-    runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    needs:
-      - prepare_synchronization
-    continue-on-error: true
-    strategy:
-      fail-fast: false
-      matrix:
-        repo:
-          - "git@github.com:rafyco/template-python-package.git"
-    env:
-      TEMPLATE_BRANCH: main
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: ssh keys preparation
-        run: |
-          mkdir -p /tmp/.ssh
-          echo "${{ secrets.SOURCE_REPO_SSH_PRIVATE_KEY }}" > "${SRC_SSH_PRIVATEKEY_ABS_PATH}"
-          chmod 600 "${SRC_SSH_PRIVATEKEY_ABS_PATH}"
-      - name: Check synchronization
-        uses: rafyco/synchronized-with@main
-        with:
-          ssh_privatekey: ${SRC_SSH_PRIVATEKEY_ABS_PATH}
-          remote_repo: ${{ matrix.repo }}
