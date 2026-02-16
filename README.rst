@@ -20,6 +20,9 @@ generates podcast from them.
 .. image:: https://img.shields.io/pypi/v/ytrss.svg
    :target: https://pypi.python.org/pypi/ytrss/
 
+.. image:: https://img.shields.io/docker/v/rafyco/ytrss
+   :target: https://hub.docker.com/repository/docker/rafyco/ytrss/general
+
 .. image:: https://img.shields.io/github/license/rafyco/ytrss.svg
    :target: https://www.gnu.org/licenses/gpl.html
 
