@@ -11,6 +11,17 @@ on: # yamllint disable-line rule:truthy
       - "docs/"
       - ".github/"
       - "*.rst"
+  workflow_dispatch:
+    inputs:
+      upgrade-type:
+        type: choice
+        description: Upgrade type
+        options:
+          - rc
+          - patch
+          - minor
+          - major
+        default: rc
 
 jobs:
   CI-upgrade:
@@ -26,11 +37,38 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          MAJOR="$(sed 's/\s*self\._major\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
+          MINOR="$(sed 's/\s*self\._minor\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
+          PATCH="$(sed 's/\s*self\._patch\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
           RC="$(sed 's/\s*self\._rc\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
-          NEW_RC=$(( RC + 1 ))
-
-          sed -i "s/self\._rc = [0-9]*/self._rc = ${NEW_RC}/" ytrss/core/version.py
-
+          
+          UPGRADE_TYPE="${{ github.event.inputs.upgrade-type || "rc" }}"
+          
+          case "${UPGRADE_TYPE}" in
+             "major")
+                NEW_MAJOR=$(( MAJOR + 1 ))
+                sed -i "s/self\._major = [0-9]*/self._major = ${NEW_MAJOR}/" ytrss/core/version.py
+                sed -i "s/self\._minor = [0-9]*/self._minor = 0/" ytrss/core/version.py
+                sed -i "s/self\._patch = [0-9]*/self._patch = 0/" ytrss/core/version.py
+                sed -i "s/self\._rc = [0-9]*/self._rc = 0/" ytrss/core/version.py
+                ;;
+             "minor")
+                NEW_MINOR=$(( MINOR + 1 ))
+                sed -i "s/self\._minor = [0-9]*/self._minor = ${NEW_MINOR}/" ytrss/core/version.py
+                sed -i "s/self\._patch = [0-9]*/self._patch = 0/" ytrss/core/version.py
+                sed -i "s/self\._rc = [0-9]*/self._rc = 0/" ytrss/core/version.py
+                ;;
+             "patch")
+                NEW_PATCH=$(( PATCH + 1 ))
+                sed -i "s/self\._patch = [0-9]*/self._patch = ${NEW_PATCH}/" ytrss/core/version.py
+                sed -i "s/self\._rc = [0-9]*/self._rc = 0/" ytrss/core/version.py
+                ;;
+             *)
+                NEW_RC=$(( RC + 1 ))
+                sed -i "s/self\._rc = [0-9]*/self._rc = ${NEW_RC}/" ytrss/core/version.py
+                ;;
+          esac    
+          
           GIT_TAG="$(python ./setup.py --version)"
 
           # spellcheck disable=SC2001
@@ -41,7 +79,7 @@ jobs:
           git config --local user.name "GitHub Action"
 
           export GIT_TAG=${{ steps.vars.outputs.git_tag }}
-          git commit -a -m "Upgrade to ${GIT_TAG} version"
+          git commit -a -m "release: Upgrade to ${GIT_TAG} version"
           git tag v${GIT_TAG} -a -m "Upgrade to ${GIT_TAG} version"
       - name: Push changes
         uses: ad-m/github-push-action@master
