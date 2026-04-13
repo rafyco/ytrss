@@ -74,7 +74,7 @@ setup(
             "pycodestyle == 2.14.0"
         ],
         "typing": [
-            "mypy == 1.20.0",
+            "mypy == 1.20.1",
             "types-PyYAML == 6.0.12.20250915",
             "types-requests == 2.33.0.20260402"
         ],
