@@ -75,7 +75,7 @@ setup(
         ],
         "typing": [
             "mypy == 1.20.1",
-            "types-PyYAML == 6.0.12.20250915",
+            "types-PyYAML == 6.0.12.20260408",
             "types-requests == 2.33.0.20260408"
         ],
         "documentation": [
