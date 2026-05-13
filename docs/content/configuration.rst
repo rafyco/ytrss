@@ -103,6 +103,11 @@ Main structure
       - ~/podcasts
       - A place with all subscriptions
 
+    * - webhooks
+      - optional
+      - []
+      - A list of webhooks (name: url) :ref:`webhooks`
+
 Subscriptions structure
 ~~~~~~~~~~~~~~~~~~~~~~~
 
