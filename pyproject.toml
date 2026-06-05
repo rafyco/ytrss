@@ -1,0 +1,86 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ytrss"
+version = "0.5.0"
+description = "Tools for downloading mp3 from YouTube subscription and playlists."
+readme = "README.rst"
+requires-python = ">=3.11"
+
+authors = [
+    { name = "Rafał Kobel", email = "rafalkobel@rafyco.pl" }
+]
+license = { text = "GPL-3.0-only" }
+keywords = ['youtube', 'console', 'download', 'rss', 'mp3', 'service']
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    'Environment :: Console',
+    'Development Status :: 4 - Beta',
+    'Topic :: Multimedia :: Sound/Audio',
+    'Operating System :: POSIX',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3 :: Only',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Topic :: Multimedia :: Sound/Audio',
+    'Topic :: Multimedia :: Video',
+    'Typing :: Typed'
+]
+dependencies = [
+    'yt_dlp',
+    'pyyaml',
+    'requests',
+    'astroid',
+    'jinja2',
+    'locks',
+    'mutagen'
+]
+
+[project.urls]
+Homepage = "https://github.com/rafyco/ytrss"
+Source = "https://github.com/rafyco/ytrss"
+Tracker = "https://github.com/rafyco/ytrss/issues"
+Changelog = "https://github.com/rafyco/ytrss/blob/master/docs/changelog.rst"
+Documentation = "https://ytrss.readthedocs.io"
+
+[project.scripts]
+ytrss = "ytrss.client:main"
+
+[dependency-groups]
+dev = [
+    "taskipy",
+    "hatchling",
+    "pytest",
+    "pylint",
+    "pep8",
+    "pycodestyle",
+    "mypy",
+    "types-PyYAML",
+    "types-requests",
+]
+docs = [
+    "Sphinx",
+    "sphinx-conestack-theme",
+    "sphinx-epytext",
+    "sphinx-autorun"
+]
+
+[tool.taskipy.tasks]
+style = "pycodestyle --ignore=E501,W503,E251,E701 --exclude .venv,.tox,.eggs,build . && pylint -d C0114,I0011,R0401,R0801,R0902,R0903,W0511,C0115,C0116 --max-line-length=120 --ignore-paths tests/stubs ytrss tests"
+
+typing = "MYPYPATH=tests/stubs mypy ytrss tests/unit tests/integration"
+unittests = "pytest tests/unit"
+integration = "pytest tests/integration"
+documentation = "sphinx-build -b html docs build/sphinx/html/"
+execute = "ytrss configuration && ytrss version && ytrss --help"
+
+[project.optional-dependencies]
+optional = [
+    'argcomplete'
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["ytrss"]

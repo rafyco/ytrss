@@ -19,7 +19,7 @@ class DefaultDestination(Destination):
 
     def __init__(self, info: DestinationInfo) -> None:
         # pylint: disable=C0123
-        if type(self) == DefaultDestination and info.type != 'default' and info.type != 'copy':
+        if type(self) == DefaultDestination and info.type != 'default' and info.type != 'copy':  # noqa: E721
             raise DestinationError()
         self.__info = info
 
