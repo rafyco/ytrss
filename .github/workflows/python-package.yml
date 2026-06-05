@@ -13,30 +13,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
-      - name: Install tox
-        run: pip install tox
+          python-version: "3.11"
+      - name: Install uv
+        run: pip install uv
       - name: Check style
-        run: |
-          tox -e style
+        run: uv run task style
 
   typing:
     name: Checks types
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
-      - name: Install tox
-        run: pip install tox
-      - name: Checks typping
-        run: |
-          tox -e typing
+          python-version: "3.11"
+      - name: Install uv
+        run: pip install uv
+      - name: Checks typing
+        run: uv run task typing
 
   unittests:
     name: Runs unittests
@@ -44,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        versions: ["3.10", "3.11", "3.12"]
+        versions: ["3.11", "3.12"]
     needs:
       - style
       - typing
@@ -54,11 +52,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.versions }}
-      - name: Install tox
-        run: pip install tox
+      - name: Install uv
+        run: pip install uv
       - name: Test with pytest
-        run: |
-          tox -e unittests
+        run: uv run task unittests
 
   documentation:
     name: Build documentation
@@ -68,15 +65,14 @@ jobs:
       - typing
     steps:
       - uses: actions/checkout@v1
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
-      - name: Install tox
-        run: pip install tox
+          python-version: "3.11"
+      - name: Install uv
+        run: pip install uv
       - name: Build documentation
-        run: |
-          tox -e documentation
+        run: uv run --group docs task documentation
       - name: Archive documentation
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
@@ -92,18 +88,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        versions: ["3.10", "3.11", "3.12"]
+        versions: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python ${{ matrix.versions }}
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.versions }}
-      - name: Install tox
-        run: pip install tox
+      - name: Install uv
+        run: pip install uv
       - name: Run console program
-        run: |
-          tox -e execute
+        run: uv run task execute
 
   analyze:
     name: CodeQL Analyze

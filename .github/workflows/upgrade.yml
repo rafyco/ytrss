@@ -1,5 +1,5 @@
 ---
-name: Package auto upgrade
+name: Package upgrade
 
 on: # yamllint disable-line rule:truthy
   push:
@@ -7,7 +7,6 @@ on: # yamllint disable-line rule:truthy
       - master
       - main
     paths-ignore:
-      - "ytrss/core/version.py"
       - "docs/"
       - ".github/"
       - "*.rst"
@@ -17,11 +16,10 @@ on: # yamllint disable-line rule:truthy
         type: choice
         description: Upgrade type
         options:
-          - rc
           - patch
           - minor
           - major
-        default: rc
+        default:
 
 permissions:
   contents: write
@@ -35,54 +33,44 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.11"
+      - name: Install uv
+        run: pip install uv
+
       - name: Upgrade version
         id: vars
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          MAJOR="$(sed 's/\s*self\._major\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
-          MINOR="$(sed 's/\s*self\._minor\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
-          PATCH="$(sed 's/\s*self\._patch\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
-          RC="$(sed 's/\s*self\._rc\s*=\s*\([0-9]*\)\s/\1/gp;d' ytrss/core/version.py)"
+          OLD_VERSION=$(uv pip show raftools | awk '/Version:/ {print $2}')
+         
+          MAJOR=$(echo -e -n "${OLD_VERSION}" | sed 's/\([0-9]*\)\.[0-9]*\.[0-9]*/\1/gp;d')
+          MINOR=$(echo "${OLD_VERSION}" | sed 's/[0-9]*\.\([0-9]*\)\.[0-9]*/\1/gp;d')
+          PATCH=$(echo "${OLD_VERSION}" | sed 's/[0-9]*\.[0-9]*\.\([0-9]*\)/\1/gp;d')
           
-          UPGRADE_TYPE="${{ github.event.inputs.upgrade-type || 'rc' }}"
+          case "${{ inputs.upgrade-type }}" in
+            "major" )
+              NEW_MAJOR=$(( MAJOR + 1 ))
+              NEW_VERSION="$NEW_MAJOR.0.0"
+               ;;
+            "minor" )
+              NEW_MINOR=$(( MINOR + 1 ))
+              NEW_VERSION="$MAJOR.$NEW_MINOR.0"
+               ;;
+            "patch" | * )
+              NEW_PATCH=$(( PATCH + 1 ))
+              NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+              ;;
+          esac
           
-          case "${UPGRADE_TYPE}" in
-             "major")
-                NEW_MAJOR=$(( MAJOR + 1 ))
-                sed -i "s/self\._major = [0-9]*/self._major = ${NEW_MAJOR}/" ytrss/core/version.py
-                sed -i "s/self\._minor = [0-9]*/self._minor = 0/" ytrss/core/version.py
-                sed -i "s/self\._patch = [0-9]*/self._patch = 0/" ytrss/core/version.py
-                sed -i "s/self\._rc = [0-9]*/self._rc = 0/" ytrss/core/version.py
-                ;;
-             "minor")
-                NEW_MINOR=$(( MINOR + 1 ))
-                sed -i "s/self\._minor = [0-9]*/self._minor = ${NEW_MINOR}/" ytrss/core/version.py
-                sed -i "s/self\._patch = [0-9]*/self._patch = 0/" ytrss/core/version.py
-                sed -i "s/self\._rc = [0-9]*/self._rc = 0/" ytrss/core/version.py
-                ;;
-             "patch")
-                NEW_PATCH=$(( PATCH + 1 ))
-                sed -i "s/self\._patch = [0-9]*/self._patch = ${NEW_PATCH}/" ytrss/core/version.py
-                sed -i "s/self\._rc = [0-9]*/self._rc = 0/" ytrss/core/version.py
-                ;;
-             *)
-                NEW_RC=$(( RC + 1 ))
-                sed -i "s/self\._rc = [0-9]*/self._rc = ${NEW_RC}/" ytrss/core/version.py
-                ;;
-          esac    
+          sed -i "s/version = \"${OLD_VERSION}\"/version = \"${NEW_VERSION}\"/g" pyproject.toml
           
-          GIT_TAG="$(python ./setup.py --version)"
-          # spellcheck disable=SC2001
-          echo "git_tag=${GIT_TAG}" >> $GITHUB_OUTPUT
+          echo "git_tag=${NEW_VERSION}" >> $GITHUB_OUTPUT
       - name: Build Package
-        run: |
-          pip install build
-          python -m build
+        run: uv build
       - name: Commit massage
         run: |
           git config --local user.email "action@github.com"

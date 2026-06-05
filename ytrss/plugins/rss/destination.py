@@ -18,7 +18,7 @@ class RssDestination(DefaultDestination):
 
     def __init__(self, info: DestinationInfo) -> None:
         # pylint: disable=C0123
-        if type(self) == RssDestination and info.type != 'rss':
+        if type(self) == RssDestination and info.type != 'rss':  # noqa: E721
             raise DestinationError()
         DefaultDestination.__init__(self, info)
 
