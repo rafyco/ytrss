@@ -47,7 +47,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          OLD_VERSION=$(uv pip show raftools | awk '/Version:/ {print $2}')
+          OLD_VERSION=$(uv pip show ytrss | awk '/Version:/ {print $2}')
          
           MAJOR=$(echo -e -n "${OLD_VERSION}" | sed 's/\([0-9]*\)\.[0-9]*\.[0-9]*/\1/gp;d')
           MINOR=$(echo "${OLD_VERSION}" | sed 's/[0-9]*\.\([0-9]*\)\.[0-9]*/\1/gp;d')
