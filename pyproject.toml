@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ytrss"
-version = "0.5.0"
+version = "0.5.1"
 description = "Tools for downloading mp3 from YouTube subscription and playlists."
 readme = "README.rst"
 requires-python = ">=3.11"
