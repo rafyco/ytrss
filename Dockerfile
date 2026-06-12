@@ -22,7 +22,10 @@ WORKDIR /app
 COPY --from=builder /app /app
 ENV PATH="/app/.venv/bin:$PATH"
 
-RUN adduser -u 1000 --disabled-password --gecos "" ytrss
+RUN apt-get update; \
+    apt-get install ffmpeg -y; \
+    adduser -u 1000 --disabled-password --gecos "" ytrss
+
 USER ytrss
 
 RUN mkdir -p /home/ytrss/.config/ytrss/cache; \
