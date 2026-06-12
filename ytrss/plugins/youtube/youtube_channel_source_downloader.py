@@ -1,5 +1,6 @@
 import re
 
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.entity.source import Source
 from ytrss.core.entity.source_downloader import SourceDownloaderError
 from ytrss.core.helpers.typing import Url
@@ -12,12 +13,12 @@ class YouTubeChannelSourceDownloader(BaseYouTubeSourceDownloader):
     Implementation of source downloader for channel on YouTube
     """
 
-    def __init__(self, source: Source) -> None:
+    def __init__(self, source: Source, configuration: YtrssConfiguration) -> None:
         match = re.match(r"https?:\/\/(www\.)?youtube\.com\/channel\/(?P<code>[\dA-Za-z0-9_\-%]+)", source.url)
         if match is None:
             raise SourceDownloaderError()
         self._code = match.group('code')
-        BaseYouTubeSourceDownloader.__init__(self, source)
+        BaseYouTubeSourceDownloader.__init__(self, source, configuration)
 
     @property
     def source_url(self) -> Url:

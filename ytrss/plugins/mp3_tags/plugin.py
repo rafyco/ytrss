@@ -15,9 +15,12 @@ class Mp3TagsPlugin(Plugin):
     Plugin to add metadata to audio files.
     """
 
-    def modify_res_files(self, downloaded_movie: DownloadedMovie, configuration: YtrssConfiguration) -> None:
+    def __init__(self, configuration: YtrssConfiguration):
+        self._configuration = configuration
+
+    def modify_res_files(self, downloaded_movie: DownloadedMovie) -> None:
         for res_file in downloaded_movie.resources_files:
-            movie_tags = FileMutagen(os.path.join(configuration.cache_path, res_file), easy=True)
+            movie_tags = FileMutagen(os.path.join(self._configuration.cache_path, res_file), easy=True)
 
             if movie_tags is None:
                 continue

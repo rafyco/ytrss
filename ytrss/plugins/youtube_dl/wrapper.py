@@ -1,7 +1,10 @@
+import os
 import sys
 from io import StringIO, TextIOBase
-from typing import Union
+from typing import Union, List
 import yt_dlp
+
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.helpers.logging import logger
 
 
@@ -73,3 +76,34 @@ def youtube_main_wrapper(*args: str, show_output: bool = False) -> tuple[int, st
     sys.stderr = old_stderr
 
     return status, tmp_stdout.getvalue(), tmp_stderr.getvalue()
+
+
+class YtDlsArguments:
+    def __init__(self, configuration: YtrssConfiguration) -> None:
+        self._cookie_path = os.path.join(configuration.database_path, "cookies.txt")
+        self._download_args = configuration.args
+
+    @property
+    def cookie_file(self) -> str:
+        return self._cookie_path
+
+    @property
+    def cookies_args(self) -> List[str]:
+        if os.path.isfile(self._cookie_path):
+            return ["--cookies", self.cookie_file]
+        return []
+
+    @property
+    def default_args(self) -> List[str]:
+        return [
+            *self.cookies_args,
+            "--remote-components",
+            "ejs:github",
+        ]
+
+    @property
+    def download_args(self) -> List[str]:
+        return [
+            *self.default_args,
+            *self._download_args,
+        ]

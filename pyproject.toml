@@ -76,6 +76,7 @@ unittests = "pytest tests/unit"
 integration = "pytest tests/integration"
 documentation = "sphinx-build -b html docs build/sphinx/html/"
 execute = "ytrss configuration && ytrss version && ytrss --help"
+all = "task style && task typing && task unittests && task execute"
 
 [project.optional-dependencies]
 optional = [

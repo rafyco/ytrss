@@ -2,7 +2,6 @@ import abc
 
 from typing import Optional
 
-from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.entity.source import Source
 from ytrss.core.entity.destination import Destination
 
@@ -39,7 +38,7 @@ class BasePlugin(metaclass=abc.ABCMeta):
         """ Method that creates destination object. """
 
     @abc.abstractmethod
-    def download_movie(self, movie: Movie, configuration: YtrssConfiguration) -> Optional[DownloadedMovie]:
+    def download_movie(self, movie: Movie) -> Optional[DownloadedMovie]:
         """ Method that download a movie. """
 
     @abc.abstractmethod
@@ -47,7 +46,7 @@ class BasePlugin(metaclass=abc.ABCMeta):
         """ Method that creates a source downloader object. """
 
     @abc.abstractmethod
-    def modify_res_files(self, downloaded_movie: DownloadedMovie, configuration: YtrssConfiguration) -> None:
+    def modify_res_files(self, downloaded_movie: DownloadedMovie) -> None:
         """ Method that modify downloaded files. """
 
 
@@ -60,7 +59,7 @@ class Plugin(BasePlugin):
     def create_destination(self, info: DestinationInfo) -> Optional[Destination]:
         return None
 
-    def download_movie(self, movie: Movie, configuration: YtrssConfiguration) -> Optional[DownloadedMovie]:
+    def download_movie(self, movie: Movie) -> Optional[DownloadedMovie]:
         return None
 
     def create_source_downloader(self, source: Source) -> Optional[SourceDownloader]:
@@ -69,5 +68,5 @@ class Plugin(BasePlugin):
     def create_movie(self, url: Url) -> Optional[Movie]:
         return None
 
-    def modify_res_files(self, downloaded_movie: DownloadedMovie, configuration: YtrssConfiguration) -> None:
+    def modify_res_files(self, downloaded_movie: DownloadedMovie) -> None:
         pass

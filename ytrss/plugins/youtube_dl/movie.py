@@ -6,9 +6,10 @@ import json
 from datetime import datetime
 from io import StringIO
 
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.entity.movie import Movie, MovieError
 from ytrss.core.helpers.typing import Url
-from ytrss.plugins.youtube_dl.wrapper import youtube_main_wrapper
+from ytrss.plugins.youtube_dl.wrapper import youtube_main_wrapper, YtDlsArguments
 
 
 class InvalidDataMovieError(MovieError):
@@ -21,13 +22,18 @@ class InvalidDataMovieError(MovieError):
 class YouTubeMovie(Movie):
     """ A YouTube implementation of movie """
 
-    def __init__(self, url: Url) -> None:
+    def __init__(self, url: Url, configuration: YtrssConfiguration) -> None:
         self._url: Url = url
+        self._configuration = configuration
         self._date: Optional[datetime] = None
         self._json_data = self._get_movie_data()
 
     def _get_movie_data(self) -> Dict[str, str]:
-        _, json_output, self._error = youtube_main_wrapper('--dump-json', self._url)
+        _, json_output, self._error = youtube_main_wrapper(
+            *YtDlsArguments(self._configuration).default_args,
+            '--dump-json',
+            self._url
+        )
         try:
             output = json.load(StringIO(json_output))
             if isinstance(output, dict):

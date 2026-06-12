@@ -20,13 +20,13 @@ from ytrss.plugins.youtube_dl.plugin import YouTubeDlPlugin
 class PluginManager(BasePlugin):
     """ Plugin Manager """
 
-    def __init__(self) -> None:
+    def __init__(self, configuration: YtrssConfiguration) -> None:
         self._plugins: List[BasePlugin] = [
             DefaultPlugin(),
             RssPlugin(),
-            YouTubePlugin(),
-            YouTubeDlPlugin(),
-            Mp3TagsPlugin()
+            YouTubePlugin(configuration),
+            YouTubeDlPlugin(configuration),
+            Mp3TagsPlugin(configuration)
         ]
 
     @property
@@ -54,10 +54,10 @@ class PluginManager(BasePlugin):
                 pass
         raise DestinationError("Unable to create destination")
 
-    def download_movie(self, movie: Movie, configuration: YtrssConfiguration) -> DownloadedMovie:
+    def download_movie(self, movie: Movie) -> DownloadedMovie:
         for plugin in self._plugins:
             try:
-                downloaded_movie = plugin.download_movie(movie, configuration)  # pylint: disable=E1128
+                downloaded_movie = plugin.download_movie(movie)  # pylint: disable=E1128
                 if downloaded_movie is not None:
                     return downloaded_movie
             except Exception:  # pylint: disable=W0703
@@ -74,9 +74,9 @@ class PluginManager(BasePlugin):
                 pass
         raise SourceDownloaderError()
 
-    def modify_res_files(self, downloaded_movie: DownloadedMovie, configuration: YtrssConfiguration) -> None:
+    def modify_res_files(self, downloaded_movie: DownloadedMovie) -> None:
         for plugin in self._plugins:
             # try:
-            plugin.modify_res_files(downloaded_movie, configuration)
+            plugin.modify_res_files(downloaded_movie)
             # except Exception as ex:  # pylint: disable=W0703
             #     logger.error("Problem with modify file: %s", ex)

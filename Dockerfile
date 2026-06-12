@@ -11,7 +11,10 @@ RUN --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
 COPY . /app
 
 RUN apt-get update; \
-    apt-get install git -y;
+    apt-get install git wget -y; \
+    wget -qO /usr/local/bin/deno.gz https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip; \
+    gunzip /usr/local/bin/deno.gz; \
+    chmod a+x /usr/local/bin/deno;
 
 RUN uv sync --frozen --no-dev --extra optional
 
@@ -20,6 +23,8 @@ FROM python:3.12-slim
 
 WORKDIR /app
 COPY --from=builder /app /app
+COPY --from=builder /usr/local/bin/deno /usr/local/bin/deno
+
 ENV PATH="/app/.venv/bin:$PATH"
 
 RUN apt-get update; \

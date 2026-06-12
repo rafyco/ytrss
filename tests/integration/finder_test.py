@@ -1,5 +1,7 @@
 import unittest
 
+from unittest.mock import Mock
+
 from ytrss.configuration.entity.source import Source
 from ytrss.plugins.youtube.youtube_channel_source_downloader import YouTubeChannelSourceDownloader
 from ytrss.plugins.youtube.youtube_named_channel_source_downloader import \
@@ -12,10 +14,12 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
 
     def test_channel_with_code_find(self) -> None:
         """ Test channel finder with code. """
+        configuration_mock = Mock()
+
         source = YouTubeChannelSourceDownloader(Source.from_json({
             'url': "https://www.youtube.com/channel/UC5SdvjkYXdGAqmqAGlxTnpw",
             'destination': "default",
-        }))
+        }), configuration_mock)
         movies = list(source.movies)
         self.assertGreater(len(movies), 0)
         for movie, _ in movies:
@@ -25,10 +29,12 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
 
     def test_channel_with_name_find(self) -> None:
         """ Test channel finder with name. """
+        configuration_mock = Mock()
+
         source = YouTubeNamedChannelSourceDownloader(Source.from_json({
             'url': "https://www.youtube.com/c/MinnivaOfficial",
             'destination': "default"
-        }))
+        }), configuration_mock)
         movies = list(source.movies)
         self.assertGreater(len(movies), 0)
         for movie, _ in movies:
@@ -38,10 +44,12 @@ class TestFinder(unittest.TestCase):  # pylint: disable=R0904
 
     def test_playlist_find(self) -> None:
         """ Test playlist finder. """
+        configuration_mock = Mock()
+
         source = YouTubePlaylistSourceDownloader(Source.from_json({
             'url': "https://www.youtube.com/playlist?list=PL6ZLc-zZUnxlkB9t8CcpFZeV6V5I_cVgu",
             'destination': "default",
-        }))
+        }), configuration_mock)
         movies = list(source.movies)
         self.assertGreater(len(movies), 0)
         for movie, _ in movies:
