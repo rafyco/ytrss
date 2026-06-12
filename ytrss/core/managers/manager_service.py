@@ -59,7 +59,7 @@ class ManagerService:
     def plugin_manager(self) -> PluginManager:
         """ Plugin manager """
         if self._plugin_manager is None:
-            self._plugin_manager = PluginManager()
+            self._plugin_manager = PluginManager(self.configuration)
         return self._plugin_manager
 
     @property

@@ -1,5 +1,6 @@
 from typing import Optional, Callable, List
 
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.entity.source import Source
 from ytrss.core.entity.plugin import Plugin
 from ytrss.core.entity.source_downloader import SourceDownloader
@@ -11,8 +12,11 @@ from ytrss.plugins.youtube.youtube_playlist_source_downloader import YouTubePlay
 class YouTubePlugin(Plugin):
     """ Plugin with sources for YouTube site """
 
+    def __init__(self, configuration: YtrssConfiguration):
+        self._configuration = configuration
+
     def create_source_downloader(self, source: Source) -> Optional[SourceDownloader]:
-        sources_constructs: List[Callable[[Source], SourceDownloader]] = [
+        sources_constructs: List[Callable[[Source, YtrssConfiguration], SourceDownloader]] = [
             YouTubePlaylistSourceDownloader,
             YouTubeChannelSourceDownloader,
             YouTubeNamedChannelSourceDownloader
@@ -20,7 +24,7 @@ class YouTubePlugin(Plugin):
 
         for source_downloader_class in sources_constructs:
             try:
-                source_downloader = source_downloader_class(source)
+                source_downloader = source_downloader_class(source, self._configuration)
                 if source_downloader is not None:
                     return source_downloader
             except Exception:  # pylint: disable=W0703

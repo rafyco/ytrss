@@ -9,7 +9,7 @@ from ytrss.core.helpers.files import cwd
 from ytrss.core.helpers.logging import logger
 from ytrss.core.helpers.typing import Path
 from ytrss.plugins.youtube_dl.movie import YouTubeMovie
-from ytrss.plugins.youtube_dl.wrapper import youtube_main_wrapper
+from ytrss.plugins.youtube_dl.wrapper import youtube_main_wrapper, YtDlsArguments
 
 
 class YouTubeDownloader:
@@ -36,7 +36,7 @@ class YouTubeDownloader:
         with cwd(self.configuration.cache_path):
             logger.info("Downloading movie: [%s] %s", self._movie.url, self._movie.title)
             status, _, _ = youtube_main_wrapper(
-                *self.configuration.args,
+                *YtDlsArguments(self.configuration).download_args,
                 '-o',
                 self._movie.identity,
                 self._movie.url,

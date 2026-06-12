@@ -4,6 +4,7 @@ from typing import Iterable, Tuple
 from urllib.request import urlopen
 from xml.dom import minidom
 
+from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.configuration.entity.source import Source
 from ytrss.core.entity.movie import Movie
@@ -19,9 +20,10 @@ class BaseYouTubeSourceDownloader(SourceDownloader):
     Object that implements source downloader that look for movie from YouTube.
     """
 
-    def __init__(self, source: Source) -> None:
+    def __init__(self, source: Source, configuration: YtrssConfiguration) -> None:
         self.url = source.url
         self.destination = source.destination
+        self._configuration = configuration
 
     @property
     @abstractmethod
@@ -44,7 +46,7 @@ class BaseYouTubeSourceDownloader(SourceDownloader):
             url: Url = Url(elem.getAttribute("href"))
             if "watch?v=" in url:  # pylint: disable=E1135
                 try:
-                    yield YouTubeMovie(url), self.destination
+                    yield YouTubeMovie(url, self._configuration), self.destination
                 except Exception as ex:  # pylint: disable=W0703
                     logger.error("Problem with url in source: %s", self.url)
                     logger.error(ex)
