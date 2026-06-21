@@ -36,7 +36,8 @@ dependencies = [
     'astroid',
     'jinja2',
     'locks',
-    'mutagen'
+    'mutagen',
+    'apscheduler',
 ]
 
 [project.urls]

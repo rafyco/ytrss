@@ -1,18 +1,15 @@
-import os
-import time
+import asyncio
 from datetime import datetime
 from argparse import Namespace
 
-from locks import Mutex
+from apscheduler.schedulers.asyncio import AsyncIOScheduler  # type: ignore[import-untyped]
 
 from ytrss.commands.configuration import ConfigurationCommand
 from ytrss.commands.version import VersionCommand
 from ytrss.commands import BaseCommand
-from ytrss.core.algoritms.clean import clean_tasks
-from ytrss.core.algoritms.download import download_all_movies
-from ytrss.core.algoritms.finder import prepare_urls
 from ytrss.core.entity.webhooks import StartDaemonWebhook
 from ytrss.core.helpers.logging import logger
+from ytrss.core.algoritms.run import run_one_step
 
 
 class DaemonCommand(BaseCommand):
@@ -48,19 +45,24 @@ class DaemonCommand(BaseCommand):
         await VersionCommand().run(options)
         await ConfigurationCommand().run(options)
         logger.info("")
-        while True:
-            os.makedirs('/tmp/ytrss', exist_ok=True)
-            try:
-                with Mutex('/tmp/ytrss/ytrss.lock'):
-                    logger.info("Start process: %s", datetime.now())
-                    prepare_urls()
-                    await download_all_movies()
-                    await clean_tasks()
-                    logger.info("Stop process: %s", datetime.now())
-            except BlockingIOError:
-                logger.info("Program is already started")
-                return 1
-            except Exception as ex:  # pylint: disable=W0703
-                logger.error("Unexpected daemon problem: %s", str(ex))
 
-            time.sleep(3600)
+        scheduler = AsyncIOScheduler()
+
+        scheduler.add_job(
+            run_one_step,
+            'interval',
+            hours=1,
+            next_run_time=datetime.now(),
+        )
+
+        scheduler.start()
+        logger.info("Scheduler started")
+
+        try:
+            await asyncio.Event().wait()
+        except (KeyboardInterrupt, SystemExit):
+            logger.info("Shutting down scheduler...")
+        finally:
+            scheduler.shutdown()
+
+        return 0
