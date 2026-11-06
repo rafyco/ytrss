@@ -60,9 +60,11 @@ class PluginManager(BasePlugin):
                 downloaded_movie = plugin.download_movie(movie)  # pylint: disable=E1128
                 if downloaded_movie is not None:
                     return downloaded_movie
+            except DownloadMovieError:
+                raise
             except Exception:  # pylint: disable=W0703
                 pass
-        raise DownloadMovieError()
+        raise DownloadMovieError("No plugin can download this movie")
 
     def create_source_downloader(self, source: Source) -> SourceDownloader:
         for plugin in self._plugins:
