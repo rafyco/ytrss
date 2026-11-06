@@ -3,7 +3,7 @@ import os
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
 from ytrss.core.entity.movie import Movie
-from ytrss.core.helpers.exceptions import DownloadMovieError
+from ytrss.core.helpers.exceptions import CacheError, DownloadMovieError
 
 from ytrss.core.helpers.files import cwd
 from ytrss.core.helpers.logging import logger
@@ -35,7 +35,7 @@ class YouTubeDownloader:
 
         with cwd(self.configuration.cache_path):
             logger.info("Downloading movie: [%s] %s", self._movie.url, self._movie.title)
-            status, _, _ = youtube_main_wrapper(
+            status, _, stderr = youtube_main_wrapper(
                 *YtDlsArguments(self.configuration).download_args,
                 '-o',
                 self._movie.identity,
@@ -44,11 +44,12 @@ class YouTubeDownloader:
             )
 
             if status != 0:
-                raise DownloadMovieError(f"yt_dlp raise with state: {status}")
+                errors = [line.strip() for line in stderr.splitlines() if line.startswith("ERROR:")]
+                raise CacheError("\n".join(errors) or f"yt_dlp raise with state: {status}")
 
             for extension in ['mp3', 'mp4', 'webm', 'mkv', 'ogg']:
                 full_file_name = Path(f"{self._movie.identity}.{extension}")
                 if os.path.isfile(full_file_name):
                     return DownloadedMovie.create_movie_desc(self.configuration.cache_path, self._movie,
                                                              [full_file_name])
-        raise DownloadMovieError(f"File {self._movie.identity} not downloaded")
+        raise CacheError(f"File {self._movie.identity} not downloaded")

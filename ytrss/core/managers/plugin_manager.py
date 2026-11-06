@@ -8,7 +8,7 @@ from ytrss.core.entity.downloaded_movie import DownloadedMovie
 from ytrss.core.entity.movie import Movie, MovieError
 from ytrss.core.entity.plugin import BasePlugin
 from ytrss.core.entity.source_downloader import SourceDownloader, SourceDownloaderError
-from ytrss.core.helpers.exceptions import DownloadMovieError
+from ytrss.core.helpers.exceptions import CacheError
 from ytrss.core.helpers.typing import Url
 from ytrss.plugins.default.plugin import DefaultPlugin
 from ytrss.plugins.mp3_tags.plugin import Mp3TagsPlugin
@@ -60,9 +60,11 @@ class PluginManager(BasePlugin):
                 downloaded_movie = plugin.download_movie(movie)  # pylint: disable=E1128
                 if downloaded_movie is not None:
                     return downloaded_movie
+            except CacheError:
+                raise
             except Exception:  # pylint: disable=W0703
                 pass
-        raise DownloadMovieError()
+        raise CacheError("No plugin can download this movie")
 
     def create_source_downloader(self, source: Source) -> SourceDownloader:
         for plugin in self._plugins:
