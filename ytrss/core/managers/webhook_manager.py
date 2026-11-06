@@ -1,3 +1,5 @@
+from urllib.parse import quote
+
 import requests
 
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
@@ -20,8 +22,9 @@ class WebhookManager:
         """ Invoke a webhook """
 
         logger.debug("[Webhook] Invoke Webhook: %s", webhook.name)
+        data = {key: quote(value, safe="") for key, value in webhook.data.items()}
         for webhook_url in self._configuration.get_webhook(webhook.name):
-            webhook_url_formated = webhook_url.format(**webhook.data)
+            webhook_url_formated = webhook_url.format(**data)
             try:
                 response = requests.get(webhook_url_formated, timeout=10)
 
