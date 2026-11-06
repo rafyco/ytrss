@@ -26,6 +26,8 @@ class YouTubeDlPlugin(Plugin):
             return None
 
     def download_movie(self, movie: Movie) -> Optional[DownloadedMovie]:
+        if not isinstance(movie, YouTubeMovie):
+            return None
         return YouTubeDownloader(movie, self._configuration).download()
 
     def create_source_downloader(self, source: Source) -> Optional[SourceDownloader]:
