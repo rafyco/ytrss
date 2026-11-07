@@ -4,7 +4,7 @@ from ytrss.configuration.entity.source import Source
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
 
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
-from ytrss.core.entity.movie import Movie, MovieError
+from ytrss.core.entity.movie import Movie
 from ytrss.core.entity.plugin import Plugin
 from ytrss.core.entity.source_downloader import SourceDownloader
 from ytrss.core.helpers.typing import Url
@@ -20,10 +20,7 @@ class YouTubeDlPlugin(Plugin):
         self._configuration = configuration
 
     def create_movie(self, url: Url) -> Optional[Movie]:
-        try:
-            return YouTubeMovie(url, self._configuration)
-        except MovieError:
-            return None
+        return YouTubeMovie(url, self._configuration)
 
     def download_movie(self, movie: Movie) -> Optional[DownloadedMovie]:
         if not isinstance(movie, YouTubeMovie):
