@@ -49,6 +49,12 @@ The following table lists all supported webhooks, their triggers, and the parame
       - Triggered if an error occurs during the download process.
       - title, url, id, desc, cause
 
+    * - movie-error
+      - Triggered once per destination and error type, when a movie cannot be created or downloaded. It is triggered
+        again for a new error type, and after a successful download to that destination, which clears its errors.
+        Movies that are not ready yet (premieres and upcoming live events) are skipped.
+      - title, url, id, desc, destination, error_type, cause
+
 Parameter Definitions
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -58,3 +64,6 @@ Parameter Definitions
  * **desc**: The description or metadata associated with the movie.
  * **destination**: The intended storage path or category for the movie.
  * **cause**: A text message describing the error/exception that led to a download failure.
+ * **error_type**: The short form of the error, the same for one kind of error on different movies.
+
+For **movie-error**, title and desc are empty when the movie could not be created.

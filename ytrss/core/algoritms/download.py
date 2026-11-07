@@ -4,12 +4,32 @@ from locks import Mutex
 
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.destination import Destination
-from ytrss.core.entity.movie import Movie
-from ytrss.core.entity.webhooks import SuccessDownloadMovieWebhook, FailedDownloadMovieWebhook
+from ytrss.core.entity.movie import Movie, MovieError
+from ytrss.core.entity.webhooks import (
+    FailedDownloadMovieWebhook,
+    MovieErrorData,
+    MovieErrorWebhook,
+    SuccessDownloadMovieWebhook
+)
 from ytrss.core.helpers.exceptions import DownloadMovieError
 from ytrss.core.helpers.logging import logger
+from ytrss.core.helpers.string_utils import error_type
 from ytrss.core.managers.manager_service import ManagerService, default_manager_service
 from ytrss.database.database import DatabaseStatus
+
+NOT_READY_CAUSES = ("Premieres in", "This live event will begin in")
+
+
+def report_movie_error(error: MovieErrorData, manager_service: ManagerService) -> None:
+    """ Invoke the movie-error webhook, if this type of error is new for the destination
+
+    A movie that is not ready yet is not an error, so it is skipped.
+    """
+    if any(text in error.cause for text in NOT_READY_CAUSES):
+        return
+    cause_type = error_type(error.cause)
+    if manager_service.database.register_error(DestinationId(error.destination), cause_type):
+        manager_service.webhook_manager.invoke_hook(MovieErrorWebhook(error, cause_type))
 
 
 async def download_movie(
@@ -57,6 +77,7 @@ async def download_task(
                             movie.url,
                             movie.title)
                 manager_service.database.change_type(movie, DatabaseStatus.DONE)
+                manager_service.database.clear_errors(destination_id)
                 manager_service.webhook_manager.invoke_hook(SuccessDownloadMovieWebhook(movie))
                 return True
             except DownloadMovieError as ex:
@@ -66,6 +87,10 @@ async def download_task(
                              movie.title)
                 manager_service.database.change_type(movie, DatabaseStatus.ERROR)
                 manager_service.webhook_manager.invoke_hook(FailedDownloadMovieWebhook(movie, ex))
+                report_movie_error(
+                    MovieErrorData(destination_id, str(ex), movie.url, movie.identity, movie.title, movie.description),
+                    manager_service
+                )
     except Exception as ex:  # pylint: disable=W0703
         logger.error("Cannot download movie (%s): [%s] %s",
                      str(ex),
@@ -81,10 +106,13 @@ async def download_all_movies(manager_service: ManagerService = default_manager_
     movies are download as a separate async task.
     """
 
+    def on_movie_error(identity: str, url: str, destination_id: DestinationId, error: MovieError) -> None:
+        report_movie_error(MovieErrorData(destination_id, str(error), url, identity), manager_service)
+
     logger.info("Starting download movies:")
     try:
         outputs = []
-        for movie, destination in manager_service.database.movies():
+        for movie, destination in manager_service.database.movies(on_movie_error):
             output = await download_task(movie, destination)
             outputs.append(output)
         queue_len = len(outputs)

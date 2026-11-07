@@ -62,3 +62,32 @@ class FailedDownloadMovieWebhook(WebhookType):
             'desc': movie.description,
             'cause': str(cause)
         })
+
+
+@dataclass
+class MovieErrorData:
+    """ Details of a movie error
+
+    The movie doesn't exist when the error is raised during its creation, so the title and the
+    description stay empty.
+    """
+    destination: str
+    cause: str
+    url: str = ""
+    identity: str = ""
+    title: str = ""
+    desc: str = ""
+
+
+class MovieErrorWebhook(WebhookType):
+    """ A webhook class representing a new type of error in destination """
+    def __init__(self, error: MovieErrorData, error_type: str) -> None:
+        super().__init__('movie-error', {
+            'title': error.title,
+            'url': error.url,
+            'id': error.identity,
+            'desc': error.desc,
+            'destination': error.destination,
+            'error_type': error_type,
+            'cause': error.cause
+        })
