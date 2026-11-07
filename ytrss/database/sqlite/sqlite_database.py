@@ -12,7 +12,7 @@ from ytrss.core.entity.movie import Movie, MovieError
 from ytrss.core.helpers.logging import logger
 from ytrss.core.managers.plugin_manager import PluginManager
 
-from ytrss.database.database import Database, DatabaseStatus, MovieSelect, get_movie_id
+from ytrss.database.database import Database, DatabaseStatus, MovieErrorCallback, MovieSelect, get_movie_id
 
 
 class SqliteDatabase(Database):
@@ -41,6 +41,14 @@ class SqliteDatabase(Database):
                     comment TEXT
                 )
             ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS movie_errors (
+                    destination TEXT NOT NULL,
+                    error_type TEXT NOT NULL,
+                    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(destination, error_type)
+                )
+            ''')
 
     def change_type(self, movie: MovieSelect, db_type: DatabaseStatus) -> None:
         with self._database_handler() as conn:
@@ -61,7 +69,7 @@ class SqliteDatabase(Database):
             rows = cursor.fetchall()
         return len(rows) > 0
 
-    def movies(self) -> Iterable[Tuple[Movie, DestinationId]]:
+    def movies(self, on_error: Optional[MovieErrorCallback] = None) -> Iterable[Tuple[Movie, DestinationId]]:
         with self._database_handler() as conn:
             cursor = conn.execute('''
                 SELECT identity, url, destination
@@ -73,8 +81,10 @@ class SqliteDatabase(Database):
         for row in rows:
             try:
                 movie = self._plugin_manager.create_movie(row[1])
-            except MovieError:
+            except MovieError as ex:
                 logger.error("Not valid url or movie not exists: %s", row[1])
+                if on_error is not None:
+                    on_error(row[0], row[1], DestinationId(row[2]), ex)
                 continue
             destination = DestinationId(row[2])
             if self.is_new(movie, destination):
@@ -106,3 +116,17 @@ class SqliteDatabase(Database):
             if len(rows) < 1:
                 return None
             return datetime.fromisoformat(rows[0][0])
+
+    def register_error(self, destination: DestinationId, error_type: str) -> bool:
+        with self._database_handler() as conn:
+            cursor = conn.execute(
+                'INSERT OR IGNORE INTO movie_errors (destination, error_type) VALUES (?, ?)',
+                (destination, error_type)
+            )
+            conn.commit()
+            return cursor.rowcount > 0
+
+    def clear_errors(self, destination: DestinationId) -> None:
+        with self._database_handler() as conn:
+            conn.execute('DELETE FROM movie_errors WHERE destination = ?', (destination,))
+            conn.commit()

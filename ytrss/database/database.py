@@ -3,13 +3,14 @@ import abc
 
 from enum import Enum
 
-from typing import Iterable, Tuple, Optional, Union
+from typing import Callable, Iterable, Tuple, Optional, Union
 
 from ytrss.configuration.entity.destination_info import DestinationId
 from ytrss.core.entity.downloaded_movie import DownloadedMovie
-from ytrss.core.entity.movie import Movie
+from ytrss.core.entity.movie import Movie, MovieError
 
 MovieSelect = Union[Movie, DownloadedMovie, str]
+MovieErrorCallback = Callable[[str, str, DestinationId, MovieError], None]
 
 
 def get_movie_id(movie: MovieSelect) -> str:
@@ -46,8 +47,12 @@ class Database(metaclass=abc.ABCMeta):
         """ Change type of movie task. """
 
     @abc.abstractmethod
-    def movies(self) -> Iterable[Tuple[Movie, DestinationId]]:
-        """ Get list of movies to download. """
+    def movies(self, on_error: Optional[MovieErrorCallback] = None) -> Iterable[Tuple[Movie, DestinationId]]:
+        """ Get list of movies to download.
+
+        A row with a movie that cannot be created is skipped. The on_error callback gets its identity,
+        url, destination and the error.
+        """
 
     @abc.abstractmethod
     def queue_mp3(self, movie: Movie, destination: DestinationId) -> bool:
@@ -56,3 +61,11 @@ class Database(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_created_data(self, movie: MovieSelect) -> Optional[datetime]:
         """ Get date of movie create. """
+
+    @abc.abstractmethod
+    def register_error(self, destination: DestinationId, error_type: str) -> bool:
+        """ Remember an error of destination. Return True only if it was not known yet. """
+
+    @abc.abstractmethod
+    def clear_errors(self, destination: DestinationId) -> None:
+        """ Forget all errors of destination. """
