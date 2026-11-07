@@ -1,4 +1,4 @@
-from typing import List, Sequence
+from typing import List, Optional, Sequence
 
 from ytrss.configuration.entity.configuration_data import YtrssConfiguration
 from ytrss.configuration.entity.destination_info import DestinationInfo
@@ -35,13 +35,18 @@ class PluginManager(BasePlugin):
         return self._plugins
 
     def create_movie(self, url: Url) -> Movie:
+        last_error: Optional[MovieError] = None
         for plugin in self._plugins:
             try:
                 movie = plugin.create_movie(url)  # pylint: disable=E1128
                 if movie is not None:
                     return movie
+            except MovieError as ex:
+                last_error = ex
             except Exception:  # pylint: disable=W0703
                 pass
+        if last_error is not None:
+            raise MovieError(str(last_error)) from last_error
         raise MovieError()
 
     def create_destination(self, info: DestinationInfo) -> Destination:
