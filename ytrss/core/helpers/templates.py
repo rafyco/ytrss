@@ -20,15 +20,15 @@ def format_desc(text: Optional[str]) -> str:
     result = re.sub(r"[\w\.\+\-]+\@[\w]+\.[a-z]{2,3}",
                     r"<a href='mailto:\g<0>'>\g<0></a>",
                     result)
-    result = re.sub(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|i"
+    result = re.sub(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$%&'()*+,\-./:;<=>?@\[\\\]^_]|[!*\(\),]|i"
                     "(?:%[0-9a-fA-F][0-9a-fA-F]))+",
                     r"<a href='\g<0>'>\g<0></a>",
                     result)
-    result = re.sub(r"\/redirect(?:[a-zA-Z0-9$-_@.&!*\(\)]*)(?:q=(?P<url>[A-Za-z0-9%.]+))+"
-                    "(?:[a-zA-Z0-9$-_@.&!*,]*)",
+    result = re.sub(r"\/redirect(?:[a-zA-Z0-9!$%&'()*+,\-./:;<=>?@\[\\\]^_]*)(?:q=(?P<url>[A-Za-z0-9%.]+))+"
+                    r"(?:[a-zA-Z0-9!$%&'()*+,\-./:;<=>?@\[\\\]^_]*)",
                     r"<a href='\g<url>'>\g<url></a>",
                     result)
-    result = re.sub(r"\/(?:redirect|watch)(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|"
+    result = re.sub(r"\/(?:redirect|watch)(?:[a-zA-Z]|[0-9]|[$%&'()*+,\-./:;<=>?@\[\\\]^_]|[!*\(\),]|"
                     "(?:%[0-9a-zA-Z][0-9a-zA-Z]))+",
                     r"<a href='https://youtube.com\g<0>'>\g<0></a>",
                     result)
