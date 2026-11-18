@@ -62,7 +62,7 @@ dev = [
     "types-requests",
 ]
 docs = [
-    "Sphinx",
+    "Sphinx>=9.0.4,<10",
     "sphinx-conestack-theme",
     "sphinx-epytext",
     "sphinx-autorun"
